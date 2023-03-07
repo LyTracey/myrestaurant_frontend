@@ -1,0 +1,33 @@
+.col {
+    padding-bottom: 12px;
+    padding-top: 12px;
+}
+
+.card {
+    background-color: #FBFBFB;
+    text-align: center;
+}
+
+.card-title {
+    padding-top: 5px;
+}
+
+.card-img-top {
+    padding: 5px;
+}
+
+.accordion-button,  .accordion-button:not(.collapsed), button:focus, button:focus:not(:focus-visible) {
+    color: #FBFBFB;
+}
+
+.warning > .accordion-button {
+    background-color: #E4A11B;
+}
+
+.error > .accordion-button {
+    background-color: #DC4C64;
+}
+
+.success > .accordion-button {
+    background-color: #14A44D;
+}

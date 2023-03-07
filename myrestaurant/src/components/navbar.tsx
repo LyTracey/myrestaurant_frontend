@@ -6,7 +6,7 @@ import "../style/navbar.scss";
 function Navigate() {
 
     return (
-        <Navbar collapseOnSelect sticky="top" expand="lg" bg="primary" variant="dark">
+        <Navbar collapseOnSelect sticky="top" expand="lg" bg="dark" variant="dark">
             <Container>
                 <Navbar.Brand>MyRestaurant</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
