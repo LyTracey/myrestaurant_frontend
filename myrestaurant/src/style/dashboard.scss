@@ -5,6 +5,7 @@
 
 .card {
     background-color: #FBFBFB;
+    text-align: center;
 }
 
 .card-title {
@@ -15,7 +16,7 @@
     padding: 5px;
 }
 
-.accordion-button,  .accordion-button:not(.collapsed) {
+.accordion-button,  .accordion-button:not(.collapsed), button:focus, button:focus:not(:focus-visible) {
     color: #FBFBFB;
 }
 

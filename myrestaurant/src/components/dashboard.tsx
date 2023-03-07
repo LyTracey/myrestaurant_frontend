@@ -32,6 +32,7 @@ export function Dashboard () {
         });
     }
 
+
     // Get statistics from api
     useEffect(() => {
         getStats();
@@ -44,7 +45,7 @@ export function Dashboard () {
                     <Card className="stats">
                         <Card.Title>Revenue</Card.Title>
                         <Card.Img variant="top" src={ placeholder }></Card.Img>
-                        <Card.Body>Weekly Total: £ { statistics.revenue }</Card.Body>
+                        <Card.Body>Weekly Total: £ { statistics.revenue?.toFixed(2) }</Card.Body>
                     </Card>
                 </Col>
 
@@ -52,7 +53,7 @@ export function Dashboard () {
                     <Card className="stats">
                         <Card.Title>Profit</Card.Title>
                         <Card.Img variant="top" src={ placeholder }></Card.Img>
-                        { Number(statistics.revenue) > 0 ? (<Card.Body>Weekly Total: £ { statistics.profit }</Card.Body>) :  <Card.Body>Weekly Total: - £ { Math.abs(Number(statistics.profit)) }</Card.Body>}
+                        { Number(statistics.profit) > 0 ? (<Card.Body>Weekly Total: £ { statistics.profit?.toFixed(2) }</Card.Body>) :  <Card.Body>Weekly Total: - £ { Math.abs(Number(statistics.profit)).toFixed(2) }</Card.Body>}
                     </Card>
                 </Col>
             </Row>
