@@ -1,3 +1,4 @@
+@use "base.scss";
 
 body {
   margin: 0;
@@ -8,8 +9,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.App {
-  background-color: #d5dae2;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+}
+
+
+.App.light-mode {
+  @include base.theme(base.$light-mode...);
+}
+
+.App.dark-mode {
+  @include base.theme(base.$dark-mode...);
 }
 
 @import "~bootstrap/scss/bootstrap";
