@@ -1,33 +1,78 @@
+@use "base.scss";
+
+.light-mode.dashboard {
+
+    .card {
+        @include base.theme(base.$light-mode-reversed...);
+    }
+
+    .accordion-button {
+        color: map-get(base.$theme-colours, "navy")
+    }
+
+
+}
+
+.dark-mode.dashboard {
+
+    .card {
+        @include base.theme(base.$dark-mode-reversed...);
+    }
+
+    .accordion-button {
+        color: map-get(base.$theme-colours, "white")
+    }
+
+}
+
+.title > h2 {
+    text-align: center;
+
+}
+
 .col {
     padding-bottom: 12px;
     padding-top: 12px;
 }
 
 .card {
-    background-color: #FBFBFB;
+    border: none;
     text-align: center;
+
+    .card-title {
+        padding-top: 5px;
+    }
+    
+    .card-img-top {
+        padding: 5px;
+    }
+
 }
 
-.card-title {
-    padding-top: 5px;
-}
+.accordion {
 
-.card-img-top {
-    padding: 5px;
-}
+    .accordion-button {
+        box-shadow: none;
+        font-weight: 500;
+    }
 
-.accordion-button,  .accordion-button:not(.collapsed), button:focus, button:focus:not(:focus-visible) {
-    color: #FBFBFB;
-}
-
-.warning > .accordion-button {
-    background-color: #E4A11B;
-}
-
-.error > .accordion-button {
-    background-color: #DC4C64;
-}
-
-.success > .accordion-button {
-    background-color: #14A44D;
+    .accordion-button::after {
+        background-image: var(--bs-accordion-btn-icon);
+    }
+    
+    .accordion-item {
+        border: none;
+    }
+    
+    .error > .accordion-button {
+        @include base.status(map-get(base.$status-colours, "error"))
+    }
+    
+    .warning > .accordion-button {
+        @include base.status(map-get(base.$status-colours, "warning"))
+    }
+    
+    .success > .accordion-button {
+        @include base.status(map-get(base.$status-colours, "success"))
+    }
 }

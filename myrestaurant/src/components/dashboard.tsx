@@ -10,7 +10,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import type { Statistics } from '../types/dashboardTypes';
 
 
-export function Dashboard () {
+export function Dashboard (props: any) {
 
     // Set states
     const [statistics, setStatistics] = useState<Statistics>({
@@ -22,7 +22,7 @@ export function Dashboard () {
     // Define variables
     const endpoint = "http://127.0.0.1:8000/myrestaurant/dashboard/";
 
-
+    // Get statistics
     function getStats() {
         axios.get(endpoint)
         .then((response) => {
@@ -32,15 +32,17 @@ export function Dashboard () {
         });
     }
 
-
     // Get statistics from api
     useEffect(() => {
         getStats();
     }, []);
 
     return (
-        <Container>
-            <Row lg={2} className='justify-content-center'>
+        <Container className={ `dashboard ${ props.theme }` }>
+            <Row className='title justify-content-center'>
+                <h2>Dashboard</h2>
+            </Row>
+            <Row lg={2} sm={1} xs={1} className='justify-content-center'>
                 <Col >
                     <Card className="stats">
                         <Card.Title>Revenue</Card.Title>
@@ -58,7 +60,23 @@ export function Dashboard () {
                 </Col>
             </Row>
 
-            <Row lg={3} className='justify-content-center'>
+            <Row sm={3} xs={1} className='justify-content-center'>
+                <Col>
+                    <Accordion className="stats col-auto">
+                        <Accordion.Item eventKey="0">
+                            <Accordion.Header className="error">Out of Stock: { statistics.out_of_stock.length }</Accordion.Header>
+
+                            <Accordion.Body>
+                                {   
+                                    statistics.out_of_stock.length != 0 ? (
+                                        statistics.out_of_stock.map((item, i) => {
+                                            return <div key={`out_if_stock_${i}`}>{ item }</div>
+                                        })) : "All items in stock!"
+                                }
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </Accordion>
+                </Col>
                 <Col>
                     <Accordion className="stats col-auto">
                         <Accordion.Item eventKey="0">
@@ -76,22 +94,6 @@ export function Dashboard () {
                     </Accordion>
                 </Col>
 
-                <Col>
-                    <Accordion className="stats col-auto">
-                        <Accordion.Item eventKey="0">
-                            <Accordion.Header className="error">Out of Stock: { statistics.out_of_stock.length }</Accordion.Header>
-
-                            <Accordion.Body>
-                                {   
-                                    statistics.out_of_stock.length != 0 ? (
-                                        statistics.out_of_stock.map((item, i) => {
-                                            return <div key={`out_if_stock_${i}`}>{ item }</div>
-                                        })) : "All items in stock!"
-                                }
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    </Accordion>
-                </Col>
                 
                 <Col>
                     <Accordion className="stats col-auto">
@@ -112,4 +114,5 @@ export function Dashboard () {
 
         </Container>
     )
+
 };
