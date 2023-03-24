@@ -40,20 +40,20 @@
     text-align: center;
 
     .card-title {
-        padding-top: 5px;
+        padding-top: 15px;
     }
     
-    .card-img-top {
-        padding: 5px;
+    .card-body {
+        height: 325px;
     }
 
 }
 
 .accordion {
-
+    
     .accordion-button {
+        height: 60px;
         box-shadow: none;
-        font-weight: 500;
     }
 
     .accordion-button::after {
@@ -75,4 +75,25 @@
     .success > .accordion-button {
         @include base.status(map-get(base.$status-colours, "success"))
     }
+}
+
+
+.date-range {
+
+    &#start-date-range {
+        text-align: right;
+    }
+
+    &#end-date-range {
+        text-align: left;
+    }
+
+    #start-date, #end-date {
+        @include base.theme(base.$light-mode-reversed...);
+        padding: 3px 7px 3px 7px;
+        border-radius: 10px;
+        outline: none;
+    }
+
+
 }

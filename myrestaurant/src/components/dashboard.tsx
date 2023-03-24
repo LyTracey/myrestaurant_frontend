@@ -5,10 +5,9 @@ import '../style/dashboard.scss';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import placeholder from "../images/placeholder-image.webp";
 import Accordion from 'react-bootstrap/Accordion';
-import type { Statistics } from '../types/dashboardTypes';
-
+import type { Statistics, DateRange } from '../types/dashboardTypes';
+import { BarChart, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer} from 'recharts';
 
 export function Dashboard (props: any) {
 
@@ -17,6 +16,11 @@ export function Dashboard (props: any) {
         low_stock: [],
         out_of_stock: [],
         sales: {}
+    });
+
+    const [dateRange, setDateRange] = useState<DateRange>({
+        start_date: new Date(),
+        end_date: new Date()
     });
 
     // Define variables
@@ -37,26 +41,89 @@ export function Dashboard (props: any) {
         getStats();
     }, []);
 
+
+    // Generate graph
+    const revenueData = [
+        {
+            name: "Week 1",
+            revenue: statistics.revenue
+        },
+        {
+            name: "Week 2",
+            revenue: 0
+        },
+        {
+            name: "Week 3",
+            revenue: 0
+        },
+        {
+            name: "Week 4",
+            revenue: 0
+        }
+    ]
+
+    const revenueGraph = (
+        <ResponsiveContainer width="90%" height="90%">
+            <BarChart data={revenueData}>
+                <XAxis dataKey="name" stroke={ props.theme === "light-mode" ? "#7A7A7A" : "#E1E1E1"} />
+                <YAxis stroke={ props.theme === "light-mode" ? "#7A7A7A" : "#E1E1E1"} />
+                <Tooltip />
+                <Bar dataKey="revenue" fill={ props.theme === "light-mode" ? "#395C6B" : "#F7EDE2"} />
+            </BarChart>
+        </ResponsiveContainer>
+    );
+
+    const profitData = [
+        {
+            name: "Week 1",
+            profit: statistics.profit
+        },
+        {
+            name: "Week 2",
+            profit: 0
+        },
+        {
+            name: "Week 3",
+            profit: 0
+        },
+        {
+            name: "Week 4",
+            profit: 0
+        }
+    ]
+
+    const profitGraph = (
+        <ResponsiveContainer width="90%" height="90%">
+            <BarChart data={profitData}>
+                <XAxis dataKey="name" stroke={ props.theme === "light-mode" ? "#7A7A7A" : "#E1E1E1"} />
+                <YAxis stroke={ props.theme === "light-mode" ? "#7A7A7A" : "#E1E1E1"} />
+                <Tooltip />
+                <Bar dataKey="profit" fill={ props.theme === "light-mode" ? "#395C6B" : "#F7EDE2"} />
+            </BarChart>
+        </ResponsiveContainer>
+    );
+
+
+    const formatProfit = () => {
+        return Number(statistics.profit) > 0 ? `£ ${statistics.profit?.toFixed(2)}` : `-£ ${Math.abs(Number(statistics.profit)).toFixed(2)}`
+    };
+
+    const handleDate = ({ target }: any) => {
+        console.log(target.value);
+    };
+
+
     return (
         <Container className={ `dashboard ${ props.theme }` }>
             <Row className='title justify-content-center'>
-                <h2>Dashboard</h2>
+                    <h2>Dashboard</h2>
             </Row>
-            <Row lg={2} sm={1} xs={1} className='justify-content-center'>
-                <Col >
-                    <Card className="stats">
-                        <Card.Title>Revenue</Card.Title>
-                        <Card.Img variant="top" src={ placeholder }></Card.Img>
-                        <Card.Body>Weekly Total: £ { statistics.revenue?.toFixed(2) }</Card.Body>
-                    </Card>
+            <Row lg={2}>
+                <Col className='date-range' id="start-date-range">
+                    <input type="date" id="start-date" name="start-date" onChange={e => handleDate(e)}/>
                 </Col>
-
-                <Col >
-                    <Card className="stats">
-                        <Card.Title>Profit</Card.Title>
-                        <Card.Img variant="top" src={ placeholder }></Card.Img>
-                        { Number(statistics.profit) > 0 ? (<Card.Body>Weekly Total: £ { statistics.profit?.toFixed(2) }</Card.Body>) :  <Card.Body>Weekly Total: - £ { Math.abs(Number(statistics.profit)).toFixed(2) }</Card.Body>}
-                    </Card>
+                <Col className='date-range' id="end-date-range">
+                    <input type="date" id="end-date" name="end-date" onChange={e => handleDate(e)}/>
                 </Col>
             </Row>
 
@@ -64,8 +131,12 @@ export function Dashboard (props: any) {
                 <Col>
                     <Accordion className="stats col-auto">
                         <Accordion.Item eventKey="0">
-                            <Accordion.Header className="error">Out of Stock: { statistics.out_of_stock.length }</Accordion.Header>
-
+                            <Accordion.Header className="error">
+                                <div>
+                                    <b>Out of Stock</b><br/>
+                                    { statistics.out_of_stock.length }                    
+                                </div>
+                            </Accordion.Header>
                             <Accordion.Body>
                                 {   
                                     statistics.out_of_stock.length != 0 ? (
@@ -80,7 +151,12 @@ export function Dashboard (props: any) {
                 <Col>
                     <Accordion className="stats col-auto">
                         <Accordion.Item eventKey="0">
-                            <Accordion.Header className='warning'>Low Stock: { statistics.low_stock.length }</Accordion.Header>
+                            <Accordion.Header className='warning'>
+                                <div>
+                                    <b>Low Stock</b><br/>
+                                    { statistics.low_stock.length }
+                                </div>
+                            </Accordion.Header>
                             <Accordion.Body>
                                 {   
                                     statistics.low_stock.length != 0 ? (
@@ -98,7 +174,11 @@ export function Dashboard (props: any) {
                 <Col>
                     <Accordion className="stats col-auto">
                         <Accordion.Item eventKey="0">
-                        <Accordion.Header className="success">Sales</Accordion.Header>
+                            <Accordion.Header className="success">
+                                <div>
+                                    <b>Sales</b><br/>
+                                </div>
+                            </Accordion.Header>
                             <Accordion.Body>
                                 {   
                                     Object.keys(statistics.sales).length != 0 ? (
@@ -111,6 +191,29 @@ export function Dashboard (props: any) {
                     </Accordion>
                 </Col>
             </Row>
+
+            <Row lg={2} sm={1} xs={1} className='justify-content-center'>
+                <Col >
+                    <Card className="stats">
+                        <Card.Title>Revenue</Card.Title>
+                        <Card.Body>
+                            { revenueGraph }
+                            Weekly Total: £ { statistics.revenue?.toFixed(2) }
+                        </Card.Body>
+                    </Card>
+                </Col>
+
+                <Col >
+                    <Card className="stats">
+                        <Card.Title>Profit</Card.Title>
+                        <Card.Body>
+                            { profitGraph }
+                            Weekly Total: { formatProfit() }
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+
 
         </Container>
     )

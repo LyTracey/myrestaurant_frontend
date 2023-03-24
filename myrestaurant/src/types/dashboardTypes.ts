@@ -9,3 +9,9 @@ export interface Statistics {
     revenue?: number,
     profit?: number
 }
+
+
+export interface DateRange {
+    start_date: Date,
+    end_date: Date
+}
