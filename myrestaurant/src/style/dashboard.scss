@@ -2,7 +2,7 @@
 
 .light-mode.dashboard {
 
-    .card {
+    .card, .date-range > #start-date, .date-range > #end-date {
         @include base.theme(base.$light-mode-reversed...);
     }
 
@@ -15,7 +15,7 @@
 
 .dark-mode.dashboard {
 
-    .card {
+    .card, .date-range > #start-date, .date-range > #end-date {
         @include base.theme(base.$dark-mode-reversed...);
     }
 
@@ -89,11 +89,22 @@
     }
 
     #start-date, #end-date {
-        @include base.theme(base.$light-mode-reversed...);
         padding: 3px 7px 3px 7px;
         border-radius: 10px;
         outline: none;
+
+        &::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            filter: opacity(70%);
+        }
+
     }
+
+
+    #start-date:hover, #end-date:hover {
+        color: map-get(base.$theme-colours, "light-secondary");
+    }
+
 
 
 }

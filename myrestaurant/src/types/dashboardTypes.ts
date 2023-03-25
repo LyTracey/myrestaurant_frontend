@@ -6,12 +6,11 @@ export interface Statistics {
     low_stock: Array<string>,
     out_of_stock: Array<string>,
     sales: Sales,
-    revenue?: number,
-    profit?: number
+    revenue: number,
+    profit: number
 }
 
-
 export interface DateRange {
-    start_date: Date,
-    end_date: Date
+    start_date: string | undefined,
+    end_date: string | undefined
 }
