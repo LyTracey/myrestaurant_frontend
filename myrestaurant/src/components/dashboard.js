@@ -1,17 +1,17 @@
-import { __assign, __awaiter, __generator } from "tslib";
+import { __assign } from "tslib";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
-import '../style/dashboard.scss';
-import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import '../style/dashboard.scss';
+import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
 import { BarChart, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer } from 'recharts';
-export function Dashboard(props) {
-    var _this = this;
+import endpoints from "../data/endpoints";
+function Dashboard(props) {
     // Set states
     var _a = useState({
         low_stock: [],
@@ -29,30 +29,19 @@ export function Dashboard(props) {
         frequency: "W"
     }), dateRange = _b[0], setDateRange = _b[1];
     // Define variables
-    var endpoint = "http://127.0.0.1:8000/myrestaurant/dashboard/";
     axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
     axios.defaults.headers.post['Content-Type'] = 'application/json';
     // Get statistics
     var getStats = function (method, data) {
         if (data === void 0) { data = undefined; }
-        return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, axios({
-                            method: method,
-                            url: endpoint,
-                            data: data
-                        })
-                            .then(function (response) {
-                            setStatistics(__assign({}, response.data));
-                        }).catch(function (error) {
-                            console.log(error);
-                        })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
+        axios({
+            method: method,
+            url: "".concat(endpoints.prefix).concat(endpoints["dashboard"]),
+            data: data
+        }).then(function (response) {
+            setStatistics(__assign({}, response.data));
+        }).catch(function (error) {
+            console.log(error);
         });
     };
     // Get statistics from api
@@ -66,15 +55,15 @@ export function Dashboard(props) {
         setDateRange(__assign(__assign({}, dateRange), (_b = {}, _b[target.name] = target.value, _b)));
     };
     // Create cards
-    var createAccordion = function (status, title, statistic, comment, keyPrefix) {
+    var createAccordion = function (status, title, statistic, comment) {
         return (_jsx(Col, { children: _jsx(Accordion, __assign({ className: "stats col-auto" }, { children: _jsxs(Accordion.Item, __assign({ eventKey: "0" }, { children: [_jsx(Accordion.Header, __assign({ className: status }, { children: _jsxs("div", { children: [_jsx("b", { children: title }), _jsx("br", {}), statistic.length] }) })), _jsx(Accordion.Body, { children: Array.isArray(statistic) ?
                                 (statistic.length != 0 ?
                                     (statistic.map(function (item, i) {
-                                        return _jsx("div", { children: item }, "".concat(keyPrefix, "-").concat(i));
+                                        return _jsx("div", { children: item }, i);
                                     })) : comment) :
                                 (Object.keys(statistic).length != 0 ?
                                     (Object.keys(statistic).map(function (key, i) {
-                                        return _jsxs("div", { children: [key, ": ", statistic[key]] }, "".concat(keyPrefix, "-").concat(i));
+                                        return _jsxs("div", { children: [key, ": ", statistic[key]] }, i);
                                     })) : "No sales made :(") })] })) })) }));
     };
     // Create bar graph crads
@@ -97,6 +86,7 @@ export function Dashboard(props) {
     };
     var axisColour = props.theme === "light-mode" ? "#7A7A7A" : "#E1E1E1";
     var barColour = props.theme === "light-mode" ? "#395C6B" : "#F7EDE2";
-    return (_jsxs(Container, __assign({ className: "dashboard ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title justify-content-center' }, { children: _jsx("h2", { children: "Dashboard" }) })), _jsx(Row, { children: _jsxs(Col, __assign({ className: "date-range" }, { children: [_jsx("input", { type: "date", id: "start-date", name: "start_date", onChange: function (e) { return handleDate(e); } }), _jsx("input", { type: "date", id: "end-date", name: "end_date", onChange: function (e) { return handleDate(e); } }), _jsxs(Form.Select, __assign({ name: 'frequency', onChange: function (e) { return handleDate(e); } }, { children: [_jsx("option", __assign({ value: "W" }, { children: "Weekly" })), _jsx("option", __assign({ value: "M" }, { children: "Monthly" })), _jsx("option", __assign({ value: "Q" }, { children: "Quarterly" }))] }))] })) }), _jsxs(Row, __assign({ lg: 2, sm: 1, xs: 1, className: 'justify-content-center' }, { children: [createGraph("Revenue", statistics.revenue, axisColour, barColour, "revenue"), createGraph("Profit", statistics.profit, axisColour, barColour, "profit")] })), _jsxs(Row, __assign({ sm: 3, xs: 1, className: 'justify-content-center' }, { children: [createAccordion("error", "Out of Stock", statistics.out_of_stock, "All items in stock!", "out-of-stock"), createAccordion("warning", "Low Stock", statistics.low_stock, "No items low in stock", "low-stock"), createAccordion("success", "Sales", statistics.sales, "No sales made :(", "sales")] }))] })));
+    return (_jsxs(Container, __assign({ className: "dashboard ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title justify-content-center' }, { children: _jsx("h2", { children: "Dashboard" }) })), _jsx(Row, { children: _jsxs(Col, __assign({ className: "date-range" }, { children: [_jsx("input", { type: "date", id: "start-date", name: "start_date", onChange: function (e) { return handleDate(e); } }), _jsx("input", { type: "date", id: "end-date", name: "end_date", onChange: function (e) { return handleDate(e); } }), _jsxs(Form.Select, __assign({ name: 'frequency', onChange: function (e) { return handleDate(e); } }, { children: [_jsx("option", __assign({ value: "W" }, { children: "Weekly" })), _jsx("option", __assign({ value: "M" }, { children: "Monthly" })), _jsx("option", __assign({ value: "Q" }, { children: "Quarterly" }))] }))] })) }), _jsxs(Row, __assign({ lg: 2, sm: 1, xs: 1, className: 'justify-content-center' }, { children: [createGraph("Revenue", statistics.revenue, axisColour, barColour, "revenue"), createGraph("Profit", statistics.profit, axisColour, barColour, "profit")] })), _jsxs(Row, __assign({ sm: 3, xs: 1, className: 'justify-content-center' }, { children: [createAccordion("error", "Out of Stock", statistics.out_of_stock, "All items in stock!"), createAccordion("warning", "Low Stock", statistics.low_stock, "No items low in stock"), createAccordion("success", "Sales", statistics.sales, "No sales made :(")] }))] })));
 }
 ;
+export default Dashboard;

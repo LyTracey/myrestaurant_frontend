@@ -1,0 +1,13 @@
+@use "base.scss";
+
+.menu {
+    .form-select {
+        height: 100px;
+    }
+
+    .units > .form-control, .ingredients > .form-check{
+        height: 30px;
+        width: 150px;
+        margin-bottom: 10px;
+    }
+}
