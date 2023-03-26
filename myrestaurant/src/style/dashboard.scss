@@ -2,7 +2,7 @@
 
 .light-mode.dashboard {
 
-    .card, .date-range > #start-date, .date-range > #end-date {
+    .card, .date-range > #start-date, .date-range > #end-date, .form-select{
         @include base.theme(base.$light-mode-reversed...);
     }
 
@@ -15,7 +15,7 @@
 
 .dark-mode.dashboard {
 
-    .card, .date-range > #start-date, .date-range > #end-date {
+    .card, .date-range > #start-date, .date-range > #end-date, .form-select {
         @include base.theme(base.$dark-mode-reversed...);
     }
 
@@ -44,7 +44,7 @@
     }
     
     .card-body {
-        height: 325px;
+        height: 350px;
     }
 
 }
@@ -54,6 +54,7 @@
     .accordion-button {
         height: 60px;
         box-shadow: none;
+        padding: 15px;
     }
 
     .accordion-button::after {
@@ -79,19 +80,15 @@
 
 
 .date-range {
-
-    &#start-date-range {
-        text-align: right;
-    }
-
-    &#end-date-range {
-        text-align: left;
-    }
-
+    text-align: center;   
+    
     #start-date, #end-date {
+        height: 45px;
         padding: 3px 7px 3px 7px;
         border-radius: 10px;
         outline: none;
+        text-align: center;
+        margin-left: 10px;
 
         &::-webkit-calendar-picker-indicator {
             cursor: pointer;
@@ -105,6 +102,12 @@
         color: map-get(base.$theme-colours, "light-secondary");
     }
 
+}
 
-
+.form-select {
+    display: inline-block;
+    width: 170px;
+    height: 45px;
+    border-radius: 10px;
+    margin-left: 10px;
 }
