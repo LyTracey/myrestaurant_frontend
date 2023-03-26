@@ -12,7 +12,7 @@ function Navigate(props: any) {
 
     return (
         <Navbar className={ props.theme } collapseOnSelect sticky="top" expand="lg">
-            <Container fluid>
+            <Container>
                 <Navbar.Brand className={ props.theme }>MyRestaurant</Navbar.Brand>
                 <Navbar.Toggle className={ props.theme } aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse role="navigation">
