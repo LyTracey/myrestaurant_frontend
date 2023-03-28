@@ -13,19 +13,17 @@ import "../style/menu.scss";
 function Menu ( props: any ) {
     
     // Test ingredients
-    const ingredients = ["Garlic", "Beef Mince", "Tomatoes"];
+    const ingredients: {[key: number]: string} = {1: "Garlic", 10: "Beef Mince", 6: "Chives"};
 
     // Set states
     const [menu, setMenu] = useState<Array<MenuObj>>([]);
     const [newMenu, setNewMenu] = useState<MenuObj>({
-        title: null,
+        title: "",
         description: "",
+        ingredients: [],
+        units: {},
         price: 0,
-        ingredients: {}
     });
-
-
-
 
     // Define variables
     axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
@@ -49,17 +47,26 @@ function Menu ( props: any ) {
        getMenu("get");
     }, []);
 
+    useEffect(() => {
+        console.log(newMenu);
+     }, [newMenu]);
+    
+    // Update data
+    const handleData = (item: string, value: string | number) => {
+        setNewMenu({...newMenu, [item]: value})
+    };
+    
+    const handleUnits = (item: number, checked: boolean=false, value: number=0) => {
+        let obj = {...newMenu};
+        checked ? obj.units[item] = value : delete obj.units[item];
+        setNewMenu(obj);
+    };
+
     // Handle selected ingredients
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        e.target.ingredients.forEach((item: any) => console.log(item.value));
-    };
-
-    // Update menu
-    const handleSelectedIngredients = (checked: boolean, item: string) => {
-        let obj = {...newMenu};
-        checked ? obj.ingredients[item] = 0 : delete obj.ingredients[item];
-        setNewMenu(obj);
+        const selectedIngredients = Object.entries(newMenu.units).filter(item => item[1] > 0).map(item => Number(item[0]));
+        setNewMenu({...newMenu, ingredients: selectedIngredients});
     };
 
     return (
@@ -71,21 +78,26 @@ function Menu ( props: any ) {
             <Form onSubmit={e => handleSubmit(e)}>
                 <Form.Group>
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" name="title"></Form.Control>
+                    <Form.Control
+                        type="text"
+                        name="title"
+                        required
+                        onChange={e => handleData(e.target.name, e.target.value)}>
+                    </Form.Control>
                 </Form.Group>
 
                 <Row xs={2}>
                     <Form.Group className='ingredients'>
                         <Form.Label>Ingredients</Form.Label>
-                        { ingredients.map((item, i) => {
+                        { Object.entries(ingredients).map((item, i) => {
                             return (
                                 <Form.Check 
                                     type="checkbox"
-                                    label={ item }
+                                    label={ item[1] }
                                     key={i}
                                     name="ingredients"
-                                    value={ item }
-                                    onChange={e => handleSelectedIngredients(e.target.checked, item)}
+                                    value={ item[0] }
+                                    onChange={e => handleUnits(Number(item[0]), e.target.checked)}
                                 />
                             )
                         })}
@@ -93,7 +105,10 @@ function Menu ( props: any ) {
 
                     <Form.Group className='units'>
                         <Form.Label>Units</Form.Label>
-                        { ingredients.map((item, i) => item in newMenu.ingredients && <Form.Control type="number" key={i} name="units"></Form.Control> )}
+                        { Object.entries(ingredients).map((item, i) => 
+                            item[0] in newMenu.units ? 
+                                <Form.Control type="number" key={i} name="units" step=".01" onChange={e => handleUnits(Number(item[0]), true, Number(e.target.value))} required></Form.Control> : 
+                                <div key={i}></div>)}
                     </Form.Group>
                 </Row>
 
@@ -102,6 +117,7 @@ function Menu ( props: any ) {
                     <Form.Control 
                         type="text"
                         name="description"
+                        onChange={e => handleData(e.target.name, e.target.value)}
                     ></Form.Control>
                 </Form.Group>
                 <Form.Group>
@@ -109,6 +125,9 @@ function Menu ( props: any ) {
                     <Form.Control 
                         type="number"
                         name="price"
+                        step=".01"
+                        required
+                        onChange={e => handleData(e.target.name, e.target.value)}
                     ></Form.Control>
                 </Form.Group>
                 <Button type="submit">Submit</Button>
