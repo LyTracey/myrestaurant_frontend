@@ -1,4 +1,5 @@
 export interface MenuObj {
+    [index: string]: any,
     id?: number,
     title: string | null,
     ingredients: Array<number>,
