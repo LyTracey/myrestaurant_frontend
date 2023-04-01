@@ -1,13 +1,44 @@
 @use "base.scss";
 
 .menu {
+    .title, .description, .price, .submit {
+        text-align: center;
+        margin-top: 10px;
+    }
+
     .form-select {
         height: 100px;
     }
 
-    .units > .form-control, .units > div, .ingredients > .form-check{
-        height: 30px;
-        width: 150px;
+    .form-label {
+        text-align: right;
+        font-weight: 500;
+        display: block;
+    }
+
+    .menu-form {
+        .row {
+            justify-content: center;
+        }
+    }
+
+    .ingredients, .units {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        
+        &.label {
+            text-align: right;
+        }
+
+        .form-control, div, .form-check{
+            height: 30px;
+            margin-bottom: 10px;
+            
+        }
+    }
+
+    .submit > button {
+        width: 100px;
         margin-bottom: 10px;
     }
 }

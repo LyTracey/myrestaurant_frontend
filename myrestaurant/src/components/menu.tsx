@@ -4,9 +4,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import MenuForm from './forms/menuForm';
 import endpoints from '../data/endpoints';
+import Button from 'react-bootstrap/Button';
+
 import { MenuObj } from '../types/menuTypes';
 import "../style/menu.scss";
 
@@ -14,7 +15,7 @@ function Menu ( props: any ) {
     
 
     // Test ingredients
-    const ingredients: {[key: number]: string} = {1: "Garlic", 3: "Beef Mince", 6: "Chives"};
+    const ingredients: {[key: string]: string} = {"1": "Garlic", "3": "Beef Mince", "6": "Chives"};
 
 
     // Set states
@@ -26,6 +27,7 @@ function Menu ( props: any ) {
         units: {},
         price: 0.00,
     });
+    const [addItem, setAddItem] = useState<boolean>(false);
 
 
     // Define variables
@@ -90,64 +92,19 @@ function Menu ( props: any ) {
             <Row className='title justify-content-center'>
                 <h2>Menu</h2>
             </Row>
+            
+            <Button onClick={() => setAddItem(!addItem)}>+</Button>
 
-            <Form onSubmit={e => handleSubmit(e)}>
-                <Form.Group>
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="title"
-                        required
-                        onChange={e => handleData(e.target.name, e.target.value)}>
-                    </Form.Control>
-                </Form.Group>
-
-                <Row xs={2}>
-                    <Form.Group className='ingredients'>
-                        <Form.Label>Ingredients</Form.Label>
-                        { Object.entries(ingredients).map((item, i) => {
-                            return (
-                                <Form.Check 
-                                    type="checkbox"
-                                    label={ item[1] }
-                                    key={i}
-                                    name="ingredients"
-                                    value={ item[0] }
-                                    onChange={e => handleUnits(item[0], e.target.checked)}
-                                />
-                            )
-                        })}
-                    </Form.Group>
-
-                    <Form.Group className='units'>
-                        <Form.Label>Units</Form.Label>
-                        { Object.entries(ingredients).map((item, i) => 
-                            item[0] in newMenu.units ? 
-                                <Form.Control type="number" key={i} name="units" step=".01" onChange={e => handleUnits(String(item[0]), true, Number(e.target.value))} required></Form.Control> : 
-                                <div key={i}></div>)}
-                    </Form.Group>
-                </Row>
-
-                <Form.Group>
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control 
-                        type="text"
-                        name="description"
-                        onChange={e => handleData(e.target.name, e.target.value)}
-                    ></Form.Control>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Price</Form.Label>
-                    <Form.Control 
-                        type="number"
-                        name="price"
-                        step="0.01"
-                        required
-                        onChange={e => handleData(e.target.name, Number(e.target.value))}
-                    ></Form.Control>
-                </Form.Group>
-                <Button type="submit">Submit</Button>
-            </Form>
+            {
+                addItem && 
+                <MenuForm 
+                    handleSubmit={handleSubmit}
+                    handleData={handleData}
+                    handleUnits={handleUnits}
+                    ingredients={ingredients}
+                    newMenu={newMenu}
+                />
+            }
 
             <Row>
                 { menu.map((item, i) => {
