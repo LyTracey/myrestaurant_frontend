@@ -6,24 +6,38 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import '../../style/menuForm.scss';
 
-function MenuForm (props: any) {
+
+function MenuUpdateForm (props: any) {
 
     return (
-        <Modal className="menu-form" show={props.addItem} onHide={props.onHide}>
+        <Modal className="menu-form" show={props.updateItem} onHide={props.onHide}>
             <Modal.Header closeButton>
-                <Modal.Title>Add Menu Item</Modal.Title>
+                <Modal.Title>Update Menu Item</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form onSubmit={e => props.handleSubmit(e, "add", props.newMenu)}>
+                <Form onSubmit={e => props.handleSubmit(e, "update", props.updateMenu) }>
                     <Container>
+                        <Form.Group className="id" as={Row} sm={2}>
+                            <Form.Label column sm={3}>ID</Form.Label>
+                            <Col className="field" sm={9}>
+                            <Form.Control
+                                type="text"
+                                name="id"
+                                defaultValue={props.updateMenu.id}
+                                readOnly
+                            >                                
+                            </Form.Control>
+                        </Col>
+                        </Form.Group>
+
                         <Form.Group className="title" as={Row} sm={2}>
                             <Form.Label column sm={3}>Title</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control
                                     type="text"
                                     name="title"
-                                    required
-                                    onChange={e => props.handleData(e.target.name, e.target.value, "add")}
+                                    defaultValue={props.updateMenu.title}
+                                    readOnly
                                 >
                                 </Form.Control>
                             </Col>
@@ -35,7 +49,8 @@ function MenuForm (props: any) {
                                 <Form.Control    
                                     type="text"
                                     name="description"
-                                    onChange={e => props.handleData(e.target.name, e.target.value, "add")}
+                                    defaultValue={props.updateMenu.description}
+                                    onChange={e => props.handleData(e.target.name, e.target.value, "update")}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>
@@ -48,7 +63,8 @@ function MenuForm (props: any) {
                                     name="price"
                                     step="0.01"
                                     required
-                                    onChange={e => props.handleData(e.target.name, Number(e.target.value), "add")}
+                                    defaultValue={props.updateMenu.price}
+                                    onChange={e => props.handleData(e.target.name, Number(e.target.value), "update")}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>
@@ -67,7 +83,7 @@ function MenuForm (props: any) {
                                             key={i}
                                             name="ingredients"
                                             value={ item[0] }
-                                            onChange={e => props.handleUnits(String(item[0]), e.target.checked, "add", props.newMenu)}
+                                            onChange={e => props.handleUnits(Number(item[0]), e.target.checked, "update", props.updateMenu)}
                                         />
                                     )
                                 })}                    
@@ -77,17 +93,22 @@ function MenuForm (props: any) {
                                 <Form.Label>Units</Form.Label>
                             </Col>
                             <Col sm={2} className='units multi-input'>
-                                { Object.entries(props.ingredients).map((item, i) => 
-                                    item[0] in props.newMenu.units ? 
-                                        <Form.Control 
+                                { 
+                                    Object.entries(props.ingredients).map((item: any, i) =>
+                                            
+                                        item[0] in (props.updateMenu.units ?? []) 
+                                        ? (<Form.Control 
                                             type="number" 
                                             key={i} 
                                             name="units" 
                                             step=".01" 
-                                            onChange={e => props.handleUnits(String(item[0]), true, "add", props.newMenu, Number(e.target.value))} 
-                                            required>
-                                        </Form.Control> : 
-                                        <div key={i}></div>)}
+                                            onChange={e => props.handleUnits(item[0], true, "update", props.updateMenu, Number(e.target.value))}
+                                            required
+                                        ></Form.Control>)
+                                        : <div key={i}></div>                                             
+                                    )
+                                }
+
                             </Col>
                         </Row>
                             
@@ -102,4 +123,4 @@ function MenuForm (props: any) {
     )
 }
 
-export default MenuForm;
+export default MenuUpdateForm;
