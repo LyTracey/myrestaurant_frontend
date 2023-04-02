@@ -1,0 +1,38 @@
+@use 'base.scss';
+
+.menu-form{
+
+    
+    .form-select {
+        height: 100px;
+    }
+    
+    .form-label {
+        text-align: right;
+        font-weight: 500;
+        display: block;
+    }
+    
+    .row {
+        justify-content: center;
+    }
+
+    .title, .description, .price, .submit, .ingredients, .units {
+        margin-top: 10px;
+    }
+    
+    .ingredients, .units {
+    
+        .form-control, div, .form-check{
+            height: 30px;
+            margin-bottom: 10px;
+            
+        }
+    }
+    
+    .submit > button {
+        width: 100px;
+        margin-bottom: 10px;
+    }
+
+}

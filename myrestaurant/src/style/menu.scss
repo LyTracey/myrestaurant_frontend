@@ -1,44 +1,42 @@
 @use "base.scss";
 
 .menu {
-    .title, .description, .price, .submit {
+    &.light-mode {
+        .card-body {
+            @include base.theme(base.$light-mode-reversed...);
+        }
+    }
+
+    &.dark-mode {
+        .card-body {
+            @include base.theme(base.$dark-mode-reversed...);
+        }
+
+    }
+
+    .title {
         text-align: center;
-        margin-top: 10px;
     }
-
-    .form-select {
-        height: 100px;
-    }
-
-    .form-label {
-        text-align: right;
-        font-weight: 500;
-        display: block;
-    }
-
-    .menu-form {
-        .row {
-            justify-content: center;
-        }
-    }
-
-    .ingredients, .units {
+    
+    .card-body {
         margin-top: 10px;
         margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 10px;
         
-        &.label {
-            text-align: right;
+        .card-title, .card-text {
+            text-align: center;
         }
 
-        .form-control, div, .form-check{
-            height: 30px;
-            margin-bottom: 10px;
-            
+    }
+
+    .btn {
+        background-color: map-get(base.$status-colours, "success");
+        border: none;
+
+        &:hover {
+            background-color: map-get(base.$theme-colours, "light-secondary")
         }
     }
 
-    .submit > button {
-        width: 100px;
-        margin-bottom: 10px;
-    }
 }

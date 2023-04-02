@@ -12,41 +12,53 @@ import Button from 'react-bootstrap/Button';
 import "../style/menu.scss";
 function Menu(props) {
     var _this = this;
-    // Test ingredients
-    var ingredients = { "1": "Garlic", "3": "Beef Mince", "6": "Chives" };
     // Set states
     var _a = useState([]), menu = _a[0], setMenu = _a[1];
-    var _b = useState({
+    var _b = useState({}), ingredients = _b[0], setIngredients = _b[1];
+    var _c = useState({
         title: "",
         description: "",
+        price: 0.00,
         ingredients: [],
         units: {},
-        price: 0.00,
-    }), newMenu = _b[0], setNewMenu = _b[1];
-    var _c = useState(false), addItem = _c[0], setAddItem = _c[1];
+    }), newMenu = _c[0], setNewMenu = _c[1];
+    var _d = useState(false), addItem = _d[0], setAddItem = _d[1];
+    // const [updateMenu, setUpdateMenu ] = useState<MenuObj>({
+    //     id: null,
+    //     title: "",
+    //     description: "",
+    //     price: null,
+    //     image: "",
+    //     ingredients: [],
+    //     units: {}
+    // });
+    // Test ingredients
+    // const ingredients: {[key: string]: string} = {"1": "Garlic", "2": "Pork Mince", "3": "Beef Mince"};
     // Define variables
     axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
     axios.defaults.headers.post['Content-Type'] = 'application/json';
     // Request menu data
-    var requestMenu = function (method, headers, data) {
-        if (headers === void 0) { headers = {}; }
-        if (data === void 0) { data = {}; }
-        axios({
-            method: method,
-            headers: headers,
-            url: "".concat(endpoints.prefix).concat(endpoints["menu"]),
-            data: data
-        }).then(function (response) {
-            if (method === "get") {
-                setMenu(response.data);
-            }
+    var getMenu = function () {
+        axios.get("".concat(endpoints.prefix).concat(endpoints["menu"])).then(function (response) {
+            setMenu(response.data);
+        }).catch(function (error) {
+            console.log(error);
+        });
+    };
+    // Test ingredients
+    var getIngredients = function () {
+        axios.get("".concat(endpoints.prefix).concat(endpoints["inventory"])).then(function (response) {
+            var filteredInventory = {};
+            response.data.forEach(function (item) { return (filteredInventory[item.id] = item.ingredient); });
+            setIngredients(filteredInventory);
         }).catch(function (error) {
             console.log(error);
         });
     };
     // UseEffect
     useEffect(function () {
-        requestMenu("get");
+        getMenu();
+        getIngredients();
     }, []);
     // Update data
     var handleData = function (item, value) {
@@ -78,15 +90,14 @@ function Menu(props) {
                         }, { formSerializer: { metaTokens: false, indexes: null } })];
                 case 1:
                     _a.sent();
-                    requestMenu("get");
+                    getMenu();
                     return [2 /*return*/];
             }
         });
     }); };
-    return (_jsxs(Container, __assign({ className: "menu ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title justify-content-center' }, { children: _jsx("h2", { children: "Menu" }) })), _jsx(Button, __assign({ onClick: function () { return setAddItem(!addItem); } }, { children: "+" })), addItem &&
-                _jsx(MenuForm, { handleSubmit: handleSubmit, handleData: handleData, handleUnits: handleUnits, ingredients: ingredients, newMenu: newMenu }), _jsx(Row, { children: menu.map(function (item, i) {
-                    return (_jsx(Col, { children: _jsxs(Card.Body, { children: [_jsx(Card.Title, { children: item.title }), _jsx(Card.Img, { src: item.image }), _jsx(Card.Text, { children: item.description }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.price) }), _jsx(Card.Text, { children: "Ingredients: ".concat(item.ingredients) })] }) }, "menu-item-".concat(i)));
-                }) })] })));
+    return (_jsxs(Container, __assign({ className: "menu ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title justify-content-center' }, { children: _jsx("h2", { children: "Menu" }) })), _jsx(Button, __assign({ onClick: function () { return setAddItem(!addItem); } }, { children: "Add Item +" })), _jsx(MenuForm, { handleSubmit: handleSubmit, handleData: handleData, handleUnits: handleUnits, ingredients: ingredients, newMenu: newMenu, addItem: addItem, onHide: function () { return setAddItem(false); } }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: menu.map(function (item, i) {
+                    return (_jsx(Col, { children: _jsxs(Card.Body, { children: [_jsx(Card.Title, { children: item.title }), _jsx(Card.Img, { src: item.image }), _jsx(Card.Text, { children: item.description }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.price) }), _jsxs(Card.Text, { children: ["Ingredients: ", item.ingredients.map(function (item) { return ingredients[item]; }).join(", ")] })] }) }, "menu-item-".concat(i)));
+                }) }))] })));
 }
 ;
 export default Menu;

@@ -8,55 +8,72 @@ import MenuForm from './forms/menuForm';
 import endpoints from '../data/endpoints';
 import Button from 'react-bootstrap/Button';
 
-import { MenuObj } from '../types/menuTypes';
+import { MenuObj, IngredientsObj } from '../types/menuTypes';
 import "../style/menu.scss";
 
 function Menu ( props: any ) {
     
 
-    // Test ingredients
-    const ingredients: {[key: string]: string} = {"1": "Garlic", "3": "Beef Mince", "6": "Chives"};
-
-
     // Set states
     const [menu, setMenu] = useState<Array<MenuObj>>([]);
+    const [ingredients, setIngredients] = useState<IngredientsObj>({});
     const [newMenu, setNewMenu] = useState<MenuObj>({
         title: "",
         description: "",
+        price: 0.00,
         ingredients: [],
         units: {},
-        price: 0.00,
     });
     const [addItem, setAddItem] = useState<boolean>(false);
-
-
+    // const [updateMenu, setUpdateMenu ] = useState<MenuObj>({
+        //     id: null,
+        //     title: "",
+        //     description: "",
+        //     price: null,
+        //     image: "",
+        //     ingredients: [],
+        //     units: {}
+        // });
+    
+    // Test ingredients
+    // const ingredients: {[key: string]: string} = {"1": "Garlic", "2": "Pork Mince", "3": "Beef Mince"};
+        
     // Define variables
     axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
     axios.defaults.headers.post['Content-Type'] = 'application/json';
-
-
+    
+    
     // Request menu data
-    const requestMenu = (method: string, headers={}, data={}) => {
-        axios({
-            method: method,
-            headers: headers,
-            url: `${endpoints.prefix}${endpoints["menu"]}`,
-            data: data
-        }).then(response => {
-            if (method === "get") {
-                setMenu(response.data);
-            }
+    const getMenu = () => {
+        axios.get(
+            `${endpoints.prefix}${endpoints["menu"]}`
+        ).then(response => {
+            setMenu(response.data);
+        }).catch(error => {
+            console.log(error);
+        })
+    };
+    
+    // Test ingredients
+    const getIngredients = () => {
+        axios.get(
+            `${endpoints.prefix}${endpoints["inventory"]}`
+        ).then(response => {
+            const filteredInventory: {[key: number]: string} = {};
+            response.data.forEach((item: any) => (
+                filteredInventory[item.id] = item.ingredient
+            ));
+            setIngredients(filteredInventory);
         }).catch(error => {
             console.log(error);
         })
     };
 
-
     // UseEffect
     useEffect(() => {
-       requestMenu("get");
+       getMenu();
+       getIngredients();
     }, []);
-
 
     // Update data
     const handleData = (item: string, value: string | number) => {
@@ -83,7 +100,7 @@ function Menu ( props: any ) {
             "ingredients[]": newMenu.ingredients,
             "units{}": newMenu.units,
         }, { formSerializer: { metaTokens: false, indexes: null }});
-        requestMenu("get");
+        getMenu();
 
     };
 
@@ -93,20 +110,20 @@ function Menu ( props: any ) {
                 <h2>Menu</h2>
             </Row>
             
-            <Button onClick={() => setAddItem(!addItem)}>+</Button>
+            <Button onClick={() => setAddItem(!addItem)}>Add Item +</Button>
 
-            {
-                addItem && 
-                <MenuForm 
-                    handleSubmit={handleSubmit}
-                    handleData={handleData}
-                    handleUnits={handleUnits}
-                    ingredients={ingredients}
-                    newMenu={newMenu}
-                />
-            }
+            
+            <MenuForm 
+                handleSubmit={handleSubmit}
+                handleData={handleData}
+                handleUnits={handleUnits}
+                ingredients={ingredients}
+                newMenu={newMenu}
+                addItem={addItem}
+                onHide={() => setAddItem(false)}
+            />
 
-            <Row>
+            <Row xs={1} md={2} lg={3}>
                 { menu.map((item, i) => {
                     return (
                         <Col key={`menu-item-${i}`}>
@@ -115,7 +132,7 @@ function Menu ( props: any ) {
                                 <Card.Img src={ item.image } />
                                 <Card.Text>{ item.description }</Card.Text>
                                 <Card.Text>{ `£ ${ item.price }` }</Card.Text>
-                                <Card.Text>{ `Ingredients: ${ item.ingredients }` }</Card.Text>
+                                <Card.Text>Ingredients: { item.ingredients.map(item => ingredients[item]).join(", ") }</Card.Text>
                             </Card.Body>
                         </Col>
                     )
