@@ -3,11 +3,11 @@
 .light-mode.dashboard {
 
     .card, .date-range > #start-date, .date-range > #end-date, .form-select{
-        @include base.theme(base.$light-mode-reversed...);
+        @include base.theme-reversed(base.$light-mode-reversed...);
     }
 
     .accordion-button {
-        color: map-get(base.$theme-colours, "navy")
+        color: map-get(base.$theme-colours, "navy");
     }
 
 
@@ -16,11 +16,11 @@
 .dark-mode.dashboard {
 
     .card, .date-range > #start-date, .date-range > #end-date, .form-select {
-        @include base.theme(base.$dark-mode-reversed...);
+        @include base.theme-reversed(base.$dark-mode-reversed...);
     }
 
     .accordion-button {
-        color: map-get(base.$theme-colours, "white")
+        color: map-get(base.$theme-colours, "dark-secondary");
     }
 
 }

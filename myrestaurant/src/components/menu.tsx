@@ -7,12 +7,11 @@ import Card from 'react-bootstrap/Card';
 import MenuForm from './forms/menuForm';
 import endpoints from '../data/endpoints';
 import Button from 'react-bootstrap/Button';
-
 import { MenuObj, IngredientsObj } from '../types/menuTypes';
 import "../style/menu.scss";
 
+
 function Menu ( props: any ) {
-    
 
     // Set states
     const [menu, setMenu] = useState<Array<MenuObj>>([]);
@@ -35,15 +34,12 @@ function Menu ( props: any ) {
         //     units: {}
         // });
     
-    // Test ingredients
-    // const ingredients: {[key: string]: string} = {"1": "Garlic", "2": "Pork Mince", "3": "Beef Mince"};
         
     // Define variables
     axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
     axios.defaults.headers.post['Content-Type'] = 'application/json';
     
-    
-    // Request menu data
+    // Fetch menu data from backend
     const getMenu = () => {
         axios.get(
             `${endpoints.prefix}${endpoints["menu"]}`
@@ -54,7 +50,7 @@ function Menu ( props: any ) {
         })
     };
     
-    // Test ingredients
+    // Fetch ingredients from backend
     const getIngredients = () => {
         axios.get(
             `${endpoints.prefix}${endpoints["inventory"]}`
@@ -69,7 +65,7 @@ function Menu ( props: any ) {
         })
     };
 
-    // UseEffect
+    // Fetch resources on first load
     useEffect(() => {
        getMenu();
        getIngredients();
@@ -80,7 +76,6 @@ function Menu ( props: any ) {
         setNewMenu({...newMenu, [item]: value})
     };
     
-
     const handleUnits = (item: string | number, checked: boolean=false, value: number=0) => {
         let obj = {...newMenu};
         checked ? obj.units[item] = value : delete obj.units[item];

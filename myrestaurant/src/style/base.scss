@@ -7,6 +7,18 @@
     color: $text;
 }
 
+@mixin theme-reversed ($background, $text, $secondary-colour) {
+    background-color: $background;
+    border: none;
+    box-shadow: none;
+    color: $text;
+    cursor: pointer;
+
+    &:hover {
+        color: $secondary-colour;
+    }
+}
+
 @mixin status ($background) {
     background-color: $background;
 }
@@ -28,8 +40,8 @@ $theme-colours: (
 
 $light-mode: #FBFBFB, #172A3A;
 
-$light-mode-reversed: #F7EDE2, #172A3A;
-
 $dark-mode: #172A3A, #E1E1E1;
 
-$dark-mode-reversed: #395C6B, #E1E1E1; 
+$light-mode-reversed: #F7EDE2, #172A3A, #7A7A7A;
+
+$dark-mode-reversed: #395C6B, #E1E1E1, #7A7A7A;

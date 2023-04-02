@@ -1,18 +1,24 @@
 @use "base.scss";
 
+.menu.light-mode {
+    @include base.theme(base.$light-mode...);
+    
+    .card-body {
+        @include base.theme-reversed(base.$light-mode-reversed...);
+    }
+
+}
+
+.menu.dark-mode {
+    @include base.theme(base.$dark-mode...);
+    
+    .card-body {
+        @include base.theme-reversed(base.$dark-mode-reversed...);
+    }
+
+}
+
 .menu {
-    &.light-mode {
-        .card-body {
-            @include base.theme(base.$light-mode-reversed...);
-        }
-    }
-
-    &.dark-mode {
-        .card-body {
-            @include base.theme(base.$dark-mode-reversed...);
-        }
-
-    }
 
     .title {
         text-align: center;
@@ -23,6 +29,7 @@
         margin-bottom: 10px;
         padding: 10px;
         border-radius: 10px;
+        height: 400px;
         
         .card-title, .card-text {
             text-align: center;
@@ -35,8 +42,7 @@
         border: none;
 
         &:hover {
-            background-color: map-get(base.$theme-colours, "light-secondary")
+            color: map-get(base.$theme-colours, "light-secondary");
         }
     }
-
 }
