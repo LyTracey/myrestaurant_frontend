@@ -1,4 +1,4 @@
-import { __assign, __awaiter, __generator } from "tslib";
+import { __assign, __awaiter, __generator, __spreadArray } from "tslib";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -37,7 +37,7 @@ function Menu(props) {
     var _f = useState(false), updateItem = _f[0], setUpdateItem = _f[1];
     // Define variables
     axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'application/json';
+    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
     // Fetch menu data from backend
     var getMenu = function () {
         axios.get("".concat(endpoints.prefix).concat(endpoints["menu"])).then(function (response) {
@@ -75,12 +75,19 @@ function Menu(props) {
         if (checked === void 0) { checked = false; }
         if (value === void 0) { value = 0; }
         var obj = __assign({}, data);
-        checked ? obj.units[item] = value : delete obj.units[item];
+        if (checked) {
+            obj.units[item] = value;
+            obj.ingredients = __spreadArray(__spreadArray([], obj.ingredients, true), [Number(item)], false);
+        }
+        else {
+            delete obj.units[item];
+            obj.ingredients = obj.ingredients.filter(function (id) { return id !== Number(item); });
+        }
         method === "add" ? setNewMenu(obj) : setUpdateMenu(obj);
     };
     // Handle submit multipart form to backend
     var handleSubmit = function (e, method, data) { return __awaiter(_this, void 0, void 0, function () {
-        var selectedIngredients, itemPath, _a;
+        var selectedIngredients, itemPath, _a, newMenuItem, updatedMenuItem;
         var _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
@@ -94,7 +101,7 @@ function Menu(props) {
                         case "add": return [3 /*break*/, 3];
                         case "update": return [3 /*break*/, 5];
                     }
-                    return [3 /*break*/, 7];
+                    return [3 /*break*/, 6];
                 case 1: return [4 /*yield*/, axios.delete(itemPath).then(function () {
                         return console.log("Successfully deleted ".concat(data.title));
                     }).catch(function (error) {
@@ -102,15 +109,15 @@ function Menu(props) {
                     })];
                 case 2:
                     _c.sent();
-                    return [3 /*break*/, 8];
+                    return [3 /*break*/, 7];
                 case 3:
-                    setNewMenu(__assign(__assign({}, newMenu), { ingredients: selectedIngredients }));
+                    newMenuItem = __assign(__assign({}, newMenu), { ingredients: selectedIngredients });
                     return [4 /*yield*/, axios.postForm("".concat(endpoints.prefix).concat(endpoints["menu"]), {
-                            title: newMenu.title,
-                            description: newMenu.description,
-                            price: newMenu.price,
-                            "ingredients[]": newMenu.ingredients,
-                            "units{}": newMenu.units
+                            title: newMenuItem.title,
+                            description: newMenuItem.description,
+                            price: newMenuItem.price,
+                            "ingredients[]": newMenuItem.ingredients,
+                            "units{}": newMenuItem.units
                         }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
                             getMenu();
                         }).catch(function (error) {
@@ -118,26 +125,24 @@ function Menu(props) {
                         })];
                 case 4:
                     _c.sent();
-                    return [3 /*break*/, 8];
+                    return [3 /*break*/, 7];
                 case 5:
-                    setUpdateMenu(__assign(__assign({}, updateMenu), { ingredients: selectedIngredients }));
-                    return [4 /*yield*/, axios.patchForm(itemPath, {
-                            description: updateMenu.description,
-                            price: updateMenu.price,
-                            "ingredients[]": updateMenu.ingredients,
-                            "units{}": updateMenu.units
-                        }).then(function () {
-                            getMenu();
-                        }).catch(function (error) {
-                            console.log(error);
-                        })];
+                    updatedMenuItem = __assign(__assign({}, updateMenu), { ingredients: selectedIngredients });
+                    axios.patchForm(itemPath, {
+                        description: updatedMenuItem.description,
+                        price: updatedMenuItem.price,
+                        "ingredients[]": updatedMenuItem.ingredients,
+                        "units{}": updatedMenuItem.units
+                    }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
+                        getMenu();
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    return [3 /*break*/, 7];
                 case 6:
-                    _c.sent();
-                    return [3 /*break*/, 8];
-                case 7:
                     console.log("Unrecognised method");
-                    _c.label = 8;
-                case 8: return [2 /*return*/];
+                    _c.label = 7;
+                case 7: return [2 /*return*/];
             }
         });
     }); };

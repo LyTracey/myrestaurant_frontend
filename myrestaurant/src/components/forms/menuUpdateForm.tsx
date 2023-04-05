@@ -83,7 +83,8 @@ function MenuUpdateForm (props: any) {
                                             key={i}
                                             name="ingredients"
                                             value={ item[0] }
-                                            onChange={e => props.handleUnits(Number(item[0]), e.target.checked, "update", props.updateMenu)}
+                                            checked={ (item[0] in props.updateMenu.ingredients) ?? false }
+                                            onChange={e => props.handleUnits(String(item[0]), e.target.checked, "update", props.updateMenu)}
                                         />
                                     )
                                 })}                    
@@ -94,15 +95,16 @@ function MenuUpdateForm (props: any) {
                             </Col>
                             <Col sm={2} className='units multi-input'>
                                 { 
-                                    Object.entries(props.ingredients).map((item: any, i) =>
+                                    Object.keys(props.ingredients).map((item: any, i) =>
                                             
-                                        item[0] in (props.updateMenu.units ?? []) 
+                                        item in (props.updateMenu.units ?? []) 
                                         ? (<Form.Control 
                                             type="number" 
                                             key={i} 
                                             name="units" 
-                                            step=".01" 
-                                            onChange={e => props.handleUnits(item[0], true, "update", props.updateMenu, Number(e.target.value))}
+                                            step=".01"
+                                            value={ props.updateMenu.units[String(item)] ?? 0 }
+                                            onChange={e => props.handleUnits(String(item), true, "update", props.updateMenu, Number(e.target.value))}
                                             required
                                         ></Form.Control>)
                                         : <div key={i}></div>                                             

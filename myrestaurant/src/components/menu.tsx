@@ -76,7 +76,7 @@ function Menu ( props: any ) {
 
     useEffect(() => {
         console.log(updateMenu);
-     });
+    });
  
     // Update newMenu state
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
@@ -86,7 +86,13 @@ function Menu ( props: any ) {
     // Update newMenu units and ingredients state
     const handleUnits = (item: string, checked: boolean=false, method: "add" | "update", data: MenuObj, value: number=0) => {
         let obj = {...data};
-        checked ? obj.units[item] = value : delete obj.units[item];
+        if (checked) {
+            obj.units[item] = value;
+            obj.ingredients = [...obj.ingredients, Number(item)];
+        } else {
+            delete obj.units[item];
+            obj.ingredients = obj.ingredients.filter(id => id !== Number(item));
+        }
         method === "add" ? setNewMenu(obj) : setUpdateMenu(obj);
     };
 
@@ -105,14 +111,14 @@ function Menu ( props: any ) {
                 );
                 break;
             case "add":
-                setNewMenu({...newMenu, ingredients: selectedIngredients});
+                const newMenuItem = {...newMenu, ingredients: selectedIngredients};
                 await axios.postForm(
                     `${endpoints.prefix}${endpoints["menu"]}`, {
-                        title: newMenu.title,
-                        description: newMenu.description,
-                        price: newMenu.price,
-                        "ingredients[]": newMenu.ingredients,
-                        "units{}": newMenu.units
+                        title: newMenuItem.title,
+                        description: newMenuItem.description,
+                        price: newMenuItem.price,
+                        "ingredients[]": newMenuItem.ingredients,
+                        "units{}": newMenuItem.units
                     }, { formSerializer: { metaTokens: false, indexes: null }}
                 ).then(() => {
                     getMenu();
@@ -121,18 +127,18 @@ function Menu ( props: any ) {
                 });
                 break;
             case "update":
-                setUpdateMenu({...updateMenu, ingredients: selectedIngredients});
-                
-                await axios.patchForm(itemPath, {
-                    description: updateMenu.description,
-                    price: updateMenu.price,
-                    "ingredients[]": updateMenu.ingredients,
-                    "units{}": updateMenu.units
-                }).then(() => {
+                const updatedMenuItem = {...updateMenu, ingredients: selectedIngredients};
+                axios.patchForm(itemPath, {
+                    description: updatedMenuItem.description,
+                    price: updatedMenuItem.price,
+                    "ingredients[]": updatedMenuItem.ingredients,
+                    "units{}": updatedMenuItem.units
+                }, { formSerializer: { metaTokens: false, indexes: null }}
+                ).then(() => {
                     getMenu();
                 }).catch(error => {
                     console.log(error);
-                });
+                })
                 break;
             default:
                 console.log("Unrecognised method");  
