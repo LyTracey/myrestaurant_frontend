@@ -4,13 +4,21 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Alert from 'react-bootstrap/Alert'
+import { useState } from 'react';
 import '../../style/menuForm.scss';
 
 
 function MenuUpdateForm (props: any) {
 
+    // Set states
+    const [deleteAlert, setDeleteAlert] = useState(false);
+
     return (
-        <Modal className="menu-form" show={props.updateItem} onHide={props.onHide}>
+        <Modal className="menu-form" show={props.updateItem} onHide={() => {
+            setDeleteAlert(false);
+            props.onHide();
+            }}>
             <Modal.Header closeButton>
                 <Modal.Title>Update Menu Item</Modal.Title>
             </Modal.Header>
@@ -25,6 +33,7 @@ function MenuUpdateForm (props: any) {
                                 name="id"
                                 defaultValue={props.updateMenu.id}
                                 readOnly
+                                disabled
                             >                                
                             </Form.Control>
                         </Col>
@@ -38,6 +47,7 @@ function MenuUpdateForm (props: any) {
                                     name="title"
                                     defaultValue={props.updateMenu.title}
                                     readOnly
+                                    disabled
                                 >
                                 </Form.Control>
                             </Col>
@@ -74,7 +84,7 @@ function MenuUpdateForm (props: any) {
                                 <Form.Label>Ingredients</Form.Label>
                             </Col>
 
-                            <Col sm={5} className="ingredients multi-input">
+                            <Col sm={4} className="ingredients multi-input">
                                 { Object.entries(props.ingredients).map((item: any, i) => {
                                     return (
                                         <Form.Check 
@@ -83,7 +93,7 @@ function MenuUpdateForm (props: any) {
                                             key={i}
                                             name="ingredients"
                                             value={ item[0] }
-                                            checked={ (item[0] in props.updateMenu.ingredients) ?? false }
+                                            checked={ props.updateMenu.ingredients.includes(Number(item[0])) }
                                             onChange={e => props.handleUnits(String(item[0]), e.target.checked, "update", props.updateMenu)}
                                         />
                                     )
@@ -93,22 +103,22 @@ function MenuUpdateForm (props: any) {
                             <Col sm={2} className='units label'>
                                 <Form.Label>Units</Form.Label>
                             </Col>
-                            <Col sm={2} className='units multi-input'>
+                            <Col sm={3} className='units multi-input'>
                                 { 
-                                    Object.keys(props.ingredients).map((item: any, i) =>
+                                    Object.keys(props.ingredients).map((item: any, i) => {
                                             
-                                        item in (props.updateMenu.units ?? []) 
-                                        ? (<Form.Control 
-                                            type="number" 
-                                            key={i} 
-                                            name="units" 
-                                            step=".01"
-                                            value={ props.updateMenu.units[String(item)] ?? 0 }
-                                            onChange={e => props.handleUnits(String(item), true, "update", props.updateMenu, Number(e.target.value))}
-                                            required
-                                        ></Form.Control>)
+                                        return (props.updateMenu.ingredients ?? []).includes(Number(item))
+                                        ? <Form.Control 
+                                                type="number" 
+                                                key={i}
+                                                name="units" 
+                                                step=".01"
+                                                value={ props.updateMenu.units[String(item)] }
+                                                onChange={e => props.handleUnits(String(item), true, "update", props.updateMenu, Number(e.target.value))}
+                                                required
+                                            ></Form.Control>
                                         : <div key={i}></div>                                             
-                                    )
+                                    })
                                 }
 
                             </Col>
@@ -117,9 +127,24 @@ function MenuUpdateForm (props: any) {
 
                         <Row className="submit" lg={8}>
                             <Button type="submit">Submit</Button>
+                            <Button type="button" onClick={() => setDeleteAlert(true)}>DELETE</Button>
                         </Row>
                     </Container>
                 </Form>
+
+                {   
+                    deleteAlert &&
+                    <Alert onClose={() => setDeleteAlert(false)} dismissible>
+                        <Alert.Heading>
+                            Are you sure you want to delete this item?
+                        </Alert.Heading>
+                        <Button type="button" onClick={() => setDeleteAlert(false) }>Cancel</Button>
+                        <Button type="button" onClick={(e) => {
+                            props.handleSubmit(e, "delete", props.updateMenu);
+                            setDeleteAlert(false);
+                        }}>Yes</Button>
+                    </Alert>
+                }
             </Modal.Body>
         </Modal>
     )

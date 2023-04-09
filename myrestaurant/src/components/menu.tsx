@@ -6,8 +6,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import MenuForm from './forms/menuForm';
 import MenuUpdateForm from './forms/menuUpdateForm';
-import endpoints from '../data/endpoints';
 import Button from 'react-bootstrap/Button';
+import endpoints from '../data/endpoints';
 import { MenuObj, IngredientsObj } from '../types/menuTypes';
 import "../style/menu.scss";
 import slugify from 'slugify';
@@ -16,25 +16,20 @@ import slugify from 'slugify';
 function Menu ( props: any ) {
 
     // Set states
-    const [menu, setMenu] = useState<Array<MenuObj>>([]);
-    const [ingredients, setIngredients] = useState<IngredientsObj>({});
-    const [newMenu, setNewMenu] = useState<MenuObj>({
+    const menuObj = {
+        id: null,
         title: "",
         description: "",
-        price: 0.00,
+        price: null,
         ingredients: [],
-        units: {},
-    });
+        units: {}
+    };
+
+    const [menu, setMenu] = useState<Array<MenuObj>>([]);
+    const [ingredients, setIngredients] = useState<IngredientsObj>({});
+    const [newMenu, setNewMenu] = useState<MenuObj>(menuObj);
     const [addItem, setAddItem] = useState<boolean>(false);
-    const [updateMenu, setUpdateMenu ] = useState<MenuObj>({
-            id: null,
-            title: "",
-            description: "",
-            price: null,
-            image: "",
-            ingredients: [],
-            units: {}
-        });
+    const [updateMenu, setUpdateMenu ] = useState<MenuObj>(menuObj);
     const [updateItem, setUpdateItem] = useState<boolean>(false);
         
     // Define variables
@@ -46,6 +41,7 @@ function Menu ( props: any ) {
         axios.get(
             `${endpoints.prefix}${endpoints["menu"]}`
         ).then(response => {
+            
             setMenu(response.data);
         }).catch(error => {
             console.log(error);
@@ -74,21 +70,19 @@ function Menu ( props: any ) {
        getIngredients();
     }, []);
 
-    useEffect(() => {
-        console.log(updateMenu);
-    });
- 
     // Update newMenu state
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
         method === "add" ? setNewMenu({...newMenu, [item]: value}) : setUpdateMenu({...updateMenu, [item]: value})
     };
     
     // Update newMenu units and ingredients state
-    const handleUnits = (item: string, checked: boolean=false, method: "add" | "update", data: MenuObj, value: number=0) => {
+    const handleUnits = (item: string, checked: boolean=false, method: "add" | "update", data: MenuObj, value: number | ""="") => {
         let obj = {...data};
         if (checked) {
             obj.units[item] = value;
-            obj.ingredients = [...obj.ingredients, Number(item)];
+            if (!obj.ingredients.includes(Number(item))) {
+                obj.ingredients = [...obj.ingredients, Number(item)];
+            }
         } else {
             delete obj.units[item];
             obj.ingredients = obj.ingredients.filter(id => id !== Number(item));
@@ -99,42 +93,42 @@ function Menu ( props: any ) {
     // Handle submit multipart form to backend
     const handleSubmit = async (e: any, method: "add" | "update" | "delete", data: MenuObj) => {
         e.preventDefault();
-        const selectedIngredients = Object.entries(data.units).filter(item => item[1] > 0).map(item => Number(item[0]));
         const itemPath = `${endpoints.prefix}${endpoints["menu"]}${slugify(data.title ?? "")}/`;
-        switch (method){
+        switch (method) {
             case "delete":
                 await axios.delete( itemPath,
-                ).then(() => 
-                    console.log(`Successfully deleted ${data.title}`)
-                ).catch(error => 
+                ).then(() => {
+                    console.log(`Successfully deleted ${data.title}`);
+                    setUpdateItem(!updateItem);
+                }).catch(error => 
                     console.log(error)
                 );
                 break;
             case "add":
-                const newMenuItem = {...newMenu, ingredients: selectedIngredients};
                 await axios.postForm(
                     `${endpoints.prefix}${endpoints["menu"]}`, {
-                        title: newMenuItem.title,
-                        description: newMenuItem.description,
-                        price: newMenuItem.price,
-                        "ingredients[]": newMenuItem.ingredients,
-                        "units{}": newMenuItem.units
+                        title: newMenu.title,
+                        description: newMenu.description,
+                        price: newMenu.price,
+                        "ingredients[]": newMenu.ingredients,
+                        "units{}": newMenu.units
                     }, { formSerializer: { metaTokens: false, indexes: null }}
                 ).then(() => {
+                    setUpdateItem(!updateItem);
                     getMenu();
                 }).catch(error => {
                     console.log(error);
                 });
                 break;
             case "update":
-                const updatedMenuItem = {...updateMenu, ingredients: selectedIngredients};
                 axios.patchForm(itemPath, {
-                    description: updatedMenuItem.description,
-                    price: updatedMenuItem.price,
-                    "ingredients[]": updatedMenuItem.ingredients,
-                    "units{}": updatedMenuItem.units
+                    description: updateMenu.description,
+                    price: updateMenu.price,
+                    "ingredients[]": updateMenu.ingredients,
+                    "units{}": updateMenu.units
                 }, { formSerializer: { metaTokens: false, indexes: null }}
                 ).then(() => {
+                    setUpdateItem(!updateItem);
                     getMenu();
                 }).catch(error => {
                     console.log(error);
@@ -169,7 +163,7 @@ function Menu ( props: any ) {
                     return (
                         <Col key={`menu-item-${i}`}>
                             <Card.Body onClick={() => {
-                                    setUpdateMenu({...updateMenu, ...item});
+                                    setUpdateMenu({...menuObj, ...item});
                                     setUpdateItem(!updateItem);
                                 }}>
                                 <Card.Title>{ item.title }</Card.Title>
@@ -184,13 +178,13 @@ function Menu ( props: any ) {
             </Row>
 
             <MenuUpdateForm 
-                handleSubmit={handleSubmit}
-                updateItem={updateItem}
-                onHide={() => setUpdateItem(false)}
-                handleData={handleData}
-                handleUnits={handleUnits}
-                ingredients={ingredients}
-                updateMenu={updateMenu}
+                handleSubmit={ handleSubmit }
+                updateItem={ updateItem }
+                onHide={ () => setUpdateItem(false) }
+                handleData={ handleData }
+                handleUnits={ handleUnits }
+                ingredients={ ingredients } 
+                updateMenu={ updateMenu }
             />
 
 
