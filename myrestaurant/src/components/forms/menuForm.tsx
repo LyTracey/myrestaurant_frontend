@@ -9,7 +9,7 @@ import '../../style/menuForm.scss';
 function MenuForm (props: any) {
 
     return (
-        <Modal className="menu-form" show={props.addItem} onHide={props.onHide}>
+        <Modal className={`menu-form ${ props.theme }`} show={props.addItem} onHide={props.onHide}>
             <Modal.Header closeButton>
                 <Modal.Title>Add Menu Item</Modal.Title>
             </Modal.Header>
@@ -92,8 +92,8 @@ function MenuForm (props: any) {
                         </Row>
                             
 
-                        <Row className="submit" lg={8}>
-                            <Button type="submit">Submit</Button>
+                        <Row className="form-actions" lg={8}>
+                            <Button type="submit" className='submit'>Submit</Button>
                         </Row>
                     </Container>
                 </Form>

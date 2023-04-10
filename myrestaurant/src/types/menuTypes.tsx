@@ -4,7 +4,7 @@ export interface MenuObj {
     title: string | null,
     ingredients: Array<number>,
     units: {[key: string]: number | ""},
-    image?: string,
+    image?: string | null,
     description: string,
     price: number | null
 };

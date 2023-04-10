@@ -16,8 +16,17 @@
 
     &:hover {
         color: $secondary-colour;
+        transition: color 0.5s;
     }
 }
+
+$light-mode: #FBFBFB, #172A3A;
+
+$dark-mode: #172A3A, #E1E1E1;
+
+$light-mode-reversed: #F7EDE2, #172A3A, #7A7A7A;
+
+$dark-mode-reversed: #395C6B, #E1E1E1, #7A7A7A;
 
 @mixin status ($background) {
     background-color: $background;
@@ -37,11 +46,3 @@ $theme-colours: (
     "light-secondary": #7A7A7A,
     "dark-secondary": #FBFBFB
 );
-
-$light-mode: #FBFBFB, #172A3A;
-
-$dark-mode: #172A3A, #E1E1E1;
-
-$light-mode-reversed: #F7EDE2, #172A3A, #7A7A7A;
-
-$dark-mode-reversed: #395C6B, #E1E1E1, #7A7A7A;

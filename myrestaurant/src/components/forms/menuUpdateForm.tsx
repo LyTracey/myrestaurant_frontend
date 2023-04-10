@@ -15,7 +15,7 @@ function MenuUpdateForm (props: any) {
     const [deleteAlert, setDeleteAlert] = useState(false);
 
     return (
-        <Modal className="menu-form" show={props.updateItem} onHide={() => {
+        <Modal className={`menu-form ${ props.theme }`} show={props.updateItem} onHide={() => {
             setDeleteAlert(false);
             props.onHide();
             }}>
@@ -125,9 +125,9 @@ function MenuUpdateForm (props: any) {
                         </Row>
                             
 
-                        <Row className="submit" lg={8}>
-                            <Button type="submit">Submit</Button>
-                            <Button type="button" onClick={() => setDeleteAlert(true)}>DELETE</Button>
+                        <Row className="form-actions" lg={8}>
+                            <Button type="submit" className="submit">Submit</Button>
+                            <Button type="button" className="delete" onClick={() => setDeleteAlert(true)}>DELETE</Button>
                         </Row>
                     </Container>
                 </Form>
@@ -138,11 +138,13 @@ function MenuUpdateForm (props: any) {
                         <Alert.Heading>
                             Are you sure you want to delete this item?
                         </Alert.Heading>
-                        <Button type="button" onClick={() => setDeleteAlert(false) }>Cancel</Button>
-                        <Button type="button" onClick={(e) => {
-                            props.handleSubmit(e, "delete", props.updateMenu);
-                            setDeleteAlert(false);
-                        }}>Yes</Button>
+                        <div className='alert-actions'>
+                            <Button type="button" className="cancel" onClick={() => setDeleteAlert(false) }>Cancel</Button>
+                            <Button type="button" className="yes" onClick={(e) => {
+                                props.handleSubmit(e, "delete", props.updateMenu);
+                                setDeleteAlert(false);
+                            }}>Yes</Button>
+                        </div>
                     </Alert>
                 }
             </Modal.Body>

@@ -11,6 +11,8 @@ import endpoints from '../data/endpoints';
 import { MenuObj, IngredientsObj } from '../types/menuTypes';
 import "../style/menu.scss";
 import slugify from 'slugify';
+import placeholder from "../images/placeholder-image.png";
+
 
 
 function Menu ( props: any ) {
@@ -21,6 +23,7 @@ function Menu ( props: any ) {
         title: "",
         description: "",
         price: null,
+        image: null,
         ingredients: [],
         units: {}
     };
@@ -100,6 +103,7 @@ function Menu ( props: any ) {
                 ).then(() => {
                     console.log(`Successfully deleted ${data.title}`);
                     setUpdateItem(!updateItem);
+                    getMenu();
                 }).catch(error => 
                     console.log(error)
                 );
@@ -146,9 +150,11 @@ function Menu ( props: any ) {
                 <h2>Menu</h2>
             </Row>
             
-            <Button onClick={() => setAddItem(!addItem)}>Add Item +</Button>
+            <Row className='actions'>
+                <Button onClick={() => setAddItem(!addItem)}>Add Item +</Button>
+            </Row>
 
-            <MenuForm 
+            <MenuForm
                 handleSubmit={handleSubmit}
                 handleData={handleData}
                 handleUnits={handleUnits}
@@ -156,6 +162,7 @@ function Menu ( props: any ) {
                 newMenu={newMenu}
                 addItem={addItem}
                 onHide={() => setAddItem(false)}
+                theme={ props.theme }
             />
 
             <Row xs={1} md={2} lg={3}>
@@ -167,17 +174,19 @@ function Menu ( props: any ) {
                                     setUpdateItem(!updateItem);
                                 }}>
                                 <Card.Title>{ item.title }</Card.Title>
-                                <Card.Img src={ item.image } />
-                                <Card.Text>{ item.description }</Card.Text>
-                                <Card.Text>{ `£ ${ item.price }` }</Card.Text>
-                                <Card.Text>Ingredients: { item.ingredients.map(item => ingredients[item]).join(", ") }</Card.Text>
+                                <Card.Img src={ item.image ?? placeholder } />
+                                <div className='card-details'>
+                                    <Card.Text>{ item.description }</Card.Text>
+                                    <Card.Text>{ `£ ${ item.price }` }</Card.Text>
+                                    <Card.Text>Ingredients: { item.ingredients.map(item => ingredients[item]).join(", ") }</Card.Text>
+                                </div>
                             </Card.Body>
                         </Col>
                     )
                 }) }
             </Row>
 
-            <MenuUpdateForm 
+            <MenuUpdateForm
                 handleSubmit={ handleSubmit }
                 updateItem={ updateItem }
                 onHide={ () => setUpdateItem(false) }
@@ -185,9 +194,8 @@ function Menu ( props: any ) {
                 handleUnits={ handleUnits }
                 ingredients={ ingredients } 
                 updateMenu={ updateMenu }
+                theme={ props.theme }
             />
-
-
         </Container>
     )
 };
