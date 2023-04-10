@@ -1,0 +1,92 @@
+@use 'base.scss';
+
+.inventory-form{
+    &.light-mode {
+        .modal-content {
+            background-color: map-get(base.$theme-colours, "white");
+            color: map-get(base.$theme-colours, "navy");
+        }
+    }
+
+    &.dark-mode {
+
+        .modal-content {
+            background-color: map-get(base.$theme-colours, "blue");
+            color: map-get(base.$theme-colours, "dark-secondary");
+        }
+
+        .form-control[disabled] {
+            background-color: map-get(base.$theme-colours, "beige");
+        }
+    }
+    
+    
+    .form-select {
+        height: 100px;
+    }
+    
+    .form-label {
+        text-align: right;
+        font-weight: 500;
+        display: block;
+    }
+    
+    .row {
+        justify-content: center;
+    }
+
+    .field {
+        margin: auto 0 auto 0;
+    }
+
+    .ingredient, .quantity, .unit_price {
+        margin-top: 10px;
+    }
+    
+    .form-actions > button {
+        width: 100px;
+        height: 40px;
+        margin: 10px;
+        border: none;
+
+        &.submit {
+            background-color: map-get(base.$status-colours, "success");            
+        }
+
+        &.delete {
+            background-color: map-get(base.$status-colours, "error");            
+        }
+        
+    }
+
+    .alert {
+        border: map-get(base.$theme-colours, "light-secondary") solid 1px;
+        background-color: map-get(base.$theme-colours, "white");
+        color: map-get(base.$theme-colours, "blue");
+        text-align: center;
+        position: absolute;
+        top: 150px;
+        left: 5%;
+        width: 90%;
+
+        .alert-heading {
+            font-size: 20px;
+        }
+
+        .alert-actions > button {
+            width: 90px;
+            height: 35px;
+            margin: 10px;
+            border: none;
+
+            &.cancel {
+                background-color: map-get(base.$theme-colours, "blue");
+            }
+
+            &.yes {
+                background-color: map-get(base.$status-colours, "success");
+            }
+        }
+    }
+
+}
