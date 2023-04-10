@@ -9,7 +9,7 @@
 }
 
 .light-mode.navbar {
-    background-color: map-get(base.$theme-colours, "white");
+    @include base.theme(base.$light-mode...);
     
     .navbar-toggler-icon {
         @include toggler-img(map-get(base.$theme-colours, "navy"));
@@ -27,7 +27,7 @@
 }
 
 .dark-mode.navbar {
-    background-color: map-get(base.$theme-colours, "navy");
+    @include base.theme(base.$dark-mode...);
 
     .navbar-toggler-icon {
         @include toggler-img(map-get(base.$theme-colours, "white"));
@@ -49,12 +49,14 @@
 .navbar-brand {
     color: inherit;
     border: none;
+    cursor: pointer;
 }
 
 .navbar-toggler, .navbar-toggler:focus {
     width: 60px;
     border: none;
     box-shadow: none;
+    cursor: pointer;
 }
 
 .navbar-collapse {
