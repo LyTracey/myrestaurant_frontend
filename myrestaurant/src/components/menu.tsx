@@ -11,7 +11,7 @@ import endpoints from '../data/endpoints';
 import { MenuObj, IngredientsObj } from '../types/menuTypes';
 import "../style/menu.scss";
 import slugify from 'slugify';
-import placeholder from "../images/placeholder-image.png";
+import placeholder from "../images/placeholder-image.webp";
 
 
 
