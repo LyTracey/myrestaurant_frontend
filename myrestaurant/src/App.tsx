@@ -4,10 +4,11 @@ import Dashboard from './components/dashboard';
 import Navbar from './components/navbar';
 import { useState } from 'react';
 import Menu from "./components/menu";
+import { Inventory } from './components/inventory';
 
 function App() {
 
-    const [theme, setTheme] = useState("light-mode");
+    const [theme, setTheme] = useState(localStorage.getItem("theme") ?? "light-mode");
 
     return (
         <div className={`App ${ theme }`}>
@@ -16,6 +17,7 @@ function App() {
                 <Routes>
                     <Route path="/dashboard/" element={ <Dashboard theme={ theme }/> } />
                     <Route path="/menu/" element={ <Menu theme={ theme }/> } />
+                    <Route path="/inventory/" element={ <Inventory theme={ theme }/> } />
                 </Routes>
             </Router>
 

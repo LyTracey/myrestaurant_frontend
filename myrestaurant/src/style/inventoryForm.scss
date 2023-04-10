@@ -1,6 +1,6 @@
 @use 'base.scss';
 
-.menu-form{
+.inventory-form{
     &.light-mode {
         .modal-content {
             background-color: map-get(base.$theme-colours, "white");
@@ -14,7 +14,7 @@
             background-color: map-get(base.$theme-colours, "blue");
             color: map-get(base.$theme-colours, "dark-secondary");
         }
-        
+
         .form-control[disabled] {
             background-color: map-get(base.$theme-colours, "beige");
         }
@@ -35,17 +35,12 @@
         justify-content: center;
     }
 
-    .title, .description, .price, .submit, .ingredients, .units {
-        margin-top: 10px;
+    .field {
+        margin: auto 0 auto 0;
     }
-    
-    .ingredients, .units {
-    
-        .form-control, div, .form-check{
-            height: 30px;
-            margin-bottom: 10px;
-            
-        }
+
+    .ingredient, .quantity, .unit_price {
+        margin-top: 10px;
     }
     
     .form-actions > button {

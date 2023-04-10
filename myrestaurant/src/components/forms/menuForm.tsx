@@ -31,7 +31,7 @@ function MenuForm (props: any) {
 
                         <Form.Group className="description" as={Row} sm={2}>
                             <Form.Label column sm={3}>Description</Form.Label>
-                            <Col sm={9}>
+                            <Col className="field" sm={9}>
                                 <Form.Control    
                                     type="text"
                                     name="description"
@@ -42,7 +42,7 @@ function MenuForm (props: any) {
 
                         <Form.Group className="price" as={Row} sm={2}>
                             <Form.Label column sm={3}>Price</Form.Label>
-                            <Col sm={9}>
+                            <Col className="field" sm={9}>
                                 <Form.Control 
                                     type="number"
                                     name="price"
@@ -62,6 +62,7 @@ function MenuForm (props: any) {
                                 { Object.entries(props.ingredients).map((item: any, i) => {
                                     return (
                                         <Form.Check 
+                                            className="field"
                                             type="checkbox"
                                             label={ item[1] }
                                             key={i}
@@ -80,6 +81,7 @@ function MenuForm (props: any) {
                                 { Object.entries(props.ingredients).map((item, i) => 
                                     item[0] in props.newMenu.units ? 
                                         <Form.Control 
+                                            className="field"
                                             type="number" 
                                             key={i} 
                                             name="units" 
