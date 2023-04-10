@@ -12,7 +12,7 @@ import Button from 'react-bootstrap/Button';
 import endpoints from '../data/endpoints';
 import "../style/menu.scss";
 import slugify from 'slugify';
-import placeholder from "../images/placeholder-image.png";
+import placeholder from "../images/placeholder-image.webp";
 function Menu(props) {
     var _this = this;
     // Set states
@@ -113,7 +113,7 @@ function Menu(props) {
                         "ingredients[]": newMenu.ingredients,
                         "units{}": newMenu.units
                     }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
-                        setUpdateItem(!updateItem);
+                        setAddItem(!addItem);
                         getMenu();
                     }).catch(function (error) {
                         console.log(error);

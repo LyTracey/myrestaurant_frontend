@@ -55,7 +55,7 @@ function MenuUpdateForm (props: any) {
 
                         <Form.Group className="description" as={Row} sm={2}>
                             <Form.Label column sm={3}>Description</Form.Label>
-                            <Col sm={9}>
+                            <Col className="field" sm={9}>
                                 <Form.Control    
                                     type="text"
                                     name="description"
@@ -67,7 +67,7 @@ function MenuUpdateForm (props: any) {
 
                         <Form.Group className="price" as={Row} sm={2}>
                             <Form.Label column sm={3}>Price</Form.Label>
-                            <Col sm={9}>
+                            <Col className="field" sm={9}>
                                 <Form.Control 
                                     type="number"
                                     name="price"
@@ -87,7 +87,8 @@ function MenuUpdateForm (props: any) {
                             <Col sm={4} className="ingredients multi-input">
                                 { Object.entries(props.ingredients).map((item: any, i) => {
                                     return (
-                                        <Form.Check 
+                                        <Form.Check
+                                            className="field"
                                             type="checkbox"
                                             label={ item[1] }
                                             key={i}
@@ -109,6 +110,7 @@ function MenuUpdateForm (props: any) {
                                             
                                         return (props.updateMenu.ingredients ?? []).includes(Number(item))
                                         ? <Form.Control 
+                                                className="field"
                                                 type="number" 
                                                 key={i}
                                                 name="units" 

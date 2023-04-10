@@ -7,7 +7,13 @@ import Form from 'react-bootstrap/Form';
 function Navigate(props: any) {
 
     const handleTheme = ({ target }: any) => {
-        target.checked ? props.setTheme("dark-mode") : props.setTheme("light-mode")
+        if (target.checked) {
+            props.setTheme("dark-mode");
+            localStorage.setItem("theme", "dark-mode");
+        } else {
+            props.setTheme("light-mode");
+            localStorage.setItem("theme", "light-mode");
+        }
     };
 
     return (
@@ -18,8 +24,8 @@ function Navigate(props: any) {
                 <Navbar.Collapse role="navigation">
                     <Nav.Link href="/dashboard/">Dashboard</Nav.Link>
                     <Nav.Link href="/menu/">Menu</Nav.Link>
-                    <Nav.Link >Orders</Nav.Link>
-                    <Nav.Link >Inventory</Nav.Link>
+                    <Nav.Link href="/orders/">Orders</Nav.Link>
+                    <Nav.Link href="/inventory/">Inventory</Nav.Link>
                     <Form>
                         <Form.Check className={ `${ props.theme }-reversed` } id="theme-btn" type="switch" checked={ props.theme === "light-mode" ? false : true} onChange={(e) => handleTheme(e) } ></Form.Check>
                     </Form>

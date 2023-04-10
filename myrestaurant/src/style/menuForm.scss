@@ -14,6 +14,10 @@
             background-color: map-get(base.$theme-colours, "blue");
             color: map-get(base.$theme-colours, "dark-secondary");
         }
+        
+        .form-control[disabled] {
+            background-color: map-get(base.$theme-colours, "beige");
+        }
     }
     
     

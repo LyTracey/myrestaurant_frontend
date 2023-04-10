@@ -118,7 +118,7 @@ function Menu ( props: any ) {
                         "units{}": newMenu.units
                     }, { formSerializer: { metaTokens: false, indexes: null }}
                 ).then(() => {
-                    setUpdateItem(!updateItem);
+                    setAddItem(!addItem);
                     getMenu();
                 }).catch(error => {
                     console.log(error);
