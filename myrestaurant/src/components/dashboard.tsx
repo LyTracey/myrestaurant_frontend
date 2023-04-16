@@ -144,7 +144,7 @@ function Dashboard (props: any) {
     return (
         <Container className={ `dashboard ${ props.theme }` }>
 
-            <Row className='title justify-content-center'>
+            <Row className='title'>
                     <h2>Dashboard</h2>
             </Row>
 

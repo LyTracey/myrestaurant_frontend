@@ -79,7 +79,7 @@ function MenuForm (props: any) {
                             </Col>
                             <Col sm={2} className='units multi-input'>
                                 { Object.entries(props.ingredients).map((item, i) => 
-                                    item[0] in props.newMenu.units ? 
+                                    (props.newMenu.ingredients ?? []).includes(Number(item[0])) ? 
                                         <Form.Control 
                                             className="field"
                                             type="number" 

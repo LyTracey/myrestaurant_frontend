@@ -1,10 +1,11 @@
-import './style/App.scss';
+import '../style/App.scss';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import Dashboard from './components/dashboard';
-import Navbar from './components/navbar';
+import Dashboard from './dashboard';
+import Navbar from './navbar';
 import { useState } from 'react';
-import Menu from "./components/menu";
-import { Inventory } from './components/inventory';
+import Menu from "./menu";
+import Inventory from './inventory';
+import Orders from './orders';
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
                     <Route path="/dashboard/" element={ <Dashboard theme={ theme }/> } />
                     <Route path="/menu/" element={ <Menu theme={ theme }/> } />
                     <Route path="/inventory/" element={ <Inventory theme={ theme }/> } />
+                    <Route path="/orders/" element={ <Orders theme={ theme }/> } />
                 </Routes>
             </Router>
 

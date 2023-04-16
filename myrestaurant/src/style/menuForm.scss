@@ -1,6 +1,6 @@
 @use 'base.scss';
 
-.menu-form{
+.menu-form, .orders-form{
     &.light-mode {
         .modal-content {
             background-color: map-get(base.$theme-colours, "white");
@@ -39,7 +39,7 @@
         margin-top: 10px;
     }
     
-    .ingredients, .units {
+    .ingredients, .units, .menu-items, .quantity {
     
         .form-control, div, .form-check{
             height: 30px;

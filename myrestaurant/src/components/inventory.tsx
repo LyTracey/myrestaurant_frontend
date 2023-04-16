@@ -14,7 +14,7 @@ import InventoryUpdateForm from "./forms/inventoryUpdateForm";
 import slugify from "slugify";
 import "../style/inventory.scss";
 
-export function Inventory (props: any) {
+function Inventory (props: any) {
 
     // Set states
     const inventoryObj = {
@@ -153,7 +153,6 @@ export function Inventory (props: any) {
         </Container>
 
     )
-
-
-
 }
+
+export default Inventory;

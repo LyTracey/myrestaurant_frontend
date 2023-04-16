@@ -79,7 +79,7 @@ function Menu ( props: any ) {
     };
     
     // Update newMenu units and ingredients state
-    const handleUnits = (item: string, checked: boolean=false, method: "add" | "update", data: MenuObj, value: number | ""="") => {
+    const handleUnits = (item: string, checked: boolean=false, method: "add" | "update", data: MenuObj, value: number | "") => {
         let obj = {...data};
         if (checked) {
             obj.units[item] = value;
@@ -102,7 +102,7 @@ function Menu ( props: any ) {
                 await axios.delete( itemPath,
                 ).then(() => {
                     console.log(`Successfully deleted ${data.title}`);
-                    setUpdateItem(!updateItem);
+                    setUpdateItem(false);
                     getMenu();
                 }).catch(error => 
                     console.log(error)
@@ -118,7 +118,7 @@ function Menu ( props: any ) {
                         "units{}": newMenu.units
                     }, { formSerializer: { metaTokens: false, indexes: null }}
                 ).then(() => {
-                    setAddItem(!addItem);
+                    setAddItem(false);
                     getMenu();
                 }).catch(error => {
                     console.log(error);
@@ -132,7 +132,7 @@ function Menu ( props: any ) {
                     "units{}": updateMenu.units
                 }, { formSerializer: { metaTokens: false, indexes: null }}
                 ).then(() => {
-                    setUpdateItem(!updateItem);
+                    setUpdateItem(false);
                     getMenu();
                 }).catch(error => {
                     console.log(error);
@@ -146,7 +146,7 @@ function Menu ( props: any ) {
 
     return (
         <Container className={`menu ${ props.theme }`}>
-            <Row className='title justify-content-center'>
+            <Row className='title'>
                 <h2>Menu</h2>
             </Row>
             
