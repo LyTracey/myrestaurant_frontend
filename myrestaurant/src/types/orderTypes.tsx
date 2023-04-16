@@ -12,5 +12,5 @@ export interface OrdersObj {
 };
 
 export interface MenuItemsObj {
-    [index: number]: string
+   [index: number]: {[imdex: string]: string | number}
 };

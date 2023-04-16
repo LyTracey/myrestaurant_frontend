@@ -6,7 +6,9 @@ export interface MenuObj {
     units: {[key: string]: number | ""},
     image?: string | null,
     description: string,
-    price: number | null
+    price: number | null,
+    in_stock?: boolean,
+    available_quantity?: number
 };
 
 export interface IngredientsObj {

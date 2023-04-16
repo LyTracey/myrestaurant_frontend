@@ -55,11 +55,13 @@ function Orders ( props: any ) {
         axios.get(
             `${endpoints.prefix}${endpoints["menu"]}`
         ).then(response => {
-            const filteredMenu: {[key: number]: string} = {};
-            // Return object of id as key and ingredient as value fields for each inventory item
-            response.data.forEach((item: any) => (
-                filteredMenu[item.id] = item.title
-            ));
+            const filteredMenu: MenuItemsObj = {};
+            // Return object of id as key and ingredient as value fields for each inventory item 
+            response.data.forEach((item: any) => {
+                if (item.in_stock) {
+                    filteredMenu[item.id] = {title: item.title, available_quantity: item.available_quantity}
+                }
+            });
             setMenu(filteredMenu);
         }).catch(error => {
             console.log(error);
@@ -195,7 +197,7 @@ function Orders ( props: any ) {
                                     <td>{item.id}</td>
                                     <td>{item.menu_items.map((item, i) => {
                                         return (
-                                            <p key={i}>{menu[item]}</p>
+                                            <p key={i}>{menu[item]?.["title"]}</p>
                                         )
                                     }
                                     )}</td>

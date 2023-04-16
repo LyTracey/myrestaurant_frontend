@@ -48,8 +48,12 @@ function Orders(props) {
     var getMenu = function () {
         axios.get("".concat(endpoints.prefix).concat(endpoints["menu"])).then(function (response) {
             var filteredMenu = {};
-            // Return object of id as key and ingredient as value fields for each inventory item
-            response.data.forEach(function (item) { return (filteredMenu[item.id] = item.title); });
+            // Return object of id as key and ingredient as value fields for each inventory item 
+            response.data.forEach(function (item) {
+                if (item.in_stock) {
+                    filteredMenu[item.id] = { title: item.title, available_quantity: item.available_quantity };
+                }
+            });
             setMenu(filteredMenu);
         }).catch(function (error) {
             console.log(error);
@@ -150,7 +154,8 @@ function Orders(props) {
                                     setUpdateOrder(__assign(__assign({}, ordersObj), item));
                                     setUpdateItem(!updateItem);
                                 } }, { children: [_jsx("td", { children: item.id }), _jsx("td", { children: item.menu_items.map(function (item, i) {
-                                            return (_jsx("p", { children: menu[item] }, i));
+                                            var _a;
+                                            return (_jsx("p", { children: (_a = menu[item]) === null || _a === void 0 ? void 0 : _a["title"] }, i));
                                         }) }), _jsx("td", { children: item.notes }), _jsx("td", { children: String(item.ordered_at) }), _jsx("td", { children: _jsx(Form.Check, {}) }), _jsx("td", { children: String(item.prepared_at) }), _jsx("td", { children: _jsx(Form.Check, {}) }), _jsx("td", { children: String(item.delivered_at) }), _jsx("td", { children: _jsx(Form.Check, {}) })] }), i));
                         }) })] })), _jsx(OrderUpdateForm, { updateItem: updateItem, onHide: function () { return setUpdateItem(false); }, handleData: handleData, handleQuantity: handleQuantity, updateOrder: updateOrder, menu: menu, handleSubmit: handleSubmit, theme: props.theme })] })));
 }

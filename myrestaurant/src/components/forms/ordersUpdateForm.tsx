@@ -25,7 +25,7 @@ function OrderUpdateForm (props: any) {
             <Modal.Body>
                 <Form onSubmit={e => props.handleSubmit(e, "update", props.updateOrder) }>
                     <Container>
-                        <Form.Group className="id" as={Row} sm={2}>
+                        <Form.Group className="field-group id" as={Row} sm={2}>
                             <Form.Label column sm={3}>ID</Form.Label>
                             <Col className="field" sm={9}>
                             <Form.Control
@@ -39,7 +39,7 @@ function OrderUpdateForm (props: any) {
                         </Col>
                         </Form.Group>
 
-                        <Form.Group className="notes" as={Row} sm={2}>
+                        <Form.Group className="field-group notes" as={Row} sm={2}>
                             <Form.Label column sm={3}>Notes</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control 
@@ -51,7 +51,7 @@ function OrderUpdateForm (props: any) {
                             </Col>
                         </Form.Group>
 
-                        <Row sm={4} className="menu-quantity">
+                        <Row sm={4} className="field-group menu-quantity">
                             <Col sm={3} className='menu-items label'>
                                 <Form.Label>Menu Items</Form.Label>
                             </Col>
@@ -59,16 +59,19 @@ function OrderUpdateForm (props: any) {
                             <Col sm={4} className="menu-items multi-input">
                                 { Object.entries(props.menu).map((item: any, i) => {
                                     return (
-                                        <Form.Check
-                                            className="field"
-                                            type="checkbox"
-                                            label={ item[1] }
-                                            key={i}
-                                            name="menu_items"
-                                            value={ item[0] }
-                                            checked={ props.updateOrder.menu_items.includes(Number(item[0])) }
-                                            onChange={e => props.handleQuantity(String(item[0]), e.target.checked, "update", props.updateOrder)}
-                                        />
+                                        <Form.Group>
+                                            <Form.Check
+                                                className="field"
+                                                type="checkbox"
+                                                label={ item[1].title }
+                                                key={i}
+                                                name="menu_items"
+                                                value={ item[0] }
+                                                checked={ props.updateOrder.menu_items.includes(Number(item[0])) }
+                                                onChange={e => props.handleQuantity(String(item[0]), e.target.checked, "update", props.updateOrder)}
+                                            />
+                                            <Form.Control.Feedback type="invalid">Available: {item[1].available_quantity}</Form.Control.Feedback>
+                                        </Form.Group>
                                     )
                                 })}                    
                             </Col>

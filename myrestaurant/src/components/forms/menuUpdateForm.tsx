@@ -25,7 +25,7 @@ function MenuUpdateForm (props: any) {
             <Modal.Body>
                 <Form onSubmit={e => props.handleSubmit(e, "update", props.updateMenu) }>
                     <Container>
-                        <Form.Group className="id" as={Row} sm={2}>
+                        <Form.Group className="field-group id" as={Row} sm={2}>
                             <Form.Label column sm={3}>ID</Form.Label>
                             <Col className="field" sm={9}>
                             <Form.Control
@@ -39,7 +39,7 @@ function MenuUpdateForm (props: any) {
                         </Col>
                         </Form.Group>
 
-                        <Form.Group className="title" as={Row} sm={2}>
+                        <Form.Group className="field-group title" as={Row} sm={2}>
                             <Form.Label column sm={3}>Title</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control
@@ -53,7 +53,7 @@ function MenuUpdateForm (props: any) {
                             </Col>
                         </Form.Group>
 
-                        <Form.Group className="description" as={Row} sm={2}>
+                        <Form.Group className="field-group description" as={Row} sm={2}>
                             <Form.Label column sm={3}>Description</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control    
@@ -65,7 +65,7 @@ function MenuUpdateForm (props: any) {
                             </Col>
                         </Form.Group>
 
-                        <Form.Group className="price" as={Row} sm={2}>
+                        <Form.Group className="field-group price" as={Row} sm={2}>
                             <Form.Label column sm={3}>Price</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control 
@@ -79,7 +79,7 @@ function MenuUpdateForm (props: any) {
                             </Col>
                         </Form.Group>
 
-                        <Row sm={4} className="ingredients-units">
+                        <Row sm={4} className="field-group ingredients-units">
                             <Col sm={3} className='ingredients label'>
                                 <Form.Label>Ingredients</Form.Label>
                             </Col>

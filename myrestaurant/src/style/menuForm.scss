@@ -19,7 +19,10 @@
             background-color: map-get(base.$theme-colours, "beige");
         }
     }
-    
+
+    .modal-dialog {
+        max-width: 80%;
+    }
     
     .form-select {
         height: 100px;
@@ -35,7 +38,7 @@
         justify-content: center;
     }
 
-    .title, .description, .price, .submit, .ingredients, .units {
+    .field-group {
         margin-top: 10px;
     }
     
