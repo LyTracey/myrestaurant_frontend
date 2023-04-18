@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import endpoints from '../data/endpoints';
 import { OrdersObj, MenuItemsObj } from '../types/orderTypes';
-import "../style/menu.scss";
+import "../style/orders.scss";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import OrdersForm from './forms/ordersForm';
@@ -74,7 +74,7 @@ function Orders ( props: any ) {
         getMenu();
     }, []);
 
-    useEffect(() => console.log(updateOrder));
+    useEffect(() => getMenu(), [addItem, updateItem]);
 
     // Update newOrder | updateOrder state
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
@@ -85,7 +85,7 @@ function Orders ( props: any ) {
     const handleQuantity = (item: string, checked: boolean=false, method: "add" | "update", data: OrdersObj, value: number | "") => {
         let obj = {...data};
         if (checked) {
-            obj.quantity[item] = value;
+            obj.quantity[item] = value ?? "";
             if (!obj.menu_items.includes(Number(item))) {
                 obj.menu_items = [...obj.menu_items, Number(item)];
             }
@@ -148,7 +148,7 @@ function Orders ( props: any ) {
     };
 
     return (
-        <Container className={`menu ${ props.theme }`}>
+        <Container className={`orders ${ props.theme }`}>
             <Row className='title'>
                 <h2>Orders</h2>
             </Row>

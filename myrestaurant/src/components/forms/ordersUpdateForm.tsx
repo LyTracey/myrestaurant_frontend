@@ -51,29 +51,34 @@ function OrderUpdateForm (props: any) {
                             </Col>
                         </Form.Group>
 
-                        <Row sm={4} className="field-group menu-quantity">
+                        <Row sm={5} className="field-group menu-quantity">
                             <Col sm={3} className='menu-items label'>
                                 <Form.Label>Menu Items</Form.Label>
                             </Col>
 
-                            <Col sm={4} className="menu-items multi-input">
+                            <Col as="fieldset" sm={3} className="menu-items multi-input">
                                 { Object.entries(props.menu).map((item: any, i) => {
                                     return (
-                                        <Form.Group>
-                                            <Form.Check
-                                                className="field"
-                                                type="checkbox"
-                                                label={ item[1].title }
-                                                key={i}
-                                                name="menu_items"
-                                                value={ item[0] }
-                                                checked={ props.updateOrder.menu_items.includes(Number(item[0])) }
-                                                onChange={e => props.handleQuantity(String(item[0]), e.target.checked, "update", props.updateOrder)}
-                                            />
-                                            <Form.Control.Feedback type="invalid">Available: {item[1].available_quantity}</Form.Control.Feedback>
-                                        </Form.Group>
+                                        <Form.Check
+                                            className="field"
+                                            key={i}
+                                            type="checkbox"
+                                            label={ item[1].title }
+                                            name="menu_items"
+                                            value={ item[0] }
+                                            checked={ props.updateOrder.menu_items.includes(Number(item[0])) }
+                                            onChange={e => props.handleQuantity(String(item[0]), e.target.checked, "update", props.updateOrder)}
+                                        />
                                     )
                                 })}                    
+                            </Col>
+
+                            <Col as="fieldset" sm={1} className="menu-items availability">
+                                { Object.entries(props.menu).map((item: any, i) => {
+                                    return (
+                                        <Form.Text as="div" className="field" key={i}>{item[1].available_quantity}</Form.Text>
+                                    )
+                                })}  
                             </Col>
                             
                             <Col sm={2} className='quantity label'>
@@ -81,19 +86,21 @@ function OrderUpdateForm (props: any) {
                             </Col>
                             <Col sm={3} className='quantity multi-input'>
                                 { 
-                                    Object.keys(props.menu).map((item: any, i) => {
+                                    Object.entries(props.menu).map((item: any, i) => {
                                             
-                                        return (props.updateOrder.menu_items ?? []).includes(Number(item))
+                                        return (props.updateOrder.menu_items ?? []).includes(Number(item[0]))
                                         ? <Form.Control
                                                 className="field"
                                                 type="number" 
                                                 key={i}
                                                 name="quantity" 
-                                                value={ props.updateOrder.quantity[String(item)] ?? "" }
-                                                onChange={e => props.handleQuantity(String(item), true, "update", props.updateOrder, Number(e.target.value))}
+                                                value={ props.updateOrder.quantity[String(item[0])] }
+                                                onChange={e => props.handleQuantity(String(item[0]), true, "update", props.updateOrder, Number(e.target.value))}
                                                 required
+                                                min={1}
+                                                max={item[1].available_quantity}
                                             ></Form.Control>
-                                        : <div key={i}></div>                                             
+                                        : <div className="field" key={i}></div>                                             
                                     })
                                 }
 

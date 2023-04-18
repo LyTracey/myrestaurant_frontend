@@ -48,6 +48,7 @@ function MenuUpdateForm (props: any) {
                                     defaultValue={props.updateMenu.title}
                                     readOnly
                                     disabled
+                                    maxLength={100}
                                 >
                                 </Form.Control>
                             </Col>
@@ -61,6 +62,7 @@ function MenuUpdateForm (props: any) {
                                     name="description"
                                     defaultValue={props.updateMenu.description}
                                     onChange={e => props.handleData(e.target.name, e.target.value, "update")}
+                                    maxLength={300}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>
@@ -75,6 +77,7 @@ function MenuUpdateForm (props: any) {
                                     required
                                     defaultValue={props.updateMenu.price}
                                     onChange={e => props.handleData(e.target.name, Number(e.target.value), "update")}
+                                    min={0}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>

@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import endpoints from '../data/endpoints';
-import "../style/menu.scss";
+import "../style/orders.scss";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import OrdersForm from './forms/ordersForm';
@@ -64,7 +64,7 @@ function Orders(props) {
         getOrders();
         getMenu();
     }, []);
-    useEffect(function () { return console.log(updateOrder); });
+    useEffect(function () { return getMenu(); }, [addItem, updateItem]);
     // Update newOrder | updateOrder state
     var handleData = function (item, value, method) {
         var _a, _b;
@@ -75,7 +75,7 @@ function Orders(props) {
         if (checked === void 0) { checked = false; }
         var obj = __assign({}, data);
         if (checked) {
-            obj.quantity[item] = value;
+            obj.quantity[item] = value !== null && value !== void 0 ? value : "";
             if (!obj.menu_items.includes(Number(item))) {
                 obj.menu_items = __spreadArray(__spreadArray([], obj.menu_items, true), [Number(item)], false);
             }
@@ -146,7 +146,7 @@ function Orders(props) {
             }
         });
     }); };
-    return (_jsxs(Container, __assign({ className: "menu ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Orders" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () {
+    return (_jsxs(Container, __assign({ className: "orders ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Orders" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () {
                         setNewOrder(ordersObj);
                         setAddItem(!addItem);
                     } }, { children: "Add Item +" })) })), _jsx(OrdersForm, { addItem: addItem, onHide: function () { return setAddItem(false); }, handleData: handleData, handleQuantity: handleQuantity, handleSubmit: handleSubmit, newOrder: newOrder, menu: menu, theme: props.theme }), _jsxs(Table, __assign({ responsive: true }, { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Order ID" }), _jsx("th", { children: "Menu Items" }), _jsx("th", { children: "Notes" }), _jsx("th", { children: "Ordered At" }), _jsx("th", { children: "Prepared" }), _jsx("th", { children: "Prepared At" }), _jsx("th", { children: "Delivered" }), _jsx("th", { children: "Delivered At" }), _jsx("th", { children: "Complete" })] }) }), _jsx("tbody", { children: orders.map(function (item, i) {

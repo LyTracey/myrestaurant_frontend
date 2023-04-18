@@ -16,7 +16,7 @@ function InventoryForm (props: any) {
             <Modal.Body>
                 <Form onSubmit={e => props.handleSubmit(e, "add", props.newInventory)}>
                     <Container>
-                        <Form.Group className="ingredient" as={Row} sm={2}>
+                        <Form.Group className="field-group ingredient" as={Row} sm={2}>
                             <Form.Label column sm={3}>Ingredient</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control
@@ -24,23 +24,25 @@ function InventoryForm (props: any) {
                                     name="ingredient"
                                     required
                                     onChange={e => props.handleData(e.target.name, e.target.value, "add")}
+                                    maxLength={100}
                                 >
                                 </Form.Control>
                             </Col>
                         </Form.Group>
 
-                        <Form.Group className="quantity" as={Row} sm={2}>
+                        <Form.Group className="field-group quantity" as={Row} sm={2}>
                             <Form.Label column sm={3}>Quantity Available</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control    
                                     type="number"
                                     name="quantity"
                                     onChange={e => props.handleData(e.target.name, e.target.value, "add")}
+                                    min={0}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>
 
-                        <Form.Group className="unit_price" as={Row} sm={2}>
+                        <Form.Group className="field-group unit_price" as={Row} sm={2}>
                             <Form.Label column sm={3}>Unit Price</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control 
@@ -49,6 +51,7 @@ function InventoryForm (props: any) {
                                     step="0.01"
                                     required
                                     onChange={e => props.handleData(e.target.name, Number(e.target.value), "add")}
+                                    min={0}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>

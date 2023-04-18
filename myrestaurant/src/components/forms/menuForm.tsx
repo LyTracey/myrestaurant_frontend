@@ -24,6 +24,7 @@ function MenuForm (props: any) {
                                     name="title"
                                     required
                                     onChange={e => props.handleData(e.target.name, e.target.value, "add")}
+                                    maxLength={100}
                                 >
                                 </Form.Control>
                             </Col>
@@ -36,6 +37,7 @@ function MenuForm (props: any) {
                                     type="text"
                                     name="description"
                                     onChange={e => props.handleData(e.target.name, e.target.value, "add")}
+                                    maxLength={300}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>
@@ -49,6 +51,7 @@ function MenuForm (props: any) {
                                     step="0.01"
                                     required
                                     onChange={e => props.handleData(e.target.name, Number(e.target.value), "add")}
+                                    min={0}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>

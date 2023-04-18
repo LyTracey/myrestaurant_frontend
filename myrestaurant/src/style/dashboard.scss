@@ -20,7 +20,7 @@
     }
 
     .accordion-button {
-        color: map-get(base.$theme-colours, "dark-secondary");
+        color: map-get(base.$theme-colours, "white");
     }
 
 }
@@ -112,6 +112,10 @@
         height: 45px;
         border-radius: 10px;
         margin-left: 10px;
+    }
+
+    .div.stats.card:hover {
+        background-color: none;
     }
 
 }

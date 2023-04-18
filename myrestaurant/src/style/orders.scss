@@ -1,0 +1,35 @@
+@use "base.scss";
+
+.orders.light-mode {
+    @include base.theme(base.$light-mode...);
+}
+
+.orders.dark-mode {
+    @include base.theme(base.$dark-mode...);
+
+    .table {
+        @include base.theme(base.$dark-mode...);
+    }
+}
+
+.orders {
+
+    .title {
+        text-align: center;
+
+    }
+    .actions {
+        justify-content: center;
+
+        .btn {
+            width: 125px;
+            background-color: map-get(base.$status-colours, "success");
+            border: none;
+    
+            &:hover {
+                color: map-get(base.$theme-colours, "light-secondary");
+            }
+        }
+
+    }
+}

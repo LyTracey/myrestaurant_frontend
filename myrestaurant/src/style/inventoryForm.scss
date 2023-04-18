@@ -12,7 +12,7 @@
 
         .modal-content {
             background-color: map-get(base.$theme-colours, "blue");
-            color: map-get(base.$theme-colours, "dark-secondary");
+            color: map-get(base.$theme-colours, "white");
         }
 
         .form-control[disabled] {
