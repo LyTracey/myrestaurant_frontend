@@ -40,13 +40,17 @@
     .card {
         border: none;
         text-align: center;
-    
+        
+        
         .card-title {
             padding-top: 15px;
         }
         
         .card-body {
             height: 350px;
+            &:hover {
+                color: map-get(base.$theme-colours , "dark-secondary")
+            }
         }
     
     }
@@ -116,6 +120,10 @@
 
     .div.stats.card:hover {
         background-color: none;
+    }
+
+    .recharts-rectangle.recharts-tooltip-cursor {
+        fill: transparent;
     }
 
 }

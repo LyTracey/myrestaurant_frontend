@@ -67,6 +67,15 @@ function Dashboard(props) {
                                     })) : "No sales made :(") })] })) })) }));
     };
     // Create bar graph crads
+    // const CustomTooltip = ({ active, payload, label }: any): any => {
+    //     if (active) {
+    //         return (
+    //             <div className='custom-tooltip'>
+    //                 <p className='label'>{`${label} : ${payload[0].value}`}</p>
+    //             </div>
+    //         )
+    //     }
+    // };
     var createGraph = function (title, data, axisColour, barColour, dataKey) {
         var _a, _b;
         var total = data.map(function (item) { return Number(item[dataKey]); }).reduce(function (a, x) { return a + x; }, 0);
@@ -82,7 +91,7 @@ function Dashboard(props) {
                 _b[dataKey] = 0,
                 _b)
         ];
-        return (_jsx(Col, { children: _jsx(Card, __assign({ className: "stats" }, { children: _jsxs(Card.Body, { children: [_jsx(Card.Title, { children: title }), _jsx(ResponsiveContainer, __assign({ width: "90%", height: "75%" }, { children: _jsxs(BarChart, __assign({ data: data.length === 0 ? dummyData : data }, { children: [_jsx(XAxis, { dataKey: "date", stroke: axisColour }), _jsx(YAxis, { stroke: axisColour }), _jsx(Tooltip, {}), _jsx(Bar, { dataKey: dataKey, fill: barColour })] })) })), _jsx(Card.Text, { children: total >= 0 ? "Total: \u00A3 ".concat(total.toFixed(2)) : "Total: -\u00A3 ".concat(Math.abs(total).toFixed(2)) })] }) })) }));
+        return (_jsx(Col, { children: _jsx(Card, __assign({ className: "stats" }, { children: _jsxs(Card.Body, { children: [_jsx(Card.Title, { children: title }), _jsx(ResponsiveContainer, __assign({ width: "90%", height: "75%" }, { children: _jsxs(BarChart, __assign({ data: data.length === 0 ? dummyData : data }, { children: [_jsx(XAxis, { dataKey: "date", stroke: axisColour }), _jsx(YAxis, { stroke: axisColour }), _jsx(Tooltip, { labelStyle: { color: "#7A7A7A" }, itemStyle: { color: "rgba(57, 92, 107, 1)" } }), _jsx(Bar, { dataKey: dataKey, fill: barColour })] })) })), _jsx(Card.Text, { children: total >= 0 ? "Total: \u00A3 ".concat(total.toFixed(2)) : "Total: -\u00A3 ".concat(Math.abs(total).toFixed(2)) })] }) })) }));
     };
     var axisColour = props.theme === "light-mode" ? "#7A7A7A" : "#E1E1E1";
     var barColour = props.theme === "light-mode" ? "#395C6B" : "#F7EDE2";

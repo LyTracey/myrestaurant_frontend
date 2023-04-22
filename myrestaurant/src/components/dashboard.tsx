@@ -102,6 +102,15 @@ function Dashboard (props: any) {
 
 
     // Create bar graph crads
+    // const CustomTooltip = ({ active, payload, label }: any): any => {
+    //     if (active) {
+    //         return (
+    //             <div className='custom-tooltip'>
+    //                 <p className='label'>{`${label} : ${payload[0].value}`}</p>
+    //             </div>
+    //         )
+    //     }
+    // };
     const createGraph = (title: string, data: Array<StatisticsObj>, axisColour: string, barColour: string, dataKey: string) => {
         
         const total = data.map(item => Number(item[dataKey]) ).reduce((a: number, x: number) => a + x, 0);
@@ -127,7 +136,7 @@ function Dashboard (props: any) {
                             <BarChart data={ data.length === 0 ? dummyData : data}>
                                 <XAxis dataKey="date" stroke={ axisColour } />
                                 <YAxis stroke={ axisColour } />
-                                <Tooltip />
+                                <Tooltip labelStyle={{color: "#7A7A7A"}} itemStyle={{color: "rgba(57, 92, 107, 1)"}} />
                                 <Bar dataKey={ dataKey } fill={ barColour } />
                             </BarChart>
                         </ResponsiveContainer>

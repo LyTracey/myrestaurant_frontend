@@ -20,13 +20,13 @@
     }
 }
 
-$light-mode: #FBFBFB, #172A3A;
+$light-mode: #FBFBFB, #7A7A7A;
 
-$dark-mode: #172A3A, #E1E1E1;
+$dark-mode: #172A3A, #FBFBFB;
 
-$light-mode-reversed: #F7EDE2, #172A3A, #7A7A7A;
+$light-mode-reversed: #F7EDE2, #7A7A7A, #395C6B;
 
-$dark-mode-reversed: #395C6B, #E1E1E1, #7A7A7A;
+$dark-mode-reversed: #395C6B, #FBFBFB, #E1E1E1;
 
 @mixin status ($background) {
     background-color: $background;
@@ -34,7 +34,7 @@ $dark-mode-reversed: #395C6B, #E1E1E1, #7A7A7A;
 
 $status-colours: (
     "error": #E07A5F,
-    "warning": #F2CC8F,
+    "warning": #F2CC72,
     "success": #9FB798
 );
 
@@ -43,7 +43,8 @@ $theme-colours: (
     "white": rgba(251, 251, 251, 1),
     "beige": rgba(247, 237, 226, 1),
     "blue": rgba(57, 92, 107, 1),
-    "light-secondary": #7A7A7A,
+    "light-secondary": #172A3A,
     "dark-secondary": #E1E1E1,
     "secondary-text": rgba(33, 37, 41, 0.75),
+    "light-text": #7A7A7A
 );

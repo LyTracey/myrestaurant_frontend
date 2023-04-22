@@ -43,6 +43,7 @@ function OrdersForm (props: any) {
                                             label={ item[1].title }
                                             name="is"
                                             value={ item[0] }
+                                            required
                                             onChange={e => props.handleQuantity(String(item[0]), e.target.checked, "add", props.newOrder)}
                                         />
                                     )

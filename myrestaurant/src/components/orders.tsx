@@ -38,7 +38,7 @@ function Orders ( props: any ) {
     // Define variables
     axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
     axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-    
+
     // Fetch menu data from backend
     const getOrders = () => {
         axios.get(
@@ -56,7 +56,6 @@ function Orders ( props: any ) {
             `${endpoints.prefix}${endpoints["menu"]}`
         ).then(response => {
             const filteredMenu: MenuItemsObj = {};
-            // Return object of id as key and ingredient as value fields for each inventory item 
             response.data.forEach((item: any) => {
                 if (item.in_stock) {
                     filteredMenu[item.id] = {title: item.title, available_quantity: item.available_quantity}
@@ -99,8 +98,6 @@ function Orders ( props: any ) {
     // Handle submit multipart form to backend
     const handleSubmit = async (e: any, method: "add" | "update" | "delete", data: OrdersObj) => {
         e.preventDefault();
-        console.log("In submit");
-        console.log(data);
         const itemPath = `${endpoints.prefix}${endpoints["orders"]}${slugify(String(data.id))}/`;
         switch (method) {
             case "delete":
@@ -147,17 +144,30 @@ function Orders ( props: any ) {
 
     };
 
+    const handleCheck = (e: any, id: number, field: string) => {
+        e.preventDefault();
+        const itemPath = `${endpoints.prefix}${endpoints["orders"]}${slugify(String(id))}/`;
+        axios.patch(itemPath, {
+            [field]: e.target.checked
+        }).then(() => getOrders())
+        .catch((error) => {
+            console.log(error);
+        });
+
+    };
+
     return (
         <Container className={`orders ${ props.theme }`}>
             <Row className='title'>
                 <h2>Orders</h2>
             </Row>
             
-            <Row className='actions'>
-                <Button onClick={() => {
+            <Row xs={2} className='actions'>
+                <Button className="add" onClick={() => {
                     setNewOrder(ordersObj);
                     setAddItem(!addItem);
                 }}>Add Item +</Button>
+                <Button className="archive" as="a" href="/orders/archive">Archive</Button>
             </Row>
 
             <OrdersForm 
@@ -173,7 +183,7 @@ function Orders ( props: any ) {
 
             <Table responsive>
                 <thead>
-                    <tr>
+                    <tr className='headers'>
                         <th>Order ID</th>
                         <th>Menu Items</th>
                         <th>Notes</th>
@@ -190,24 +200,24 @@ function Orders ( props: any ) {
                     { 
                         orders.map((item, i) => {
                             return (
-                                <tr key={i} onClick={() => {
+                                <tr className="rows" onClick={item => {
                                     setUpdateOrder({...ordersObj, ...item});
                                     setUpdateItem(!updateItem);
-                                }}>
-                                    <td>{item.id}</td>
-                                    <td>{item.menu_items.map((item, i) => {
+                                }} key={i}>
+                                    <td className='id' >{item.id}</td>
+                                    <td className='menu-items' >{item.menu_items.map((item, i) => {
                                         return (
                                             <p key={i}>{menu[item]?.["title"]}</p>
                                         )
                                     }
                                     )}</td>
-                                    <td>{item.notes}</td>
-                                    <td>{String(item.ordered_at)}</td>
-                                    <td><Form.Check /></td>
-                                    <td>{String(item.prepared_at)}</td>
-                                    <td><Form.Check /></td>
-                                    <td>{String(item.delivered_at)}</td>
-                                    <td><Form.Check /></td>
+                                    <td className='notes' >{item.notes}</td>
+                                    <td className='ordered-at' >{String(item.ordered_at)}</td>
+                                    <td className='prepared-at-check' ><Form.Check onChange={(e) => handleCheck(e, item.id!, "prepared")} onClick={e => e.stopPropagation()} checked={ item.prepared }/></td>
+                                    <td className='prepared-at' >{String(item.prepared_at)}</td>
+                                    <td className='delivered-at-check'><Form.Check onChange={(e) => handleCheck(e, item.id!, "delivered")} onClick={e => e.stopPropagation()} checked={ item.delivered }/></td>
+                                    <td className='delivered-at' >{String(item.delivered_at)}</td>
+                                    <td className='complete-check'><Form.Check onChange={(e) => handleCheck(e, item.id!, "complete")} onClick={e => e.stopPropagation()} checked={ item.complete }/></td>
                                 </tr>
                                 )
 

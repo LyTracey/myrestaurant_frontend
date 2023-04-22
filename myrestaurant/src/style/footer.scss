@@ -1,0 +1,23 @@
+@use 'base.scss';
+
+.footer {
+    height: 125px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    .links {
+        justify-content: center;
+
+        .nav-link {
+            width: 150px;
+            text-align: center;
+            margin: 0;
+        }
+    }
+
+    .navbar-brand {
+        margin: 0 auto 10px auto;
+    }
+}

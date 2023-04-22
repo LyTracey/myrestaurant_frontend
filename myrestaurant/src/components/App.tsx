@@ -6,6 +6,8 @@ import { useState } from 'react';
 import Menu from "./menu";
 import Inventory from './inventory';
 import Orders from './orders';
+import Footer from './footer';
+import ArchivedOrders from './ordersArchive';
 
 function App() {
 
@@ -20,9 +22,10 @@ function App() {
                     <Route path="/menu/" element={ <Menu theme={ theme }/> } />
                     <Route path="/inventory/" element={ <Inventory theme={ theme }/> } />
                     <Route path="/orders/" element={ <Orders theme={ theme }/> } />
+                    <Route path="/orders/archive" element={ <ArchivedOrders theme={ theme }/>} />
                 </Routes>
             </Router>
-
+            <Footer theme={ theme }/>
         </div>
     )
 }

@@ -66,6 +66,7 @@ function OrderUpdateForm (props: any) {
                                             label={ item[1].title }
                                             name="menu_items"
                                             value={ item[0] }
+                                            required
                                             checked={ props.updateOrder.menu_items.includes(Number(item[0])) }
                                             onChange={e => props.handleQuantity(String(item[0]), e.target.checked, "update", props.updateOrder)}
                                         />

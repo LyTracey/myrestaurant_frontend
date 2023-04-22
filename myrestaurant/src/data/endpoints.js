@@ -4,6 +4,7 @@ var endpoints = {
     dashboard: "dashboard/",
     menu: "menu/",
     inventory: "inventory/",
-    orders: "orders/"
+    orders: "orders/",
+    archivedOrders: "orders/archive"
 };
 export default endpoints;
