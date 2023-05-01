@@ -2,6 +2,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import "../style/footer.scss";
+import { ReactComponent as Logo } from "../images/moonlight-logo.svg";
 
 
 function Footer(props: any) {
@@ -14,8 +15,8 @@ function Footer(props: any) {
       </Container>
       <Container>
         <Navbar.Brand>
-            <img className="brand-logo" src="" width="30" height="30"></img>
-            Moonlight Cafe
+            MOONLIGHT CAFE 
+            <Logo className="footer-logo"/>
         </Navbar.Brand>
       </Container>
     </Navbar>

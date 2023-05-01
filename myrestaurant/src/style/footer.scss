@@ -9,6 +9,8 @@
 
     .links {
         justify-content: center;
+        color: map-get(base.$theme-colours, "blue");
+        font-size: 15px;
 
         .nav-link {
             width: 150px;
@@ -19,5 +21,14 @@
 
     .navbar-brand {
         margin: 0 auto 10px auto;
+        color: map-get(base.$theme-colours, "blue");
+        font-size: 15px;
+    }
+
+    .footer-logo {
+        height: 44px;
+        width: 44px;
+        margin-left: 10px;
+        fill: map-get(base.$theme-colours, "blue");
     }
 }

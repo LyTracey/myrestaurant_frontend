@@ -8,6 +8,7 @@ import Inventory from './inventory';
 import Orders from './orders';
 import Footer from './footer';
 import ArchivedOrders from './ordersArchive';
+import Home from './home';
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
             <Navbar theme={ theme } setTheme={ setTheme }/>
             <Router>
                 <Routes>
+                    <Route path="/" element={ <Home theme={ theme }/> } />
                     <Route path="/dashboard/" element={ <Dashboard theme={ theme }/> } />
                     <Route path="/menu/" element={ <Menu theme={ theme }/> } />
                     <Route path="/inventory/" element={ <Inventory theme={ theme }/> } />

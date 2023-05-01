@@ -2,14 +2,18 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import "../style/navbar.scss";
-import Form from 'react-bootstrap/Form';
+import { ReactComponent as SunIcon } from '../images/icons/sun.svg';
+import { ReactComponent as MoonIcon } from '../images/icons/moon.svg';
+import Button from 'react-bootstrap/Button';
+import { ReactComponent as Logo } from "../images/moonlight-logo.svg";
 
 function Navigate(props: any) {
 
-    const handleTheme = ({ target }: any) => {
-        if (target.checked) {
+    const handleTheme = () => {
+        if (localStorage.getItem("theme") === "light-mode"){
             props.setTheme("dark-mode");
             localStorage.setItem("theme", "dark-mode");
+            
         } else {
             props.setTheme("light-mode");
             localStorage.setItem("theme", "light-mode");
@@ -17,18 +21,35 @@ function Navigate(props: any) {
     };
 
     return (
-        <Navbar className={ props.theme } collapseOnSelect sticky="top" expand="lg">
+        <Navbar className={ props.theme } collapseOnSelect sticky="top" expand="md">
             <Container>
-                <Navbar.Brand className={ props.theme }>Moonlight Cafe</Navbar.Brand>
+                <Navbar.Brand href="/" className={ props.theme }>
+                    MOONLIGHT CAFE
+                    <Logo className="logo"/>
+                </Navbar.Brand>
                 <Navbar.Toggle className={ props.theme } aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse role="navigation">
                     <Nav.Link href="/dashboard/">Dashboard</Nav.Link>
                     <Nav.Link href="/menu/">Menu</Nav.Link>
                     <Nav.Link href="/orders/">Orders</Nav.Link>
                     <Nav.Link href="/inventory/">Inventory</Nav.Link>
-                    <Form>
-                        <Form.Check className={ `${ props.theme }-reversed` } id="theme-btn" type="switch" checked={ props.theme === "light-mode" ? false : true} onChange={(e) => handleTheme(e) } ></Form.Check>
-                    </Form>
+                    <Button className={`${ props.theme } theme-toggle`} onClick={() => handleTheme() }>
+                        {   
+                            props.theme === "light-mode" ?
+                                (
+                                    <div>
+                                        <SunIcon className="theme-icon light fade-in" /> 
+                                        <MoonIcon className="theme-icon dark fade-out" />
+                                    </div>
+                                ) : 
+                                (
+                                    <div>
+                                        <SunIcon className="theme-icon light fade-out" /> 
+                                        <MoonIcon className="theme-icon dark fade-in" />
+                                    </div>
+                                )
+                        }
+                    </Button>
                 </Navbar.Collapse>
             </Container>
         </Navbar>

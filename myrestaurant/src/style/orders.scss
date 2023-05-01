@@ -63,8 +63,14 @@
         }
 
         .edit {
-            background-color: map-get(base.$status-colours, "error");
-            border: none;
+            color: map-get(base.$status-colours, "error");
+            border: map-get(base.$status-colours, "error") solid 2px;
+            background-color: transparent;
+
+            &:hover {
+                background-color: map-get(base.$theme-colours, "blue");
+            }
+
         }
 
 
