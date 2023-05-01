@@ -25,7 +25,7 @@ function InventoryUpdateForm (props: any) {
             <Modal.Body>
                 <Form onSubmit={e => props.handleSubmit(e, "update", props.updateInventory) }>
                     <Container>
-                        <Form.Group className="id" as={Row} sm={2}>
+                        <Form.Group className="field-group id" as={Row} sm={2}>
                             <Form.Label column sm={3}>ID</Form.Label>
                             <Col className="field" sm={9}>
                             <Form.Control
@@ -39,7 +39,7 @@ function InventoryUpdateForm (props: any) {
                         </Col>
                         </Form.Group>
 
-                        <Form.Group className="ingredient" as={Row} sm={2}>
+                        <Form.Group className="field-group ingredient" as={Row} sm={2}>
                             <Form.Label column sm={3}>Ingredient</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control
@@ -48,12 +48,13 @@ function InventoryUpdateForm (props: any) {
                                     defaultValue={props.updateInventory.ingredient}
                                     readOnly
                                     disabled
+                                    maxLength={100}
                                 >
                                 </Form.Control>
                             </Col>
                         </Form.Group>
 
-                        <Form.Group className="quantity" as={Row} sm={2}>
+                        <Form.Group className="field-group quantity" as={Row} sm={2}>
                             <Form.Label column sm={3}>Quantity Available</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control    
@@ -62,6 +63,7 @@ function InventoryUpdateForm (props: any) {
                                     step="0.01"
                                     defaultValue={props.updateInventory.quantity}
                                     onChange={e => props.handleData(e.target.name, e.target.value, "update")}
+                                    min={0}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>
@@ -76,6 +78,7 @@ function InventoryUpdateForm (props: any) {
                                     required
                                     defaultValue={props.updateInventory.unit_price}
                                     onChange={e => props.handleData(e.target.name, Number(e.target.value), "update")}
+                                    min={0}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>

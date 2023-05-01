@@ -5,6 +5,7 @@
     border: none;
     box-shadow: none;
     color: $text;
+    transition: ease 1s;
 }
 
 @mixin theme-reversed ($background, $text, $secondary-colour) {
@@ -13,6 +14,7 @@
     box-shadow: none;
     color: $text;
     cursor: pointer;
+    transition: ease 1s;
 
     &:hover {
         color: $secondary-colour;
@@ -20,13 +22,13 @@
     }
 }
 
-$light-mode: #FBFBFB, #172A3A;
+$light-mode: #FBFBFB, #7A7A7A;
 
-$dark-mode: #172A3A, #E1E1E1;
+$dark-mode: #172A3A, #FBFBFB;
 
-$light-mode-reversed: #F7EDE2, #172A3A, #7A7A7A;
+$light-mode-reversed: #F7EDE2, #7A7A7A, #172A3A;
 
-$dark-mode-reversed: #395C6B, #E1E1E1, #7A7A7A;
+$dark-mode-reversed: #395C6B, #FBFBFB, #E1E1E1;
 
 @mixin status ($background) {
     background-color: $background;
@@ -39,10 +41,12 @@ $status-colours: (
 );
 
 $theme-colours: (
-    "navy": rgba(23, 42, 58, 1),
+    "navy": #172A3A,
     "white": rgba(251, 251, 251, 1),
-    "beige": rgba(247, 237, 226, 1),
-    "blue": rgba(57, 92, 107, 1),
-    "light-secondary": #7A7A7A,
-    "dark-secondary": #FBFBFB
+    "beige": rgba(247, 237, 226, 1), // #F7EDE2
+    "blue": rgba(57, 92, 107, 1), // #395c6b
+    "light-secondary": #172A3A,
+    "dark-secondary": #E1E1E1,
+    "secondary-text": rgba(33, 37, 41, 0.75), // #212529
+    "light-text": #7A7A7A
 );

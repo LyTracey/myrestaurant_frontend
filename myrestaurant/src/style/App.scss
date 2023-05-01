@@ -1,4 +1,9 @@
 @use "base.scss";
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200&display=swap');
+
+html, body {
+  height: 100%;
+}
 
 body {
   margin: 0;
@@ -14,6 +19,11 @@ code {
   monospace;
 }
 
+.App {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 150px;
+}
 
 .App.light-mode {
   @include base.theme(base.$light-mode...);
@@ -21,6 +31,10 @@ code {
 
 .App.dark-mode {
   @include base.theme(base.$dark-mode...);
+}
+
+.form-check-input {
+  cursor: pointer;
 }
 
 @import "~bootstrap/scss/bootstrap";

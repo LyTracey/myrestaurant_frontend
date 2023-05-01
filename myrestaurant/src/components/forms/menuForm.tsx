@@ -16,7 +16,7 @@ function MenuForm (props: any) {
             <Modal.Body>
                 <Form onSubmit={e => props.handleSubmit(e, "add", props.newMenu)}>
                     <Container>
-                        <Form.Group className="title" as={Row} sm={2}>
+                        <Form.Group className="field-group title" as={Row} sm={2}>
                             <Form.Label column sm={3}>Title</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control
@@ -24,23 +24,25 @@ function MenuForm (props: any) {
                                     name="title"
                                     required
                                     onChange={e => props.handleData(e.target.name, e.target.value, "add")}
+                                    maxLength={100}
                                 >
                                 </Form.Control>
                             </Col>
                         </Form.Group>
 
-                        <Form.Group className="description" as={Row} sm={2}>
+                        <Form.Group className="field-group description" as={Row} sm={2}>
                             <Form.Label column sm={3}>Description</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control    
                                     type="text"
                                     name="description"
                                     onChange={e => props.handleData(e.target.name, e.target.value, "add")}
+                                    maxLength={300}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>
 
-                        <Form.Group className="price" as={Row} sm={2}>
+                        <Form.Group className="field-group price" as={Row} sm={2}>
                             <Form.Label column sm={3}>Price</Form.Label>
                             <Col className="field" sm={9}>
                                 <Form.Control 
@@ -49,11 +51,12 @@ function MenuForm (props: any) {
                                     step="0.01"
                                     required
                                     onChange={e => props.handleData(e.target.name, Number(e.target.value), "add")}
+                                    min={0}
                                 ></Form.Control>
                             </Col>
                         </Form.Group>
 
-                        <Row sm={4} className="ingredients-units">
+                        <Row sm={4} className="field-group ingredients-units">
                             <Col sm={3} className='ingredients label'>
                                 <Form.Label>Ingredients</Form.Label>
                             </Col>
@@ -79,7 +82,7 @@ function MenuForm (props: any) {
                             </Col>
                             <Col sm={2} className='units multi-input'>
                                 { Object.entries(props.ingredients).map((item, i) => 
-                                    item[0] in props.newMenu.units ? 
+                                    (props.newMenu.ingredients ?? []).includes(Number(item[0])) ? 
                                         <Form.Control 
                                             className="field"
                                             type="number" 

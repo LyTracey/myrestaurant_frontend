@@ -66,7 +66,6 @@ function Menu(props) {
     // Update newMenu units and ingredients state
     var handleUnits = function (item, checked, method, data, value) {
         if (checked === void 0) { checked = false; }
-        if (value === void 0) { value = ""; }
         var obj = __assign({}, data);
         if (checked) {
             obj.units[item] = value;
@@ -98,7 +97,7 @@ function Menu(props) {
                     return [3 /*break*/, 6];
                 case 1: return [4 /*yield*/, axios.delete(itemPath).then(function () {
                         console.log("Successfully deleted ".concat(data.title));
-                        setUpdateItem(!updateItem);
+                        setUpdateItem(false);
                         getMenu();
                     }).catch(function (error) {
                         return console.log(error);
@@ -113,7 +112,7 @@ function Menu(props) {
                         "ingredients[]": newMenu.ingredients,
                         "units{}": newMenu.units
                     }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
-                        setAddItem(!addItem);
+                        setAddItem(false);
                         getMenu();
                     }).catch(function (error) {
                         console.log(error);
@@ -128,7 +127,7 @@ function Menu(props) {
                         "ingredients[]": updateMenu.ingredients,
                         "units{}": updateMenu.units
                     }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
-                        setUpdateItem(!updateItem);
+                        setUpdateItem(false);
                         getMenu();
                     }).catch(function (error) {
                         console.log(error);
@@ -141,7 +140,7 @@ function Menu(props) {
             }
         });
     }); };
-    return (_jsxs(Container, __assign({ className: "menu ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title justify-content-center' }, { children: _jsx("h2", { children: "Menu" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () { return setAddItem(!addItem); } }, { children: "Add Item +" })) })), _jsx(MenuForm, { handleSubmit: handleSubmit, handleData: handleData, handleUnits: handleUnits, ingredients: ingredients, newMenu: newMenu, addItem: addItem, onHide: function () { return setAddItem(false); }, theme: props.theme }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: menu.map(function (item, i) {
+    return (_jsxs(Container, __assign({ className: "menu ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Menu" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () { return setAddItem(!addItem); } }, { children: "Add Item +" })) })), _jsx(MenuForm, { handleSubmit: handleSubmit, handleData: handleData, handleUnits: handleUnits, ingredients: ingredients, newMenu: newMenu, addItem: addItem, onHide: function () { return setAddItem(false); }, theme: props.theme }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: menu.map(function (item, i) {
                     var _a;
                     return (_jsx(Col, { children: _jsxs(Card.Body, __assign({ onClick: function () {
                                 setUpdateMenu(__assign(__assign({}, menuObj), item));

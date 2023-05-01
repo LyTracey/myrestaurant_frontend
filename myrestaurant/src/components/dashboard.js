@@ -67,6 +67,15 @@ function Dashboard(props) {
                                     })) : "No sales made :(") })] })) })) }));
     };
     // Create bar graph crads
+    // const CustomTooltip = ({ active, payload, label }: any): any => {
+    //     if (active) {
+    //         return (
+    //             <div className='custom-tooltip'>
+    //                 <p className='label'>{`${label} : ${payload[0].value}`}</p>
+    //             </div>
+    //         )
+    //     }
+    // };
     var createGraph = function (title, data, axisColour, barColour, dataKey) {
         var _a, _b;
         var total = data.map(function (item) { return Number(item[dataKey]); }).reduce(function (a, x) { return a + x; }, 0);
@@ -82,11 +91,11 @@ function Dashboard(props) {
                 _b[dataKey] = 0,
                 _b)
         ];
-        return (_jsx(Col, { children: _jsx(Card, __assign({ className: "stats" }, { children: _jsxs(Card.Body, { children: [_jsx(Card.Title, { children: title }), _jsx(ResponsiveContainer, __assign({ width: "90%", height: "75%" }, { children: _jsxs(BarChart, __assign({ data: data.length === 0 ? dummyData : data }, { children: [_jsx(XAxis, { dataKey: "date", stroke: axisColour }), _jsx(YAxis, { stroke: axisColour }), _jsx(Tooltip, {}), _jsx(Bar, { dataKey: dataKey, fill: barColour })] })) })), _jsx(Card.Text, { children: total >= 0 ? "Total: \u00A3 ".concat(total.toFixed(2)) : "Total: -\u00A3 ".concat(Math.abs(total).toFixed(2)) })] }) })) }));
+        return (_jsx(Col, { children: _jsx(Card, __assign({ className: "stats" }, { children: _jsxs(Card.Body, { children: [_jsx(Card.Title, { children: title }), _jsx(ResponsiveContainer, __assign({ width: "90%", height: "75%" }, { children: _jsxs(BarChart, __assign({ data: data.length === 0 ? dummyData : data }, { children: [_jsx(XAxis, { dataKey: "date", stroke: axisColour }), _jsx(YAxis, { stroke: axisColour }), _jsx(Tooltip, { labelStyle: { color: "#7A7A7A" }, itemStyle: { color: "rgba(57, 92, 107, 1)" } }), _jsx(Bar, { dataKey: dataKey, fill: barColour })] })) })), _jsx(Card.Text, { children: total >= 0 ? "Total: \u00A3 ".concat(total.toFixed(2)) : "Total: -\u00A3 ".concat(Math.abs(total).toFixed(2)) })] }) })) }));
     };
     var axisColour = props.theme === "light-mode" ? "#7A7A7A" : "#E1E1E1";
     var barColour = props.theme === "light-mode" ? "#395C6B" : "#F7EDE2";
-    return (_jsxs(Container, __assign({ className: "dashboard ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title justify-content-center' }, { children: _jsx("h2", { children: "Dashboard" }) })), _jsx(Row, { children: _jsxs(Col, __assign({ className: "date-range" }, { children: [_jsx("input", { type: "date", id: "start-date", name: "start_date", onChange: function (e) { return handleDate(e); } }), _jsx("input", { type: "date", id: "end-date", name: "end_date", onChange: function (e) { return handleDate(e); } }), _jsxs(Form.Select, __assign({ name: 'frequency', onChange: function (e) { return handleDate(e); } }, { children: [_jsx("option", __assign({ value: "W" }, { children: "Weekly" })), _jsx("option", __assign({ value: "M" }, { children: "Monthly" })), _jsx("option", __assign({ value: "Q" }, { children: "Quarterly" }))] }))] })) }), _jsxs(Row, __assign({ lg: 2, sm: 1, xs: 1, className: 'justify-content-center' }, { children: [createGraph("Revenue", statistics.revenue, axisColour, barColour, "revenue"), createGraph("Profit", statistics.profit, axisColour, barColour, "profit")] })), _jsxs(Row, __assign({ sm: 3, xs: 1, className: 'justify-content-center' }, { children: [createAccordion("error", "Out of Stock", statistics.out_of_stock, "All items in stock!"), createAccordion("warning", "Low Stock", statistics.low_stock, "No items low in stock"), createAccordion("success", "Sales", statistics.sales, "No sales made :(")] }))] })));
+    return (_jsxs(Container, __assign({ className: "dashboard ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Dashboard" }) })), _jsx(Row, { children: _jsxs(Col, __assign({ className: "date-range" }, { children: [_jsx("input", { type: "date", id: "start-date", name: "start_date", onChange: function (e) { return handleDate(e); } }), _jsx("input", { type: "date", id: "end-date", name: "end_date", onChange: function (e) { return handleDate(e); } }), _jsxs(Form.Select, __assign({ name: 'frequency', onChange: function (e) { return handleDate(e); } }, { children: [_jsx("option", __assign({ value: "W" }, { children: "Weekly" })), _jsx("option", __assign({ value: "M" }, { children: "Monthly" })), _jsx("option", __assign({ value: "Q" }, { children: "Quarterly" }))] }))] })) }), _jsxs(Row, __assign({ lg: 2, sm: 1, xs: 1, className: 'justify-content-center' }, { children: [createGraph("Revenue", statistics.revenue, axisColour, barColour, "revenue"), createGraph("Profit", statistics.profit, axisColour, barColour, "profit")] })), _jsxs(Row, __assign({ sm: 3, xs: 1, className: 'justify-content-center' }, { children: [createAccordion("error", "Out of Stock", statistics.out_of_stock, "All items in stock!"), createAccordion("warning", "Low Stock", statistics.low_stock, "No items low in stock"), createAccordion("success", "Sales", statistics.sales, "No sales made :(")] }))] })));
 }
 ;
 export default Dashboard;

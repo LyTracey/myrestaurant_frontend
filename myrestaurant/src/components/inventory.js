@@ -14,7 +14,7 @@ import InventoryForm from "./forms/inventoryForm";
 import InventoryUpdateForm from "./forms/inventoryUpdateForm";
 import slugify from "slugify";
 import "../style/inventory.scss";
-export function Inventory(props) {
+function Inventory(props) {
     var _this = this;
     // Set states
     var inventoryObj = {
@@ -113,3 +113,4 @@ export function Inventory(props) {
                             } }, { children: [_jsx(Card.Title, { children: item.ingredient }), _jsx(Card.Img, { src: (_a = item.image) !== null && _a !== void 0 ? _a : placeholder }), _jsxs("div", __assign({ className: 'card-details' }, { children: [_jsxs(Card.Text, { children: ["Available: ", item.quantity] }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.unit_price) })] }))] })) }, "inventory-item-".concat(i)));
                 }) })), _jsx(InventoryUpdateForm, { handleSubmit: handleSubmit, updateItem: updateItem, onHide: function () { return setUpdateItem(false); }, handleData: handleData, updateInventory: updateInventory, theme: props.theme })] })));
 }
+export default Inventory;
