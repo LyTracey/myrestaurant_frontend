@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -10,6 +10,8 @@ import Form from 'react-bootstrap/Form';
 import type { Statistics, StatisticsObj, DateRange } from '../types/dashboardTypes';
 import { BarChart, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer} from 'recharts';
 import endpoints from "../data/endpoints";
+import { ThemeContext } from './contexts';
+
 
 function Dashboard (props: any) {
 
@@ -23,6 +25,7 @@ function Dashboard (props: any) {
         profit: []
     });
 
+    // Set variables
     const today = new Date();
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 14);
@@ -34,18 +37,12 @@ function Dashboard (props: any) {
     });
 
 
-    // Define variables
-    axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'application/json';
-
-
     // Get statistics
-    const getStats = (method: string, data: DateRange | undefined = undefined) => {
-        axios({
-            method: method,
-            url: `${endpoints.prefix}${endpoints["dashboard"]}`,
-            data: data
-        }).then((response) => {
+    const getStats = (data: DateRange | undefined = undefined) => {
+        console.log(dateRange);
+        axios.patchForm(`${endpoints.prefix}${endpoints["dashboard"]}`,
+            {...data}
+        ).then((response) => {
             setStatistics({...response.data});
         }).catch((error) => {
             console.log(error);
@@ -55,7 +52,7 @@ function Dashboard (props: any) {
 
     // Get statistics from api
     useEffect(() => {
-        getStats("patch", dateRange);
+        getStats(dateRange);
     }, [dateRange]);
 
     
@@ -101,16 +98,6 @@ function Dashboard (props: any) {
     };
 
 
-    // Create bar graph crads
-    // const CustomTooltip = ({ active, payload, label }: any): any => {
-    //     if (active) {
-    //         return (
-    //             <div className='custom-tooltip'>
-    //                 <p className='label'>{`${label} : ${payload[0].value}`}</p>
-    //             </div>
-    //         )
-    //     }
-    // };
     const createGraph = (title: string, data: Array<StatisticsObj>, axisColour: string, barColour: string, dataKey: string) => {
         
         const total = data.map(item => Number(item[dataKey]) ).reduce((a: number, x: number) => a + x, 0);
@@ -151,7 +138,7 @@ function Dashboard (props: any) {
     const barColour = props.theme === "light-mode" ? "#395C6B" : "#F7EDE2";
 
     return (
-        <Container className={ `dashboard ${ props.theme }` }>
+        <Container className={ `dashboard ${ useContext(ThemeContext) }` }>
 
             <Row className='title'>
                     <h2>Dashboard</h2>

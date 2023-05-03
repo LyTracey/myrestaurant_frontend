@@ -13,6 +13,8 @@ import InventoryForm from "./forms/inventoryForm";
 import InventoryUpdateForm from "./forms/inventoryUpdateForm";
 import slugify from "slugify";
 import "../style/inventory.scss";
+import { useContext } from 'react';
+import { ThemeContext } from './contexts';
 
 function Inventory (props: any) {
 
@@ -31,11 +33,6 @@ function Inventory (props: any) {
     const [newInventory, setNewInventory] = useState<InventoryObj>(inventoryObj);
     const [updateInventory, setUpdateInventory] = useState<InventoryObj>(inventoryObj);
 
-
-    // Define variables
-    axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-    
     // Get inventory
     const getInventory = () => {
         axios.get(
@@ -104,7 +101,7 @@ function Inventory (props: any) {
     };
 
     return (
-        <Container className={`inventory ${ props.theme }`}>
+        <Container className={`inventory ${ useContext(ThemeContext) }`}>
             <Row className='title'>
                 <h2>Inventory</h2>
             </Row>

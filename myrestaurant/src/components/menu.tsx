@@ -12,6 +12,8 @@ import { MenuObj, IngredientsObj } from '../types/menuTypes';
 import "../style/menu.scss";
 import slugify from 'slugify';
 import placeholder from "../images/placeholder-image.webp";
+import { useContext } from 'react';
+import { ThemeContext } from './contexts';
 
 
 
@@ -34,10 +36,6 @@ function Menu ( props: any ) {
     const [addItem, setAddItem] = useState<boolean>(false);
     const [updateMenu, setUpdateMenu ] = useState<MenuObj>(menuObj);
     const [updateItem, setUpdateItem] = useState<boolean>(false);
-        
-    // Define variables
-    axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
     
     // Fetch menu data from backend
     const getMenu = () => {
@@ -145,7 +143,7 @@ function Menu ( props: any ) {
     };
 
     return (
-        <Container className={`menu ${ props.theme }`}>
+        <Container className={`menu ${ useContext(ThemeContext) }`}>
             <Row className='title'>
                 <h2>Menu</h2>
             </Row>

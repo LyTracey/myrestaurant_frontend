@@ -6,6 +6,8 @@ import { ReactComponent as SunIcon } from '../images/icons/sun.svg';
 import { ReactComponent as MoonIcon } from '../images/icons/moon.svg';
 import Button from 'react-bootstrap/Button';
 import { ReactComponent as Logo } from "../images/moonlight-logo.svg";
+import { useContext } from 'react';
+import { ThemeContext } from './contexts';
 
 function Navigate(props: any) {
 
@@ -13,7 +15,6 @@ function Navigate(props: any) {
         if (localStorage.getItem("theme") === "light-mode"){
             props.setTheme("dark-mode");
             localStorage.setItem("theme", "dark-mode");
-            
         } else {
             props.setTheme("light-mode");
             localStorage.setItem("theme", "light-mode");
@@ -21,18 +22,28 @@ function Navigate(props: any) {
     };
 
     return (
-        <Navbar className={ props.theme } collapseOnSelect sticky="top" expand="md">
-            <Container>
+        <Navbar className={ useContext(ThemeContext) } collapseOnSelect sticky="top" expand="md">
+            <Container fluid>
                 <Navbar.Brand href="/" className={ props.theme }>
                     MOONLIGHT CAFE
                     <Logo className="logo"/>
                 </Navbar.Brand>
                 <Navbar.Toggle className={ props.theme } aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse role="navigation">
-                    <Nav.Link href="/dashboard/">Dashboard</Nav.Link>
+                    <Nav.Link href="/">Home</Nav.Link>
+                    
                     <Nav.Link href="/menu/">Menu</Nav.Link>
-                    <Nav.Link href="/orders/">Orders</Nav.Link>
-                    <Nav.Link href="/inventory/">Inventory</Nav.Link>
+
+                    { props.loggedIn &&<Nav.Link href="/dashboard/">Dashboard</Nav.Link> }
+                    { props.loggedIn &&<Nav.Link href="/orders/">Orders</Nav.Link> }
+                    { props.loggedIn &&<Nav.Link href="/inventory/">Inventory</Nav.Link> }
+                    
+                    {
+                        props.loggedIn ? 
+                        <Nav.Link href="/logout/">Logout</Nav.Link>
+                        : <Nav.Link href="/login/">Login</Nav.Link>
+                    }
+
                     <Button className={`${ props.theme } theme-toggle`} onClick={() => handleTheme() }>
                         {   
                             props.theme === "light-mode" ?

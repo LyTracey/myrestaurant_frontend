@@ -3,6 +3,7 @@
 
 .light-mode.navbar {
     @include base.theme(base.$light-mode...);
+    border-bottom: 1.5px solid map-get(base.$theme-colours, "dark-secondary");
 
     .theme-toggle {
         // background-color: map-get(base.$theme-colours, "beige");
@@ -17,11 +18,12 @@
     .logo {
         fill: map-get(base.$theme-colours, "light-text");
     }
-
 }
+
 
 .dark-mode.navbar {
     @include base.theme(base.$dark-mode...);
+    border-bottom: 1.5px solid map-get(base.$theme-colours, "blue");
 
     .theme-toggle {
         // background-color: map-get(base.$theme-colours, "dark-secondary");
@@ -38,6 +40,10 @@
 
 }
 
+.navbar {
+    padding-left: 5%;
+    padding-right: 5%;
+}
 
 .navbar-brand {
     color: inherit;
@@ -84,13 +90,12 @@
     to {opacity: 0;}
 }
 
-.theme-toggle {
+.theme-toggle.btn.btn-primary {
     width: 32px;
     height: 32px;
     border: none;
     border-radius: 50%;
     position: relative;
-
     
     
     .theme-icon {

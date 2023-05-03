@@ -9,14 +9,13 @@ import endpoints from '../data/endpoints';
 import "../style/orders.scss";
 import Table from 'react-bootstrap/Table';
 import slugify from 'slugify';
-function ArchivedOrders(props) {
+import { useContext } from 'react';
+import { ThemeContext } from './contexts';
+function ArchivedOrders() {
     var _this = this;
     // Set states
     var _a = useState([]), orders = _a[0], setOrders = _a[1];
     var _b = useState({}), menu = _b[0], setMenu = _b[1];
-    // Define variables
-    axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
     // Fetch menu data from backend
     var getOrders = function () {
         axios.get("".concat(endpoints.prefix).concat(endpoints["archivedOrders"])).then(function (response) {
@@ -61,7 +60,7 @@ function ArchivedOrders(props) {
             return [2 /*return*/];
         });
     }); };
-    return (_jsxs(Container, __assign({ className: "orders ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Archived Orders" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ className: "live-orders", as: "a", href: '/orders' }, { children: "Live Orders" })) })), _jsxs(Table, __assign({ responsive: true }, { children: [_jsx("thead", { children: _jsxs("tr", __assign({ className: 'headers' }, { children: [_jsx("th", { children: "Order ID" }), _jsx("th", { children: "Menu Items" }), _jsx("th", { children: "Notes" }), _jsx("th", { children: "Ordered At" }), _jsx("th", { children: "Prepared At" }), _jsx("th", { children: "Delivered At" }), _jsx("th", {})] })) }), _jsx("tbody", { children: orders.map(function (item, i) {
+    return (_jsxs(Container, __assign({ className: "orders ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Archived Orders" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ className: "live-orders", as: "a", href: '/orders' }, { children: "Live Orders" })) })), _jsxs(Table, __assign({ responsive: true }, { children: [_jsx("thead", { children: _jsxs("tr", __assign({ className: 'headers' }, { children: [_jsx("th", { children: "Order ID" }), _jsx("th", { children: "Menu Items" }), _jsx("th", { children: "Notes" }), _jsx("th", { children: "Ordered At" }), _jsx("th", { children: "Prepared At" }), _jsx("th", { children: "Delivered At" }), _jsx("th", {})] })) }), _jsx("tbody", { children: orders.map(function (item, i) {
                             return (_jsxs("tr", __assign({ className: 'rows' }, { children: [_jsx("td", __assign({ className: 'id' }, { children: item.id })), _jsx("td", __assign({ className: 'menu-items' }, { children: item.menu_items.map(function (item, i) {
                                             var _a;
                                             return (_jsx("p", { children: (_a = menu[item]) === null || _a === void 0 ? void 0 : _a["title"] }, i));

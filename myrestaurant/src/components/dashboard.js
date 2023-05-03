@@ -1,6 +1,6 @@
 import { __assign } from "tslib";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -11,6 +11,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
 import { BarChart, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer } from 'recharts';
 import endpoints from "../data/endpoints";
+import { ThemeContext } from './contexts';
 function Dashboard(props) {
     // Set states
     var _a = useState({
@@ -20,6 +21,7 @@ function Dashboard(props) {
         revenue: [],
         profit: []
     }), statistics = _a[0], setStatistics = _a[1];
+    // Set variables
     var today = new Date();
     var lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 14);
@@ -28,17 +30,11 @@ function Dashboard(props) {
         end_date: today.toISOString().split('T')[0],
         frequency: "W"
     }), dateRange = _b[0], setDateRange = _b[1];
-    // Define variables
-    axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'application/json';
     // Get statistics
-    var getStats = function (method, data) {
+    var getStats = function (data) {
         if (data === void 0) { data = undefined; }
-        axios({
-            method: method,
-            url: "".concat(endpoints.prefix).concat(endpoints["dashboard"]),
-            data: data
-        }).then(function (response) {
+        console.log(dateRange);
+        axios.patchForm("".concat(endpoints.prefix).concat(endpoints["dashboard"]), __assign({}, data)).then(function (response) {
             setStatistics(__assign({}, response.data));
         }).catch(function (error) {
             console.log(error);
@@ -46,7 +42,7 @@ function Dashboard(props) {
     };
     // Get statistics from api
     useEffect(function () {
-        getStats("patch", dateRange);
+        getStats(dateRange);
     }, [dateRange]);
     // Handle date input
     var handleDate = function (_a) {
@@ -66,16 +62,6 @@ function Dashboard(props) {
                                         return _jsxs("div", { children: [key, ": ", statistic[key]] }, i);
                                     })) : "No sales made :(") })] })) })) }));
     };
-    // Create bar graph crads
-    // const CustomTooltip = ({ active, payload, label }: any): any => {
-    //     if (active) {
-    //         return (
-    //             <div className='custom-tooltip'>
-    //                 <p className='label'>{`${label} : ${payload[0].value}`}</p>
-    //             </div>
-    //         )
-    //     }
-    // };
     var createGraph = function (title, data, axisColour, barColour, dataKey) {
         var _a, _b;
         var total = data.map(function (item) { return Number(item[dataKey]); }).reduce(function (a, x) { return a + x; }, 0);
@@ -95,7 +81,7 @@ function Dashboard(props) {
     };
     var axisColour = props.theme === "light-mode" ? "#7A7A7A" : "#E1E1E1";
     var barColour = props.theme === "light-mode" ? "#395C6B" : "#F7EDE2";
-    return (_jsxs(Container, __assign({ className: "dashboard ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Dashboard" }) })), _jsx(Row, { children: _jsxs(Col, __assign({ className: "date-range" }, { children: [_jsx("input", { type: "date", id: "start-date", name: "start_date", onChange: function (e) { return handleDate(e); } }), _jsx("input", { type: "date", id: "end-date", name: "end_date", onChange: function (e) { return handleDate(e); } }), _jsxs(Form.Select, __assign({ name: 'frequency', onChange: function (e) { return handleDate(e); } }, { children: [_jsx("option", __assign({ value: "W" }, { children: "Weekly" })), _jsx("option", __assign({ value: "M" }, { children: "Monthly" })), _jsx("option", __assign({ value: "Q" }, { children: "Quarterly" }))] }))] })) }), _jsxs(Row, __assign({ lg: 2, sm: 1, xs: 1, className: 'justify-content-center' }, { children: [createGraph("Revenue", statistics.revenue, axisColour, barColour, "revenue"), createGraph("Profit", statistics.profit, axisColour, barColour, "profit")] })), _jsxs(Row, __assign({ sm: 3, xs: 1, className: 'justify-content-center' }, { children: [createAccordion("error", "Out of Stock", statistics.out_of_stock, "All items in stock!"), createAccordion("warning", "Low Stock", statistics.low_stock, "No items low in stock"), createAccordion("success", "Sales", statistics.sales, "No sales made :(")] }))] })));
+    return (_jsxs(Container, __assign({ className: "dashboard ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Dashboard" }) })), _jsx(Row, { children: _jsxs(Col, __assign({ className: "date-range" }, { children: [_jsx("input", { type: "date", id: "start-date", name: "start_date", onChange: function (e) { return handleDate(e); } }), _jsx("input", { type: "date", id: "end-date", name: "end_date", onChange: function (e) { return handleDate(e); } }), _jsxs(Form.Select, __assign({ name: 'frequency', onChange: function (e) { return handleDate(e); } }, { children: [_jsx("option", __assign({ value: "W" }, { children: "Weekly" })), _jsx("option", __assign({ value: "M" }, { children: "Monthly" })), _jsx("option", __assign({ value: "Q" }, { children: "Quarterly" }))] }))] })) }), _jsxs(Row, __assign({ lg: 2, sm: 1, xs: 1, className: 'justify-content-center' }, { children: [createGraph("Revenue", statistics.revenue, axisColour, barColour, "revenue"), createGraph("Profit", statistics.profit, axisColour, barColour, "profit")] })), _jsxs(Row, __assign({ sm: 3, xs: 1, className: 'justify-content-center' }, { children: [createAccordion("error", "Out of Stock", statistics.out_of_stock, "All items in stock!"), createAccordion("warning", "Low Stock", statistics.low_stock, "No items low in stock"), createAccordion("success", "Sales", statistics.sales, "No sales made :(")] }))] })));
 }
 ;
 export default Dashboard;

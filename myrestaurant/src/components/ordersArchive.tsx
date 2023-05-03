@@ -8,17 +8,15 @@ import { OrdersObj, MenuItemsObj } from '../types/orderTypes';
 import "../style/orders.scss";
 import Table from 'react-bootstrap/Table';
 import slugify from 'slugify';
+import { useContext } from 'react';
+import { ThemeContext } from './contexts';
 
-function ArchivedOrders ( props: any ) {
+function ArchivedOrders () {
     
     // Set states
     const [orders, setOrders] = useState<Array<OrdersObj>>([]);
     const [menu, setMenu] = useState<MenuItemsObj>({});
         
-    // Define variables
-    axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-
     // Fetch menu data from backend
     const getOrders = () => {
         axios.get(
@@ -68,7 +66,7 @@ function ArchivedOrders ( props: any ) {
     };
 
     return (
-        <Container className={`orders ${ props.theme }`}>
+        <Container className={`orders ${ useContext(ThemeContext) }`}>
             <Row className='title'>
                 <h2>Archived Orders</h2>
             </Row>

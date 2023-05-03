@@ -11,6 +11,8 @@ import Form from 'react-bootstrap/Form';
 import OrdersForm from './forms/ordersForm';
 import OrderUpdateForm from './forms/ordersUpdateForm';
 import slugify from 'slugify';
+import { useContext } from 'react';
+import { ThemeContext } from './contexts';
 
 function Orders ( props: any ) {
 
@@ -35,9 +37,6 @@ function Orders ( props: any ) {
     const [updateOrder, setUpdateOrder] = useState<OrdersObj>(ordersObj);
     const [updateItem, setUpdateItem] = useState<boolean>(false);
         
-    // Define variables
-    axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 
     // Fetch menu data from backend
     const getOrders = () => {
@@ -72,6 +71,8 @@ function Orders ( props: any ) {
         getOrders();
         getMenu();
     }, []);
+
+    useEffect(() => console.log(updateOrder));
 
     useEffect(() => getMenu(), [addItem, updateItem]);
 
@@ -157,7 +158,7 @@ function Orders ( props: any ) {
     };
 
     return (
-        <Container className={`orders ${ props.theme }`}>
+        <Container className={`orders ${ useContext(ThemeContext) }`}>
             <Row className='title'>
                 <h2>Orders</h2>
             </Row>
@@ -200,7 +201,7 @@ function Orders ( props: any ) {
                     { 
                         orders.map((item, i) => {
                             return (
-                                <tr className="rows" onClick={item => {
+                                <tr className="rows" onClick={() => {
                                     setUpdateOrder({...ordersObj, ...item});
                                     setUpdateItem(!updateItem);
                                 }} key={i}>

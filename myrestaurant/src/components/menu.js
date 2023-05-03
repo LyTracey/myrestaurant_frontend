@@ -13,6 +13,8 @@ import endpoints from '../data/endpoints';
 import "../style/menu.scss";
 import slugify from 'slugify';
 import placeholder from "../images/placeholder-image.webp";
+import { useContext } from 'react';
+import { ThemeContext } from './contexts';
 function Menu(props) {
     var _this = this;
     // Set states
@@ -31,9 +33,6 @@ function Menu(props) {
     var _d = useState(false), addItem = _d[0], setAddItem = _d[1];
     var _e = useState(menuObj), updateMenu = _e[0], setUpdateMenu = _e[1];
     var _f = useState(false), updateItem = _f[0], setUpdateItem = _f[1];
-    // Define variables
-    axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
     // Fetch menu data from backend
     var getMenu = function () {
         axios.get("".concat(endpoints.prefix).concat(endpoints["menu"])).then(function (response) {
@@ -140,7 +139,7 @@ function Menu(props) {
             }
         });
     }); };
-    return (_jsxs(Container, __assign({ className: "menu ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Menu" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () { return setAddItem(!addItem); } }, { children: "Add Item +" })) })), _jsx(MenuForm, { handleSubmit: handleSubmit, handleData: handleData, handleUnits: handleUnits, ingredients: ingredients, newMenu: newMenu, addItem: addItem, onHide: function () { return setAddItem(false); }, theme: props.theme }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: menu.map(function (item, i) {
+    return (_jsxs(Container, __assign({ className: "menu ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Menu" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () { return setAddItem(!addItem); } }, { children: "Add Item +" })) })), _jsx(MenuForm, { handleSubmit: handleSubmit, handleData: handleData, handleUnits: handleUnits, ingredients: ingredients, newMenu: newMenu, addItem: addItem, onHide: function () { return setAddItem(false); }, theme: props.theme }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: menu.map(function (item, i) {
                     var _a;
                     return (_jsx(Col, { children: _jsxs(Card.Body, __assign({ onClick: function () {
                                 setUpdateMenu(__assign(__assign({}, menuObj), item));

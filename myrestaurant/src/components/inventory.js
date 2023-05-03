@@ -14,6 +14,8 @@ import InventoryForm from "./forms/inventoryForm";
 import InventoryUpdateForm from "./forms/inventoryUpdateForm";
 import slugify from "slugify";
 import "../style/inventory.scss";
+import { useContext } from 'react';
+import { ThemeContext } from './contexts';
 function Inventory(props) {
     var _this = this;
     // Set states
@@ -29,9 +31,6 @@ function Inventory(props) {
     var _c = useState(false), updateItem = _c[0], setUpdateItem = _c[1];
     var _d = useState(inventoryObj), newInventory = _d[0], setNewInventory = _d[1];
     var _e = useState(inventoryObj), updateInventory = _e[0], setUpdateInventory = _e[1];
-    // Define variables
-    axios.defaults.headers.common['Authorization'] = "Token c5028653f703b10525ee32557069750b458b1e64";
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
     // Get inventory
     var getInventory = function () {
         axios.get("".concat(endpoints.prefix).concat(endpoints["inventory"])).then(function (response) {
@@ -105,7 +104,7 @@ function Inventory(props) {
             }
         });
     }); };
-    return (_jsxs(Container, __assign({ className: "inventory ".concat(props.theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Inventory" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () { return setAddItem(!addItem); } }, { children: "Add Item +" })) })), _jsx(InventoryForm, { handleSubmit: handleSubmit, handleData: handleData, newInventory: newInventory, addItem: addItem, onHide: function () { return setAddItem(false); }, theme: props.theme }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: inventory.map(function (item, i) {
+    return (_jsxs(Container, __assign({ className: "inventory ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Inventory" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () { return setAddItem(!addItem); } }, { children: "Add Item +" })) })), _jsx(InventoryForm, { handleSubmit: handleSubmit, handleData: handleData, newInventory: newInventory, addItem: addItem, onHide: function () { return setAddItem(false); }, theme: props.theme }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: inventory.map(function (item, i) {
                     var _a;
                     return (_jsx(Col, { children: _jsxs(Card.Body, __assign({ onClick: function () {
                                 setUpdateInventory(__assign(__assign({}, inventoryObj), item));

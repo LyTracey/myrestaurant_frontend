@@ -6,13 +6,18 @@ import HomeImageDark from "../images/home-image-dark.png";
 import HomeBackgroundDark from "../images/home-background-dark.png";
 import HomeBackgroundLight from "../images/home-background-light.png";
 import "../style/home.scss";
+import { useContext } from 'react';
+import { ThemeContext } from './contexts';
 
-function Home (props: any) {
+function Home () {
+
+    const theme = useContext(ThemeContext);
+
     return (
-        <Container className={`home ${props.theme}`}>
+        <Container className={`home ${theme}`}>
             <Row className="home-screen">
-                <img className="home-background" src={ props.theme === "light-mode" ? HomeBackgroundLight : HomeBackgroundDark }></img>
-                <img className="home-image" src={ props.theme === "light-mode" ? HomeImageLight : HomeImageDark }></img>
+                <img className="home-background" src={ theme === "light-mode" ? HomeBackgroundLight : HomeBackgroundDark }></img>
+                <img className="home-image" src={ theme === "light-mode" ? HomeImageLight : HomeImageDark }></img>
             </Row>
 
             
