@@ -1,0 +1,61 @@
+@use "sass:map";
+
+$themes: (
+    "navy": #172A3A,
+    "white": rgba(251, 251, 251, 1), #FBFBFB
+    "beige": rgba(247, 237, 226, 1), // #F7EDE2
+    "blue": rgba(57, 92, 107, 1), // #395c6b
+    "off-white": #E1E1E1,
+    "grey": rgba(33, 37, 41, 0.75), // #212529
+    "light-grey": #7A7A7A,
+    "red": #E07A5F,
+    "yellow": #F2CC8F,
+    "green": #9FB798
+);
+
+@mixin theme ($background, $text) {
+    background-color: $background;
+    border: none;
+    box-shadow: none;
+    color: $text;
+    transition: ease 0.5s;
+}
+
+@mixin card ($background, $text, $hover-color) {
+    background-color: $background;
+    color: $text;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    transition: ease 0.5s;
+
+    &:hover {
+        color: $hover-color;
+    }
+}
+
+@mixin button ($background) {
+    color: map-get($themes, "white");
+    border: none;
+    background-color: $background;
+    text-align: center;
+    cursor: pointer;
+    transition: ease 0.5s;
+
+    &:hover {
+        color: map-get($themes, "off-white");
+    }
+}
+
+@mixin container () {
+    
+}
+
+$light-mode: #FBFBFB, #7A7A7A;
+
+$dark-mode: #172A3A, #FBFBFB;
+
+$light-mode-card: #F7EDE2, #7A7A7A, #172A3A;
+
+$dark-mode-card: #395C6B, #FBFBFB, #E1E1E1;
+

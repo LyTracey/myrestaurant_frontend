@@ -1,0 +1,80 @@
+@use "base.scss";
+
+.orders.light-mode {
+    @include base.theme(base.$light-mode...);
+
+    .table {
+        @include base.theme(base.$light-mode...);
+    }
+
+    tr.rows:hover {
+        background-color: map-get(base.$themes, "beige");
+        color: map-get(base.$themes, "blue");
+    }
+
+}
+
+.orders.dark-mode {
+    @include base.theme(base.$dark-mode...);
+
+    .table, tr.rows:hover {
+        @include base.theme(base.$dark-mode...);
+    }
+
+}
+
+.orders {
+    padding-top: 20px;
+
+    .title {
+        text-align: center;
+
+    }
+    .actions {
+        justify-content: center;
+
+        .btn {
+            width: 125px;
+            border: none;
+            margin-left: 15px;
+    
+            &:hover {
+                color: map-get(base.$themes, "navy");
+            }
+        }
+
+        .archive {
+            background-color: map-get(base.$themes, "blue");
+        }
+
+        .add, .live-orders {
+            background-color: map-get(base.$themes, "green");
+        }
+    }
+
+    th, td {
+        text-align: center;
+
+        &.menu-items, &.notes {
+            text-align: left;
+        }
+
+        &.menu-items, &.notes, &.id {
+            cursor: pointer;
+        }
+
+        .edit {
+            color: map-get(base.$themes, "red");
+            border: map-get(base.$themes, "red") solid 2px;
+            background-color: transparent;
+
+            &:hover {
+                background-color: map-get(base.$themes, "blue");
+            }
+
+        }
+
+
+    }
+
+}

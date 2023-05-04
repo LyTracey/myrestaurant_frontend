@@ -1,0 +1,108 @@
+@use 'base.scss';
+
+.menu-form, .orders-form{
+    &.light-mode {
+        .modal-content, .form-text {
+            background-color: map-get(base.$themes, "white");
+            color: map-get(base.$themes, "navy");
+        }
+
+        .form-text {
+            color: map-get(base.$themes, "grey");
+        }
+    }
+
+    &.dark-mode {
+
+        .modal-content, .form-text {
+            background-color: map-get(base.$themes, "blue");
+            color: map-get(base.$themes, "off-white");
+        }
+        
+        .form-control[disabled] {
+            background-color: map-get(base.$themes, "beige");
+        }
+    }
+
+    .modal-dialog {
+        max-width: 80%;
+        margin: 0 auto 0 auto;
+    }
+    
+    .form-select {
+        height: 100px;
+    }
+    
+    .form-label {
+        text-align: right;
+        font-weight: 500;
+        display: block;
+    }
+    
+    .row {
+        justify-content: center;
+    }
+
+    .form-control:valid, .form-check-input:valid {
+       color: map-get(base.$themes, "grey")
+    }
+
+    .field-group {
+        margin-top: 10px;
+    }
+    
+    .ingredients, .units, .menu-items, .quantity {
+    
+        .field{
+            height: 40px;
+            margin-bottom: 5px;
+        }
+    }
+    
+    .form-actions > button {
+        width: 100px;
+        height: 40px;
+        margin: 10px;
+        border: none;
+
+        &.submit {
+            background-color: map-get(base.$themes, "green");            
+        }
+
+        &.delete {
+            background-color: map-get(base.$themes, "red");            
+        }
+        
+    }
+
+    .alert {
+        border: map-get(base.$themes, "navy") solid 1px;
+        background-color: map-get(base.$themes, "white");
+        color: map-get(base.$themes, "blue");
+        text-align: center;
+        position: absolute;
+        top: 150px;
+        left: 5%;
+        width: 90%;
+
+        .alert-heading {
+            font-size: 20px;
+        }
+
+        .alert-actions > button {
+            width: 90px;
+            height: 35px;
+            margin: 10px;
+            border: none;
+
+            &.cancel {
+                background-color: map-get(base.$themes, "blue");
+            }
+
+            &.yes {
+                background-color: map-get(base.$themes, "green");
+            }
+        }
+    }
+
+}

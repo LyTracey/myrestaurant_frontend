@@ -1,0 +1,68 @@
+@use "base.scss";
+
+.inventory.light-mode {
+    @include base.theme(base.$light-mode...);
+    
+    .card-body {
+        @include base.card(base.$light-mode-card...);
+    }
+
+
+}
+
+.inventory.dark-mode {
+    @include base.theme(base.$dark-mode...);
+    
+    .card-body, .modal-content {
+        @include base.card(base.$dark-mode-card...);
+    }
+
+}
+
+.inventory {
+    padding-top: 20px;
+
+    .title {
+        text-align: center;
+    }
+    
+    .card-body {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        height: 300px;
+        text-align: center;
+
+        .card-title, .card-details, .card-img  {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .card-text {
+            margin-bottom: 0;
+        }
+
+        .card-img {
+            height: 65%;
+            width: 90%;
+        }
+        
+
+    }
+
+    .actions {
+        justify-content: center;
+
+        .btn {
+            width: 125px;
+            background-color: map-get(base.$themes, "green");
+            border: none;
+    
+            &:hover {
+                color: map-get(base.$themes, "navy");
+            }
+        }
+
+    }
+}

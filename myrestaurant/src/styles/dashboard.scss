@@ -1,0 +1,133 @@
+@use "base.scss";
+
+.light-mode.dashboard {
+
+    .card, .date-range > #start-date, .date-range > #end-date, .form-select{
+        @include base.card(base.$light-mode-card...);
+    }
+
+    .accordion-button {
+        color: map-get(base.$themes, "navy");
+    }
+
+
+}
+
+.dark-mode.dashboard {
+
+    .card, .date-range > #start-date, .date-range > #end-date, .form-select {
+        @include base.card(base.$dark-mode-card...);
+    }
+
+    .accordion-button {
+        color: map-get(base.$themes, "white");
+    }
+
+}
+
+.dashboard {
+    padding-top: 20px;
+    
+    .title > h2 {
+        text-align: center;
+    
+    }
+    
+    .col {
+        padding-bottom: 12px;
+        padding-top: 12px;
+    }
+    
+    .card {
+        border: none;
+        text-align: center;
+        
+        
+        .card-title {
+            padding-top: 15px;
+        }
+        
+        .card-body {
+            height: 350px;
+            &:hover {
+                color: map-get(base.$themes , "off-white")
+            }
+        }
+    
+    }
+    
+    .accordion {
+        
+        .accordion-button {
+            height: 60px;
+            box-shadow: none;
+            padding: 15px;
+        }
+    
+        .accordion-button::after {
+            background-image: var(--bs-accordion-btn-icon);
+        }
+        
+        .accordion-item {
+            border: none;
+        }
+        
+        .error > .accordion-button {
+            @include base.button(map-get(base.$themes, "red"));
+            text-align: left;
+        }
+        
+        .warning > .accordion-button {
+            @include base.button(map-get(base.$themes, "yellow"));
+            text-align: left;
+        }
+        
+        .success > .accordion-button {
+            @include base.button(map-get(base.$themes, "green"));
+            text-align: left;
+        }
+    }
+    
+    
+    .date-range {
+        text-align: center;   
+        
+        #start-date, #end-date {
+            height: 45px;
+            padding: 3px 7px 3px 7px;
+            border-radius: 10px;
+            outline: none;
+            text-align: center;
+            margin-left: 10px;
+    
+            &::-webkit-calendar-picker-indicator {
+                cursor: pointer;
+                filter: opacity(70%);
+            }
+    
+        }
+    
+    
+        #start-date:hover, #end-date:hover {
+            color: map-get(base.$themes, "off-white");
+        }
+    
+    }
+    
+    .form-select {
+        display: inline-block;
+        width: 170px;
+        height: 45px;
+        border-radius: 10px;
+        margin-left: 10px;
+    }
+
+    .div.stats.card:hover {
+        background-color: none;
+    }
+
+    .recharts-rectangle.recharts-tooltip-cursor {
+        fill: transparent;
+    }
+
+}
