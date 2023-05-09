@@ -43,7 +43,6 @@ function OrdersForm (props: any) {
                                             label={ item[1].title }
                                             name="is"
                                             value={ item[0] }
-                                            required
                                             onChange={e => props.handleQuantity(String(item[0]), e.target.checked, "add", props.newOrder)}
                                         />
                                     )
@@ -70,7 +69,6 @@ function OrdersForm (props: any) {
                                                 key={i}
                                                 name="quantity" 
                                                 onChange={e => props.handleQuantity(String(item[0]), true, "add", props.newOrder, Number(e.target.value))} 
-                                                required
                                                 min={1}
                                                 max={item[1].available_quantity}>
                                             </Form.Control>

@@ -42,6 +42,7 @@ function Inventory(props) {
     useEffect(function () {
         getInventory();
     }, []);
+    useEffect(function () { return console.log(updateInventory); });
     // Handle data
     var handleData = function (item, value, method) {
         var _a, _b;

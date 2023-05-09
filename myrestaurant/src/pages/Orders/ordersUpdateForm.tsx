@@ -66,7 +66,6 @@ function OrderUpdateForm (props: any) {
                                             label={ item[1].title }
                                             name="menu_items"
                                             value={ item[0] }
-                                            required
                                             checked={ props.updateOrder.menu_items.includes(Number(item[0])) }
                                             onChange={e => props.handleQuantity(String(item[0]), e.target.checked, "update", props.updateOrder)}
                                         />
@@ -97,7 +96,6 @@ function OrderUpdateForm (props: any) {
                                                 name="quantity" 
                                                 value={ props.updateOrder.quantity[String(item[0])] }
                                                 onChange={e => props.handleQuantity(String(item[0]), true, "update", props.updateOrder, Number(e.target.value))}
-                                                required
                                                 min={1}
                                                 max={item[1].available_quantity}
                                             ></Form.Control>

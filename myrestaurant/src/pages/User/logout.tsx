@@ -12,11 +12,14 @@ function Logout (props: any) {
         sessionStorage.removeItem("access");
         sessionStorage.setItem("loggedIn", "false");
         props.setLoggedIn(false);
+        sessionStorage.removeItem("isStaff");
+        props.setIsStaff(false);
+        sessionStorage.removeItem("username");
     };
 
     useEffect(() => {
         logout();
-        navigate("/");
+        navigate("/login");
     }, []);
 
     return (

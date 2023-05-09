@@ -58,6 +58,8 @@ function Inventory (props: any) {
         getInventory()
     }, []);
 
+    useEffect(() =>  console.log(updateInventory));
+
     // Handle data
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
         method === "add" ? setNewInventory({...newInventory, [item]: value}) : setUpdateInventory({...updateInventory, [item]: value})

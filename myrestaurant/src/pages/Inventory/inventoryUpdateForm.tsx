@@ -61,7 +61,7 @@ function InventoryUpdateForm (props: any) {
                                     type="number"
                                     name="quantity"
                                     step="0.01"
-                                    defaultValue={props.updateInventory.quantity}
+                                    value={props.updateInventory.quantity}
                                     onChange={e => props.handleData(e.target.name, e.target.value, "update")}
                                     min={0}
                                 ></Form.Control>
@@ -73,7 +73,7 @@ function InventoryUpdateForm (props: any) {
                             <Col className="field" sm={9}>
                                 <Form.Control 
                                     type="number"
-                                    name="price"
+                                    name="unit_price"
                                     step="0.01"
                                     required
                                     defaultValue={props.updateInventory.unit_price}

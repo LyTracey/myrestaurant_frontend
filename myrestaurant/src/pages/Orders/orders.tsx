@@ -72,8 +72,6 @@ function Orders ( props: any ) {
         getMenu();
     }, []);
 
-    useEffect(() => console.log(updateOrder));
-
     useEffect(() => {
         getMenu()
     }, [addItem, updateItem]);

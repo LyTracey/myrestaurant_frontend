@@ -1,6 +1,7 @@
 import '../../styles/App.scss';
-import { Routes, Route } from 'react-router-dom';
-import { useState, createContext } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useState, createContext, useRef } from 'react';
+import axios, { AxiosResponse, AxiosError } from "axios";
 import Dashboard from '../Dashboard/dashboard';
 import Navbar from '../Base/navbar';
 import Menu from "../Menu/menu";
@@ -9,15 +10,13 @@ import Orders from '../Orders/orders';
 import Footer from '../Base/footer';
 import ArchivedOrders from '../Orders/ordersArchive';
 import Home from '../Home/home';
-import Register from '../Login/register';
-import Login from '../Login/login';
-import Logout from '../Login/logout';
+import Register from '../User/register';
+import Login from '../User/login';
+import Logout from '../User/logout';
 import PrivateRoute from './privateRoute';
 import endpoints from '../../data/endpoints';
-import axios from "axios";
-import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AxiosResponse, AxiosError } from 'axios';
+import Profile from '../User/profile';
+import { useEffect } from 'react';
 
 // Create ThemeContext
 export const ThemeContext = createContext('light-mode');
@@ -27,12 +26,18 @@ function App() {
     // Set states
     const [theme, setTheme] = useState(localStorage.getItem("theme") ?? "light-mode");
     const [loggedIn, setLoggedIn] = useState(sessionStorage.getItem("loggedIn") === "true" ? true : false);
+    const [isStaff, setIsStaff] = useState(sessionStorage.getItem("isStaff") === "true" ? true : false);
+    const navigate = useNavigate();
+    const navigationRef = useRef(navigate);
 
     // Create axios user and restaurant instances
     const userAPI = axios.create({
         baseURL: `${endpoints["prefix_user"]}`,
         timeout: 1000
     });
+
+    useEffect(() => console.log(isStaff));
+    
 
     const dataAPI = axios.create({
         headers: {
@@ -44,8 +49,7 @@ function App() {
         formSerializer: { metaTokens: false, indexes: null }
     });
 
-    const navigate = useNavigate();
-    const navigationRef = useRef(navigate);
+
 
     const checkTokens = async () => {
         if (sessionStorage.getItem("access")) {
@@ -65,14 +69,12 @@ function App() {
                 })
                 .catch(() => {
                     // If refresh token invalid, remove access token and make loggedIn false
-                    sessionStorage.removeItem("access");
-                    sessionStorage.setItem("loggedIn", "false");
-                    setLoggedIn(false);
-                    navigationRef.current("/login");
+                    navigationRef.current("/logout");
                 });
             }
             );
         } else {
+            sessionStorage.setItem("loggedIn", "false");
             setLoggedIn(false);
             navigationRef.current("/login");
         }
@@ -89,14 +91,15 @@ function App() {
     return (
         <div className={`App ${ theme }`}>
             <ThemeContext.Provider value={theme}>
-                <Navbar theme={ theme } setTheme={ setTheme } loggedIn={ loggedIn } />
+                <Navbar theme={ theme } setTheme={ setTheme } loggedIn={ loggedIn } isStaff={ isStaff } />
                     <Routes>
                         <Route index element={ <Home /> } />
                         <Route path="/menu/" element={ <Menu dataAPI={ dataAPI } /> } /> 
-                        <Route path="/login/" element={ <Login loggedIn={ loggedIn } setLoggedIn={ setLoggedIn } userAPI={ userAPI } />} />
-                        <Route path="/logout/" element={ <Logout setLoggedIn={ setLoggedIn }/>} />
+                        <Route path="/login/" element={ <Login setLoggedIn={ setLoggedIn } setIsStaff={ setIsStaff } userAPI={ userAPI } />} />
+                        <Route path="/logout/" element={ <Logout setLoggedIn={ setLoggedIn } setIsStaff={ setIsStaff } />} />
                         <Route path="/register/" element={ <Register userAPI={ userAPI } /> } />
                         <Route path="/" element={ <PrivateRoute loggedIn={ loggedIn }/>}>
+                            <Route path="/profile/" element={ <Profile isStaff={ isStaff } userAPI={ userAPI } />} />
                             <Route path="/dashboard/" element={ <Dashboard dataAPI={ dataAPI } /> } />
                             <Route path="/inventory/" element={ <Inventory dataAPI={ dataAPI } /> } />
                             <Route path="/orders/" element={ <Orders dataAPI={ dataAPI } />} />

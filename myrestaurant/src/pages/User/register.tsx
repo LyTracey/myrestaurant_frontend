@@ -11,7 +11,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 
 interface User {
-    email: string,
+    username: string,
     password1: string,
     password2: string,
     is_staff: boolean
@@ -22,7 +22,7 @@ function Register (props: any) {
 
     // Set states
     const [newUser, setNewUser] = useState<User>({
-        email: "",
+        username: "",
         password1: "",
         password2: "",
         is_staff: false
@@ -48,7 +48,7 @@ function Register (props: any) {
         props.userAPI.post(
             `${endpoints["register"]}`,
             {
-                email: newUser.email,
+                username: newUser.username,
                 password: newUser.password1,
                 is_staff: newUser.is_staff
             }
@@ -65,12 +65,12 @@ function Register (props: any) {
             <h2 className="title">Register</h2>
 
             <Form className="form" onSubmit={e => handleSubmit(e)}>
-                <Form.Group className="group email">
-                    <Form.Label>E-mail</Form.Label>
+                <Form.Group className="group username">
+                    <Form.Label>Username</Form.Label>
                     <Form.Control 
-                        type="email" 
-                        placeholder="Enter email"
-                        name="email"
+                        type="text" 
+                        placeholder="Enter username"
+                        name="username"
                         onChange={e => handleData(e.target.name, e.target.value)}
                         required
                     />

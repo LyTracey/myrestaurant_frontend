@@ -24,8 +24,11 @@
 }
 
 .navbar {
-    padding-left: 5%;
-    padding-right: 5%;
+
+    .container-fluid {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
 
     // Brand
     .navbar-brand:hover, .nav-link:hover {
@@ -62,7 +65,7 @@
     .nav-link{
         padding: 4px;
         border-radius: 3em;
-        width: 100px;
+        width: fit-content;
         margin: auto;
     }
 

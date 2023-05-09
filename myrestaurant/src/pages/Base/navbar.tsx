@@ -32,14 +32,14 @@ function Navigate(props: any) {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav"><Collapse className="icon" /></Navbar.Toggle>
                 <Navbar.Collapse role="navigation">
 
-                    { !props.loggedIn &&<Nav.Link href="/">Home</Nav.Link> }
+                    { !props.isStaff && <Nav.Link href="/">Home</Nav.Link> }
                     
                     <Nav.Link href="/menu/">Menu</Nav.Link>
 
-                    { props.loggedIn &&<Nav.Link href="/dashboard/">Dashboard</Nav.Link> }
-                    { props.loggedIn &&<Nav.Link href="/orders/">Orders</Nav.Link> }
-                    { props.loggedIn &&<Nav.Link href="/inventory/">Inventory</Nav.Link> }
-                    
+                    { props.isStaff && <Nav.Link href="/dashboard/">Dashboard</Nav.Link> }
+                    { props.isStaff && <Nav.Link href="/orders/">Orders</Nav.Link> }
+                    { props.isStaff && <Nav.Link href="/inventory/">Inventory</Nav.Link> }
+                    { props.loggedIn && <Nav.Link href="/profile/">Profile</Nav.Link>}
                     {
                         props.loggedIn ? 
                         <Nav.Link href="/logout/">Logout</Nav.Link>

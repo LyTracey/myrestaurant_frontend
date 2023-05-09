@@ -11,14 +11,14 @@ import "../../styles/register.scss";
 import { AxiosError } from "axios";
 
 export interface LoginUser {
-    email: string,
+    username: string,
     password: string
 };
 
 function Login (props: any) {
     // Set state
     const [login, setLogin] = useState<LoginUser>({
-        email: "",
+        username: "",
         password: ""
     });
 
@@ -37,14 +37,17 @@ function Login (props: any) {
         props.userAPI.post(
             `${endpoints["login"]}`,
             {
-                email: login.email,
+                username: login.username,
                 password: login.password,
             }
         ).then((response: any) => {
             sessionStorage.setItem("access", response.data.access);
             sessionStorage.setItem("loggedIn", "true");
             props.setLoggedIn(true);
-            navigate("/");
+            sessionStorage.setItem("isStaff", response.data.isStaff);
+            props.setIsStaff(response.data.isStaff);
+            sessionStorage.setItem("username", login.username);
+            navigate("/profile");
         }).catch((error: AxiosError) => console.log(error));
     };
 
@@ -53,12 +56,12 @@ function Login (props: any) {
             <Form onSubmit={e => handleSubmit(e)}>
                 <h2 className="title">Login</h2>
 
-                <Form.Group className="group email">
-                    <Form.Label>E-mail</Form.Label>
+                <Form.Group className="group username">
+                    <Form.Label>Username</Form.Label>
                     <Form.Control 
-                        type="email" 
-                        placeholder="Enter email"
-                        name="email"
+                        type="text" 
+                        placeholder="Enter username"
+                        name="username"
                         onChange={e => handleData(e.target.name, e.target.value)}
                         required
                     />

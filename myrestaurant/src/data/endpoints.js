@@ -8,6 +8,7 @@ var endpoints = {
     orders: "orders/",
     archivedOrders: "archive/orders/",
     register: "register/",
+    profile: "profile/",
     login: "login/",
     refresh: "token/refresh/",
     verify: "token/verify/"

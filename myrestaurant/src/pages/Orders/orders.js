@@ -61,7 +61,6 @@ function Orders(props) {
         getOrders();
         getMenu();
     }, []);
-    useEffect(function () { return console.log(updateOrder); });
     useEffect(function () {
         getMenu();
     }, [addItem, updateItem]);

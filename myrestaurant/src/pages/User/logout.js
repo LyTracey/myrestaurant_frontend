@@ -10,10 +10,13 @@ function Logout(props) {
         sessionStorage.removeItem("access");
         sessionStorage.setItem("loggedIn", "false");
         props.setLoggedIn(false);
+        sessionStorage.removeItem("isStaff");
+        props.setIsStaff(false);
+        sessionStorage.removeItem("username");
     };
     useEffect(function () {
         logout();
-        navigate("/");
+        navigate("/login");
     }, []);
     return (_jsx(Spinner, __assign({ animation: "border" }, { children: _jsx("span", __assign({ className: "visually-hidden" }, { children: "Loading..." })) })));
 }
