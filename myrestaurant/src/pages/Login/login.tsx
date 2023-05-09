@@ -3,12 +3,12 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import axios from "axios";
 import endpoints from "../../data/endpoints";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { useNavigate } from 'react-router-dom';
 import "../../styles/register.scss";
+import { AxiosError } from "axios";
 
 export interface LoginUser {
     email: string,
@@ -34,8 +34,8 @@ function Login (props: any) {
         e.preventDefault();
 
         // Post request to get jwt token
-        axios.post(
-            `${endpoints["prefix_user"]}${endpoints["login"]}`,
+        props.userAPI.post(
+            `${endpoints["login"]}`,
             {
                 email: login.email,
                 password: login.password,
@@ -45,7 +45,7 @@ function Login (props: any) {
             sessionStorage.setItem("loggedIn", "true");
             props.setLoggedIn(true);
             navigate("/");
-        }).catch(error => console.log(error));
+        }).catch((error: AxiosError) => console.log(error));
     };
 
     return (

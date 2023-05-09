@@ -1,12 +1,10 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Container from 'react-bootstrap/Container';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import placeholder from "../../images/placeholder-image.webp";
-import axios from "axios";
 import endpoints from "../../data/endpoints";
 import InventoryForm from "./inventoryForm";
 import InventoryUpdateForm from "./inventoryUpdateForm";
@@ -14,6 +12,7 @@ import slugify from "slugify";
 import "../../styles/inventory.scss";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
+import { AxiosResponse, AxiosError } from 'axios';
 
 
 interface InventoryObj {
@@ -42,21 +41,22 @@ function Inventory (props: any) {
     const [newInventory, setNewInventory] = useState<InventoryObj>(inventoryObj);
     const [updateInventory, setUpdateInventory] = useState<InventoryObj>(inventoryObj);
 
+
     // Get inventory
     const getInventory = () => {
-        axios.get(
-            `${endpoints.prefix}${endpoints["inventory"]}`
-        ).then(response => {
+        props.dataAPI.get(
+            `${endpoints["inventory"]}`
+        ).then((response: AxiosResponse) => {
             setInventory(response.data);
-        }).catch(error => {
+        }).catch((error: AxiosError) => {
             console.log(error);
-        })
+        });
     };
 
     // Fetch inventory on load
-    useEffect(() => getInventory(), []);
-
-    useEffect(() => console.log(newInventory));
+    useEffect(() => {
+        getInventory()
+    }, []);
 
     // Handle data
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
@@ -66,40 +66,39 @@ function Inventory (props: any) {
     // Handle submit
     const handleSubmit = async (e: any, method: "add" | "update" | "delete", data: InventoryObj) => {
         e.preventDefault();
-        const itemPath = `${endpoints.prefix}${endpoints["inventory"]}${slugify(String(data.id) ?? "")}/`;
+        const itemPath = `${endpoints["inventory"]}${slugify(String(data.id) ?? "")}/`;
         switch (method) {
             case "delete":
-                await axios.delete( itemPath,
+                await props.dataAPI.delete( itemPath,
                 ).then(() => {
                     console.log(`Successfully deleted ${data.ingredient}`);
                     setUpdateItem(!updateItem);
                     getInventory();
-                }).catch(error => 
+                }).catch((error: AxiosError) => 
                     console.log(error)
                 );
                 break;
             case "add":
-                await axios.postForm(
-                    `${endpoints.prefix}${endpoints["inventory"]}`, {
+                await props.dataAPI.post(
+                    `${endpoints["inventory"]}`, {
                         ingredient: newInventory.ingredient,
                         quantity: newInventory.quantity,
                         unit_price: newInventory.unit_price,
                     }).then(() => {
-                    setAddItem(!addItem);
-                    getInventory();
-                }).catch(error => {
-                    console.log(error);
-                });
+                        setAddItem(!addItem);
+                        getInventory();
+                    }).catch((error: AxiosError) => {
+                        console.log(error);
+                    });
                 break;
             case "update":
-                axios.patchForm(itemPath, {
+                await props.dataAPI.patch(itemPath, {
                     quantity: updateInventory.quantity,
                     unit_price: updateInventory.unit_price,
-                }, { formSerializer: { metaTokens: false, indexes: null }}
-                ).then(() => {
+                }).then(() => {
                     setUpdateItem(!updateItem);
                     getInventory();
-                }).catch(error => {
+                }).catch((error: AxiosError) => {
                     console.log(error);
                 })
                 break;

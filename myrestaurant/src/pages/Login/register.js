@@ -2,7 +2,6 @@ import { __assign } from "tslib";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import axios from 'axios';
 import endpoints from "../../data/endpoints";
 import { useState } from "react";
 import "../../styles/register.scss";
@@ -12,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 ;
-function Register() {
+function Register(props) {
     // Set states
     var _a = useState({
         email: "",
@@ -34,7 +33,7 @@ function Register() {
             return "Passwords do not match.";
         }
         // Post request to create new user
-        axios.post("".concat(endpoints["prefix_user"]).concat(endpoints["register"]), {
+        props.userAPI.post("".concat(endpoints["register"]), {
             email: newUser.email,
             password: newUser.password1,
             is_staff: newUser.is_staff

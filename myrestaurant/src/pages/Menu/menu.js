@@ -1,7 +1,6 @@
 import { __assign, __awaiter, __generator, __spreadArray } from "tslib";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -37,7 +36,7 @@ function Menu(props) {
     var _f = useState(false), updateItem = _f[0], setUpdateItem = _f[1];
     // Fetch menu data from backend
     var getMenu = function () {
-        axios.get("".concat(endpoints.prefix).concat(endpoints["menu"])).then(function (response) {
+        props.dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
             setMenu(response.data);
         }).catch(function (error) {
             console.log(error);
@@ -45,7 +44,7 @@ function Menu(props) {
     };
     // Fetch ingredients from backend
     var getIngredients = function () {
-        axios.get("".concat(endpoints.prefix).concat(endpoints["inventory"])).then(function (response) {
+        props.dataAPI.get("".concat(endpoints["inventory"])).then(function (response) {
             var filteredInventory = {};
             // Return object of id as key and ingredient as value fields for each inventory item
             response.data.forEach(function (item) { return (filteredInventory[item.id] = item.ingredient); });
@@ -88,7 +87,7 @@ function Menu(props) {
             switch (_c.label) {
                 case 0:
                     e.preventDefault();
-                    itemPath = "".concat(endpoints.prefix).concat(endpoints["menu"]).concat(slugify((_b = data.title) !== null && _b !== void 0 ? _b : ""), "/");
+                    itemPath = "".concat(endpoints["menu"]).concat(slugify((_b = data.title) !== null && _b !== void 0 ? _b : ""), "/");
                     _a = method;
                     switch (_a) {
                         case "delete": return [3 /*break*/, 1];
@@ -96,7 +95,7 @@ function Menu(props) {
                         case "update": return [3 /*break*/, 5];
                     }
                     return [3 /*break*/, 6];
-                case 1: return [4 /*yield*/, axios.delete(itemPath).then(function () {
+                case 1: return [4 /*yield*/, props.dataAPI.delete(itemPath).then(function () {
                         console.log("Successfully deleted ".concat(data.title));
                         setUpdateItem(false);
                         getMenu();
@@ -106,13 +105,13 @@ function Menu(props) {
                 case 2:
                     _c.sent();
                     return [3 /*break*/, 7];
-                case 3: return [4 /*yield*/, axios.postForm("".concat(endpoints.prefix).concat(endpoints["menu"]), {
+                case 3: return [4 /*yield*/, props.dataAPI.post("".concat(endpoints["menu"]), {
                         title: newMenu.title,
                         description: newMenu.description,
                         price: newMenu.price,
                         "ingredients[]": newMenu.ingredients,
                         "units{}": newMenu.units
-                    }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
+                    }).then(function () {
                         setAddItem(false);
                         getMenu();
                     }).catch(function (error) {
@@ -122,12 +121,12 @@ function Menu(props) {
                     _c.sent();
                     return [3 /*break*/, 7];
                 case 5:
-                    axios.patchForm(itemPath, {
+                    props.dataAPI.patch(itemPath, {
                         description: updateMenu.description,
                         price: updateMenu.price,
                         "ingredients[]": updateMenu.ingredients,
                         "units{}": updateMenu.units
-                    }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
+                    }).then(function () {
                         setUpdateItem(false);
                         getMenu();
                     }).catch(function (error) {

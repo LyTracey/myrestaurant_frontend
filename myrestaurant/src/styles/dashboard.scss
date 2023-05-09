@@ -1,43 +1,58 @@
 @use "base.scss";
 
+// Light mode
 .light-mode.dashboard {
 
     .card, .date-range > #start-date, .date-range > #end-date, .form-select{
         @include base.card(base.$light-mode-card...);
     }
 
-    .accordion-button {
-        color: map-get(base.$themes, "navy");
+    .recharts-bar-rectangle > path {
+        fill: map-get(base.$themes, "blue" );
     }
 
+    .recharts-cartesian-axis {
+        line {
+            stroke: map-get(base.$themes, "light-grey" );
+        }
 
+        text {
+            fill: map-get(base.$themes, "light-grey" );
+        }
+    }
 }
 
+// Dark mode
 .dark-mode.dashboard {
 
     .card, .date-range > #start-date, .date-range > #end-date, .form-select {
         @include base.card(base.$dark-mode-card...);
     }
 
-    .accordion-button {
-        color: map-get(base.$themes, "white");
+    .recharts-bar-rectangle > path {
+        fill: map-get(base.$themes, "beige" );
     }
 
+    .recharts-cartesian-axis {
+        line {
+            stroke: map-get(base.$themes, "off-white" );
+        }
+
+        text {
+            fill: map-get(base.$themes, "off-white" );
+        }
+    }
 }
 
 .dashboard {
     padding-top: 20px;
-    
-    .title > h2 {
-        text-align: center;
-    
-    }
     
     .col {
         padding-bottom: 12px;
         padding-top: 12px;
     }
     
+    // Graphs
     .card {
         border: none;
         text-align: center;
@@ -49,21 +64,27 @@
         
         .card-body {
             height: 350px;
-            &:hover {
-                color: map-get(base.$themes , "off-white")
-            }
         }
     
     }
+
+    .recharts-tooltip-label {
+        color: map-get(base.$themes, "light-grey");
+    }
+
+    .recharts-tooltip-item > span {
+        color: map-get(base.$themes, "blue");
+    }
     
+    // Accordion
     .accordion {
-        
+
         .accordion-button {
-            height: 60px;
-            box-shadow: none;
-            padding: 15px;
+            color: map-get(base.$themes, "white");
+            font-weight: 400;
+            margin-bottom: 10px;
         }
-    
+        
         .accordion-button::after {
             background-image: var(--bs-accordion-btn-icon);
         }
@@ -73,22 +94,19 @@
         }
         
         .error > .accordion-button {
-            @include base.button(map-get(base.$themes, "red"));
-            text-align: left;
+            @include base.accordion(map-get(base.$themes, "red"));      
         }
         
         .warning > .accordion-button {
-            @include base.button(map-get(base.$themes, "yellow"));
-            text-align: left;
+            @include base.accordion(map-get(base.$themes, "yellow"));
         }
         
         .success > .accordion-button {
-            @include base.button(map-get(base.$themes, "green"));
-            text-align: left;
+            @include base.accordion(map-get(base.$themes, "green"));
         }
     }
     
-    
+    // Date range buttons
     .date-range {
         text-align: center;   
         
@@ -99,6 +117,7 @@
             outline: none;
             text-align: center;
             margin-left: 10px;
+            margin-bottom: 10px;
     
             &::-webkit-calendar-picker-indicator {
                 cursor: pointer;

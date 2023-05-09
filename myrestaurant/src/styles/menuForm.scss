@@ -25,7 +25,7 @@
     }
 
     .modal-dialog {
-        max-width: 80%;
+        max-width: fit-content;
         margin: 0 auto 0 auto;
     }
     
@@ -37,6 +37,12 @@
         text-align: right;
         font-weight: 500;
         display: block;
+    }
+
+    @media(max-width: 576px) {
+        .form-label {
+            text-align: left;
+        }
     }
     
     .row {

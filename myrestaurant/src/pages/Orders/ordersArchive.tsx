@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { AxiosResponse, AxiosError } from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
@@ -11,7 +11,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { OrdersObj, MenuItemsObj} from "./orderTypes";
 
-function ArchivedOrders () {
+function ArchivedOrders (props: any) {
     
     // Set states
     const [orders, setOrders] = useState<Array<OrdersObj>>([]);
@@ -19,20 +19,20 @@ function ArchivedOrders () {
         
     // Fetch menu data from backend
     const getOrders = () => {
-        axios.get(
-            `${endpoints.prefix}${endpoints["archivedOrders"]}`
-        ).then(response => {
+        props.dataAPI.get(
+            `${endpoints["archivedOrders"]}`
+        ).then((response: AxiosResponse) => {
             setOrders(response.data);
-        }).catch(error => {
+        }).catch((error: AxiosError) => {
             console.log(error);
         })
     };
     
     // Fetch ingredients from backend
     const getMenu = () => {
-        axios.get(
-            `${endpoints.prefix}${endpoints["menu"]}`
-        ).then(response => {
+        props.dataAPI.get(
+            `${endpoints["menu"]}`
+        ).then((response: AxiosResponse) => {
             const filteredMenu: MenuItemsObj = {};
             // Return object of id as key and ingredient as value fields for each inventory item 
             response.data.forEach((item: any) => {
@@ -41,7 +41,7 @@ function ArchivedOrders () {
                 }
             });
             setMenu(filteredMenu);
-        }).catch(error => {
+        }).catch((error: AxiosError) => {
             console.log(error);
         })
     };
@@ -55,12 +55,12 @@ function ArchivedOrders () {
     // Handle submit multipart form to backend
     const handleSubmit = async (e: any, id: number) => {
         e.preventDefault();
-        const itemPath = `${endpoints.prefix}${endpoints["orders"]}${slugify(String(id))}/`;
-            axios.patch(itemPath, {
+        const itemPath = `${endpoints["orders"]}${slugify(String(id))}/`;
+            props.DataAPI.patch(itemPath, {
                 complete: false
             }).then(() => {
                 getOrders();
-            }).catch(error => {
+            }).catch((error: AxiosError) => {
                 console.log(error);
             })
     };

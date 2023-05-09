@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { AxiosResponse, AxiosError } from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -51,35 +51,35 @@ function Menu ( props: any ) {
     const [addItem, setAddItem] = useState<boolean>(false);
     const [updateMenu, setUpdateMenu ] = useState<MenuObj>(menuObj);
     const [updateItem, setUpdateItem] = useState<boolean>(false);
+
     
     // Fetch menu data from backend
     const getMenu = () => {
-        axios.get(
-            `${endpoints.prefix}${endpoints["menu"]}`
-        ).then(response => {
-            
+        props.dataAPI.get(
+            `${endpoints["menu"]}`
+        ).then((response: AxiosResponse) => {
             setMenu(response.data);
-        }).catch(error => {
+        }).catch((error: AxiosError) => {
             console.log(error);
-        })
+        });
     };
     
     // Fetch ingredients from backend
     const getIngredients = () => {
-        axios.get(
-            `${endpoints.prefix}${endpoints["inventory"]}`
-        ).then(response => {
+        props.dataAPI.get(
+            `${endpoints["inventory"]}`
+        ).then((response: AxiosResponse) => {
             const filteredInventory: {[key: number]: string} = {};
             // Return object of id as key and ingredient as value fields for each inventory item
             response.data.forEach((item: any) => (
                 filteredInventory[item.id] = item.ingredient
             ));
             setIngredients(filteredInventory);
-        }).catch(error => {
+        }).catch((error: AxiosError) => {
             console.log(error);
-        })
+        });
     };
-
+    
     // Fetch menu data and ingredients data on first load
     useEffect(() => {
        getMenu();
@@ -109,45 +109,44 @@ function Menu ( props: any ) {
     // Handle submit multipart form to backend
     const handleSubmit = async (e: any, method: "add" | "update" | "delete", data: MenuObj) => {
         e.preventDefault();
-        const itemPath = `${endpoints.prefix}${endpoints["menu"]}${slugify(data.title ?? "")}/`;
+        const itemPath = `${endpoints["menu"]}${slugify(data.title ?? "")}/`;
         switch (method) {
             case "delete":
-                await axios.delete( itemPath,
+                await props.dataAPI.delete( itemPath,
                 ).then(() => {
                     console.log(`Successfully deleted ${data.title}`);
                     setUpdateItem(false);
                     getMenu();
-                }).catch(error => 
+                }).catch((error: AxiosError) => 
                     console.log(error)
                 );
                 break;
             case "add":
-                await axios.postForm(
-                    `${endpoints.prefix}${endpoints["menu"]}`, {
+                await props.dataAPI.post(
+                    `${endpoints["menu"]}`, {
                         title: newMenu.title,
                         description: newMenu.description,
                         price: newMenu.price,
                         "ingredients[]": newMenu.ingredients,
                         "units{}": newMenu.units
-                    }, { formSerializer: { metaTokens: false, indexes: null }}
+                    }
                 ).then(() => {
                     setAddItem(false);
                     getMenu();
-                }).catch(error => {
+                }).catch((error: AxiosError )=> {
                     console.log(error);
                 });
                 break;
             case "update":
-                axios.patchForm(itemPath, {
+                props.dataAPI.patch(itemPath, {
                     description: updateMenu.description,
                     price: updateMenu.price,
                     "ingredients[]": updateMenu.ingredients,
                     "units{}": updateMenu.units
-                }, { formSerializer: { metaTokens: false, indexes: null }}
-                ).then(() => {
+                }).then(() => {
                     setUpdateItem(false);
                     getMenu();
-                }).catch(error => {
+                }).catch((error: AxiosError) => {
                     console.log(error);
                 })
                 break;

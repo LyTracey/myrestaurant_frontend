@@ -1,7 +1,6 @@
 import { __assign, __awaiter, __generator } from "tslib";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
@@ -11,14 +10,14 @@ import Table from 'react-bootstrap/Table';
 import slugify from 'slugify';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
-function ArchivedOrders() {
+function ArchivedOrders(props) {
     var _this = this;
     // Set states
     var _a = useState([]), orders = _a[0], setOrders = _a[1];
     var _b = useState({}), menu = _b[0], setMenu = _b[1];
     // Fetch menu data from backend
     var getOrders = function () {
-        axios.get("".concat(endpoints.prefix).concat(endpoints["archivedOrders"])).then(function (response) {
+        props.dataAPI.get("".concat(endpoints["archivedOrders"])).then(function (response) {
             setOrders(response.data);
         }).catch(function (error) {
             console.log(error);
@@ -26,7 +25,7 @@ function ArchivedOrders() {
     };
     // Fetch ingredients from backend
     var getMenu = function () {
-        axios.get("".concat(endpoints.prefix).concat(endpoints["menu"])).then(function (response) {
+        props.dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
             var filteredMenu = {};
             // Return object of id as key and ingredient as value fields for each inventory item 
             response.data.forEach(function (item) {
@@ -49,8 +48,8 @@ function ArchivedOrders() {
         var itemPath;
         return __generator(this, function (_a) {
             e.preventDefault();
-            itemPath = "".concat(endpoints.prefix).concat(endpoints["orders"]).concat(slugify(String(id)), "/");
-            axios.patch(itemPath, {
+            itemPath = "".concat(endpoints["orders"]).concat(slugify(String(id)), "/");
+            props.DataAPI.patch(itemPath, {
                 complete: false
             }).then(function () {
                 getOrders();

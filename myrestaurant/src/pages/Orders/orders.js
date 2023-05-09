@@ -1,7 +1,6 @@
 import { __assign, __awaiter, __generator, __spreadArray } from "tslib";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
@@ -37,7 +36,7 @@ function Orders(props) {
     var _f = useState(false), updateItem = _f[0], setUpdateItem = _f[1];
     // Fetch menu data from backend
     var getOrders = function () {
-        axios.get("".concat(endpoints.prefix).concat(endpoints["orders"])).then(function (response) {
+        props.dataAPI.get("".concat(endpoints["orders"])).then(function (response) {
             setOrders(response.data);
         }).catch(function (error) {
             console.log(error);
@@ -45,7 +44,7 @@ function Orders(props) {
     };
     // Fetch ingredients from backend
     var getMenu = function () {
-        axios.get("".concat(endpoints.prefix).concat(endpoints["menu"])).then(function (response) {
+        props.dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
             var filteredMenu = {};
             response.data.forEach(function (item) {
                 if (item.in_stock) {
@@ -63,7 +62,9 @@ function Orders(props) {
         getMenu();
     }, []);
     useEffect(function () { return console.log(updateOrder); });
-    useEffect(function () { return getMenu(); }, [addItem, updateItem]);
+    useEffect(function () {
+        getMenu();
+    }, [addItem, updateItem]);
     // Update newOrder | updateOrder state
     var handleData = function (item, value, method) {
         var _a, _b;
@@ -92,15 +93,15 @@ function Orders(props) {
             switch (_b.label) {
                 case 0:
                     e.preventDefault();
-                    itemPath = "".concat(endpoints.prefix).concat(endpoints["orders"]).concat(slugify(String(data.id)), "/");
+                    itemPath = "".concat(endpoints["orders"]).concat(slugify(String(data.id)), "/");
                     _a = method;
                     switch (_a) {
                         case "delete": return [3 /*break*/, 1];
                         case "add": return [3 /*break*/, 3];
                         case "update": return [3 /*break*/, 5];
                     }
-                    return [3 /*break*/, 6];
-                case 1: return [4 /*yield*/, axios.delete(itemPath).then(function () {
+                    return [3 /*break*/, 7];
+                case 1: return [4 /*yield*/, props.dataAPI.delete(itemPath).then(function () {
                         console.log("Successfully deleted order number ".concat(data.id));
                         setUpdateItem(false);
                         getOrders();
@@ -109,12 +110,12 @@ function Orders(props) {
                     })];
                 case 2:
                     _b.sent();
-                    return [3 /*break*/, 7];
-                case 3: return [4 /*yield*/, axios.postForm("".concat(endpoints.prefix).concat(endpoints["orders"]), {
+                    return [3 /*break*/, 8];
+                case 3: return [4 /*yield*/, props.dataAPI.post("".concat(endpoints["orders"]), {
                         notes: newOrder.notes,
                         "menu_items[]": newOrder.menu_items,
                         "quantity{}": newOrder.quantity
-                    }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
+                    }).then(function () {
                         console.log("Successfully added order number ".concat(data.id));
                         setAddItem(false);
                         getOrders();
@@ -123,31 +124,32 @@ function Orders(props) {
                     })];
                 case 4:
                     _b.sent();
-                    return [3 /*break*/, 7];
-                case 5:
-                    axios.patchForm(itemPath, {
+                    return [3 /*break*/, 8];
+                case 5: return [4 /*yield*/, props.dataAPI.patch(itemPath, {
                         notes: updateOrder.notes,
                         "menu_items[]": updateOrder.menu_items,
                         "quantity{}": updateOrder.quantity
-                    }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
+                    }).then(function () {
                         setUpdateItem(false);
                         getOrders();
                     }).catch(function (error) {
                         console.log(error);
-                    });
-                    return [3 /*break*/, 7];
+                    })];
                 case 6:
+                    _b.sent();
+                    return [3 /*break*/, 8];
+                case 7:
                     console.log("Unrecognised method");
-                    _b.label = 7;
-                case 7: return [2 /*return*/];
+                    _b.label = 8;
+                case 8: return [2 /*return*/];
             }
         });
     }); };
     var handleCheck = function (e, id, field) {
         var _a;
         e.preventDefault();
-        var itemPath = "".concat(endpoints.prefix).concat(endpoints["orders"]).concat(slugify(String(id)), "/");
-        axios.patch(itemPath, (_a = {},
+        var itemPath = "".concat(endpoints["orders"]).concat(slugify(String(id)), "/");
+        props.dataAPI.patch(itemPath, (_a = {},
             _a[field] = e.target.checked,
             _a)).then(function () { return getOrders(); })
             .catch(function (error) {

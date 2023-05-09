@@ -23,6 +23,7 @@ code {
   position: relative;
   min-height: 100vh;
   padding-bottom: 150px;
+  transition: 0.5s;
 }
 
 .App.light-mode {
@@ -35,6 +36,10 @@ code {
 
 .form-check-input {
   cursor: pointer;
+}
+
+.title {
+  text-align: center;
 }
 
 @import "~bootstrap/scss/bootstrap";

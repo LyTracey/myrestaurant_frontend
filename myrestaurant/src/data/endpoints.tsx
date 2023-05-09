@@ -1,5 +1,4 @@
 interface Endpoint {
-    prefix: string,
     [key: string]: string
 };
 

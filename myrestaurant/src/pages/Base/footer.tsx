@@ -17,9 +17,9 @@ function Footer() {
         <Nav.Link className='other-projects'>Other Projects</Nav.Link>
       </Container>
       <Container>
-        <Navbar.Brand>
+        <Navbar.Brand href="/">
             MOONLIGHT CAFE 
-            <Logo className="footer-logo"/>
+            <Logo className="icon footer-logo"/>
         </Navbar.Brand>
       </Container>
     </Navbar>

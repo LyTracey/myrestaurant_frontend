@@ -1,6 +1,6 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import axios from 'axios';
+import { AxiosError } from 'axios';
 import endpoints from "../../data/endpoints";
 import { useState } from "react";
 import "../../styles/register.scss";
@@ -18,7 +18,7 @@ interface User {
 };
 
 
-function Register () {
+function Register (props: any) {
 
     // Set states
     const [newUser, setNewUser] = useState<User>({
@@ -45,8 +45,8 @@ function Register () {
         }
 
         // Post request to create new user
-        axios.post(
-            `${endpoints["prefix_user"]}${endpoints["register"]}`,
+        props.userAPI.post(
+            `${endpoints["register"]}`,
             {
                 email: newUser.email,
                 password: newUser.password1,
@@ -54,7 +54,7 @@ function Register () {
             }
         ).then(() => {
             navigate("/");
-        }).catch(error => console.log(error));
+        }).catch((error: AxiosError) => console.log(error));
 
         return "User created."
 

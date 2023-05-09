@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import "../../styles/navbar.scss";
 import { ReactComponent as SunIcon } from '../../images/icons/sun.svg';
 import { ReactComponent as MoonIcon } from '../../images/icons/moon.svg';
+import { ReactComponent as Collapse } from '../../images/icons/collapsed-navbar.svg';
 import Button from 'react-bootstrap/Button';
 import { ReactComponent as Logo } from "../../images/moonlight-logo.svg";
 import { useContext } from 'react';
@@ -24,13 +25,14 @@ function Navigate(props: any) {
     return (
         <Navbar className={ useContext(ThemeContext) } collapseOnSelect sticky="top" expand="md">
             <Container fluid>
-                <Navbar.Brand href="/" className={ props.theme }>
+                <Navbar.Brand href="/">
                     MOONLIGHT CAFE
-                    <Logo className="logo"/>
+                    <Logo className="icon logo"/>
                 </Navbar.Brand>
-                <Navbar.Toggle className={ props.theme } aria-controls="responsive-navbar-nav" />
+                <Navbar.Toggle aria-controls="responsive-navbar-nav"><Collapse className="icon" /></Navbar.Toggle>
                 <Navbar.Collapse role="navigation">
-                    <Nav.Link href="/">Home</Nav.Link>
+
+                    { !props.loggedIn &&<Nav.Link href="/">Home</Nav.Link> }
                     
                     <Nav.Link href="/menu/">Menu</Nav.Link>
 

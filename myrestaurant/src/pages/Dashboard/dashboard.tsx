@@ -1,11 +1,8 @@
 import '../../styles/dashboard.scss';
 import endpoints from "../../data/endpoints";
-import axios from 'axios';
-import { checkTokens } from '../../utils/checkTokens';
 import { ThemeContext } from '../Base/App';
 import { BarChart, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer} from 'recharts';
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -34,8 +31,6 @@ interface DateRange {
 
 function Dashboard (props: any) {
 
-    const navigate = useNavigate();
-
     // Set states
     const [statistics, setStatistics] = useState<Statistics>({
         low_stock: [],
@@ -59,14 +54,12 @@ function Dashboard (props: any) {
 
     // API call to get statistics data
     const getStats = (data: DateRange | undefined = undefined) => {
-        if (!checkTokens()) {
-            return navigate("/")
-        }
-        axios.patchForm(`${endpoints.prefix}${endpoints["dashboard"]}`,
+        props.dataAPI.patch(
+            `${endpoints["dashboard"]}`,
             {...data}
-        ).then((response) => {
+        ).then((response: any) => {
             setStatistics({...response.data});
-        }).catch((error) => {
+        }).catch((error: any) => {
             console.log(error);
         });
     };
@@ -89,38 +82,36 @@ function Dashboard (props: any) {
     // Create cards
     const createAccordion = (status: string, title: string, statistic: Array<string> | StatisticsObj, comment: string) => {
         return (
-            <Col>
-                <Accordion className="stats col-auto">
-                    <Accordion.Item eventKey="0">
-                        <Accordion.Header className={ status }>
-                            <div>
-                                <b>{ title }</b><br/>
-                                { statistic.length }                    
-                            </div>
-                        </Accordion.Header>
-                        <Accordion.Body>
-                            {   
-                                Array.isArray(statistic) ? 
-                                    (statistic.length != 0 ? 
-                                        (statistic.map((item: string, i: number) => {
-                                                return <div key={ i }>{ item }</div>
-                                            })
-                                        ) : comment) : 
-                                    (Object.keys(statistic).length != 0 ? 
-                                        (Object.keys(statistic).map((key, i) => {
-                                                return <div key={ i }>{ key }: { statistic[key] }</div>
-                                            })
-                                        ) : "No sales made :(")                                   
-                            }
-                        </Accordion.Body>
-                    </Accordion.Item>
-                </Accordion>
-            </Col>
+            <Accordion className="stats">
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header className={ status }>
+                        <div>
+                            <b>{ title }</b><br/>
+                            { statistic.length }                    
+                        </div>
+                    </Accordion.Header>
+                    <Accordion.Body>
+                        {   
+                            Array.isArray(statistic) ? 
+                                (statistic.length != 0 ? 
+                                    (statistic.map((item: string, i: number) => {
+                                            return <div key={ i }>{ item }</div>
+                                        })
+                                    ) : comment) : 
+                                (Object.keys(statistic).length != 0 ? 
+                                    (Object.keys(statistic).map((key, i) => {
+                                            return <div key={ i }>{ key }: { statistic[key] }</div>
+                                        })
+                                    ) : "No sales made :(")                                   
+                        }
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
         )
     };
 
 
-    const createGraph = (title: string, data: Array<StatisticsObj>, axisColour: string, barColour: string, dataKey: string) => {
+    const createGraph = (title: string, data: Array<StatisticsObj>, dataKey: string) => {
         
         const total = data.map(item => Number(item[dataKey]) ).reduce((a: number, x: number) => a + x, 0);
 
@@ -143,10 +134,10 @@ function Dashboard (props: any) {
                         <Card.Title>{ title }</Card.Title>
                         <ResponsiveContainer width="90%" height="75%">
                             <BarChart data={ data.length === 0 ? dummyData : data}>
-                                <XAxis dataKey="date" stroke={ axisColour } />
-                                <YAxis stroke={ axisColour } />
-                                <Tooltip labelStyle={{color: "#7A7A7A"}} itemStyle={{color: "rgba(57, 92, 107, 1)"}} />
-                                <Bar dataKey={ dataKey } fill={ barColour } />
+                                <XAxis dataKey="date"/>
+                                <YAxis />
+                                <Tooltip />
+                                <Bar dataKey={ dataKey } />
                             </BarChart>
                         </ResponsiveContainer>
                         <Card.Text>{ total >= 0 ? `Total: £ ${ total.toFixed(2) }` :  `Total: -£ ${ Math.abs(total).toFixed(2) }` }</Card.Text>
@@ -156,14 +147,11 @@ function Dashboard (props: any) {
         )
     };
 
-    const axisColour = props.theme === "light-mode" ? "#7A7A7A" : "#E1E1E1";
-    const barColour = props.theme === "light-mode" ? "#395C6B" : "#F7EDE2";
-
     return (
         <Container className={ `dashboard ${ useContext(ThemeContext) }` }>
 
             <Row className='title'>
-                    <h2>Dashboard</h2>
+                <h2>Dashboard</h2>
             </Row>
 
 
@@ -180,12 +168,12 @@ function Dashboard (props: any) {
             </Row>
 
 
-            <Row lg={2} sm={1} xs={1} className='justify-content-center'>
-                { createGraph("Revenue", statistics.revenue, axisColour, barColour, "revenue") }
-                { createGraph("Profit", statistics.profit, axisColour, barColour, "profit") }
+            <Row lg={2} xs={1}>
+                { createGraph("Revenue", statistics.revenue, "revenue") }
+                { createGraph("Profit", statistics.profit, "profit") }
             </Row>
 
-            <Row sm={3} xs={1} className='justify-content-center'>
+            <Row sm={3} xs={1}>
                 { createAccordion("error", "Out of Stock", statistics.out_of_stock, "All items in stock!") }
                 { createAccordion("warning", "Low Stock", statistics.low_stock, "No items low in stock") }
                 { createAccordion("success", "Sales", statistics.sales, "No sales made :(")}

@@ -1,5 +1,24 @@
 @use 'base.scss';
 
+
+.footer.light-mode {
+    @include base.theme(base.$light-mode...);
+
+    .navbar-brand, .icon {
+        color: map-get(base.$themes, "light-grey");
+        color: map-get(base.$themes, "light-grey");
+    }
+}
+
+.footer.dark-mode {
+    @include base.theme(base.$dark-mode...);
+
+    .navbar-brand, .icon {
+        color: map-get(base.$themes, "blue");
+        fill: map-get(base.$themes, "blue");
+    }
+}
+
 .footer {
     height: 125px;
     position: absolute;
@@ -7,18 +26,29 @@
     left: 0;
     width: 100%;
 
-    .links {
-        justify-content: center;
+    .navbar-brand:hover, .nav-link:hover {
         color: map-get(base.$themes, "blue");
+
+        .icon {
+            fill: map-get(base.$themes, "blue");
+        }
+
+    }
+
+
+    // Links
+    .links {
+        padding: 0 20%;
+        justify-content: center;
         font-size: 15px;
 
         .nav-link {
-            width: 150px;
+            width: fit-content;
             text-align: center;
-            margin: 0;
         }
     }
 
+    // Footer brand
     .navbar-brand {
         margin: 0 auto 10px auto;
         color: map-get(base.$themes, "blue");
@@ -29,6 +59,5 @@
         height: 44px;
         width: 44px;
         margin-left: 10px;
-        fill: map-get(base.$themes, "blue");
     }
 }

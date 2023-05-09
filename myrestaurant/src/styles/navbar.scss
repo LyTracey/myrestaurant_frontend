@@ -5,17 +5,8 @@
     @include base.theme(base.$light-mode...);
     border-bottom: 1.5px solid map-get(base.$themes, "off-white");
 
-    .theme-toggle {
-        // background-color: map-get(base.$themes, "beige");
-        background-color: transparent;
-    }
-
-    .nav-link:hover {
-        color: map-get(base.$themes, "off-white");
-        
-    }
-
-    .logo {
+    .navbar-brand, .icon{
+        color: map-get(base.$themes, "light-grey");
         fill: map-get(base.$themes, "light-grey");
     }
 }
@@ -25,16 +16,8 @@
     @include base.theme(base.$dark-mode...);
     border-bottom: 1.5px solid map-get(base.$themes, "blue");
 
-    .theme-toggle {
-        // background-color: map-get(base.$themes, "off-white");
-        background-color: transparent;
-    }
-
-    .nav-link:hover {
-        color: map-get(base.$themes, "blue");
-    }
-
-    .logo {
+    .navbar-brand, .icon {
+        color: map-get(base.$themes, "beige");
         fill: map-get(base.$themes, "beige");
     }
 
@@ -43,96 +26,120 @@
 .navbar {
     padding-left: 5%;
     padding-right: 5%;
-}
 
-.navbar-brand {
-    color: inherit;
-    border: none;
-    cursor: pointer;
-    font-family: 'Dosis', sans-serif;
-    text-decoration: underline dotted;
-    text-underline-offset: 8px;
+    // Brand
+    .navbar-brand:hover, .nav-link:hover {
+        color: map-get(base.$themes, "blue");
+        transition: color 0.5s;
 
-    .logo {
-        height: 44px;
-        width: 44px;
-        margin-left: 10px;
-    }
-}
-
-.navbar-toggler, .navbar-toggler:focus {
-    width: 60px;
-    border: none;
-    box-shadow: none;
-    cursor: pointer;
-}
-
-.navbar-collapse {
-    justify-content: space-around;
-    text-align: center;
-}
-
-.nav-link{
-    padding: 4px;
-    border-radius: 3em;
-    width: 100px;
-    margin: auto;
-
-}
-
-@keyframes fade-in {
-    from {opacity: 0;}
-    to {opacity: 1;}
-}
-
-@keyframes fade-out {
-    from {opacity: 1;}
-    to {opacity: 0;}
-}
-
-.theme-toggle.btn.btn-primary {
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 50%;
-    position: relative;
-    
-    
-    .theme-icon {
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        width: 24px;
-        height: 24px;
-        
-        
-        &.light {
-            fill: map-get(base.$themes, "yellow");
-            transition: 0.5s ease;
-
-            &:hover {
-                fill: map-get(base.$themes , "light-grey");
-            }
+        .icon {
+            fill: map-get(base.$themes, "blue");
+            transition: fill 0.5s;
         }
 
-        &.dark {
-            fill: map-get(base.$themes, "white"); 
-            transition: 0.5s ease;
-            &:hover {
-                fill: map-get(base.$themes , "light-grey");
-            }
+    }
+
+    .icon:hover {
+        fill: map-get(base.$themes, "blue");
+        transition: fill 0.5s;
+    }
+
+    .navbar-brand {
+        border: none;
+        cursor: pointer;
+        font-family: 'Dosis', sans-serif;
+        text-decoration: underline dotted;
+        text-underline-offset: 8px;
+    
+        .logo {
+            height: 44px;
+            width: 44px;
+            margin-left: 10px;
+        }
+    }
+    
+    // Links
+    .nav-link{
+        padding: 4px;
+        border-radius: 3em;
+        width: 100px;
+        margin: auto;
+    }
+
+    // Collapsed menu
+    .navbar-toggler, .navbar-toggler:focus {
+        width: 60px;
+        border: none;
+        box-shadow: none;
+        cursor: pointer;
+    }
+    
+    .navbar-collapse {
+        justify-content: space-around;
+        text-align: center;
+    }
+    
+
+    // Theme button
+    .theme-toggle, .theme-toggle:focus {
+        background-color: transparent;
+    }
+    
+    @keyframes fade-in {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
+    
+    @keyframes fade-out {
+        from {opacity: 1;}
+        to {opacity: 0;}
+    }
+    
+    .theme-toggle.btn.btn-primary {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 50%;
+        position: relative;
+        
+        
+        .theme-icon {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: 24px;
+            height: 24px;
             
+            
+            &.light {
+                fill: map-get(base.$themes, "yellow");
+                transition: 0.5s ease;
+    
+                &:hover {
+                    fill: map-get(base.$themes , "blue");
+                }
+            }
+    
+            &.dark {
+                fill: map-get(base.$themes, "white"); 
+                transition: 0.5s ease;
+                &:hover {
+                    fill: map-get(base.$themes , "yellow");
+                }
+                
+            }
+    
+            &.fade-in {
+                animation: fade-in 1.5s ease;
+            }
+    
+            &.fade-out {
+                display: none;
+                animation: fade-out 1.5s ease;
+            }
+    
         }
-
-        &.fade-in {
-            animation: fade-in 1.5s ease;
-        }
-
-        &.fade-out {
-            display: none;
-            animation: fade-out 1.5s ease;
-        }
-
     }
-}
+
+}    
 

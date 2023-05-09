@@ -9,10 +9,6 @@
 .register, .login {
     padding: 20px 10%;
 
-    .title {
-        text-align: center;
-    }
-
     .group {
         margin-bottom: 15px;
     }
@@ -23,9 +19,7 @@
         margin: 0;
 
         .submit-button {
-            width: 100px;
-            background-color: map-get(base.$themes, "green");
-            border: none;
+            @include base.button(map-get(base.$themes, "green"));
         }
     }
 

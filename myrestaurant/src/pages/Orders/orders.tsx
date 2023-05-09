@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { AxiosResponse, AxiosError } from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
@@ -40,20 +40,20 @@ function Orders ( props: any ) {
 
     // Fetch menu data from backend
     const getOrders = () => {
-        axios.get(
-            `${endpoints.prefix}${endpoints["orders"]}`
-        ).then(response => {
+        props.dataAPI.get(
+            `${endpoints["orders"]}`
+        ).then((response: AxiosResponse) => {
             setOrders(response.data);
-        }).catch(error => {
+        }).catch((error: AxiosError) => {
             console.log(error);
-        })
+        });
     };
     
     // Fetch ingredients from backend
     const getMenu = () => {
-        axios.get(
-            `${endpoints.prefix}${endpoints["menu"]}`
-        ).then(response => {
+        props.dataAPI.get(
+            `${endpoints["menu"]}`
+        ).then((response: AxiosResponse) => {
             const filteredMenu: MenuItemsObj = {};
             response.data.forEach((item: any) => {
                 if (item.in_stock) {
@@ -61,9 +61,9 @@ function Orders ( props: any ) {
                 }
             });
             setMenu(filteredMenu);
-        }).catch(error => {
+        }).catch((error: AxiosError) => {
             console.log(error);
-        })
+        });
     };
 
     // Fetch menu data and ingredients data on first load
@@ -74,7 +74,9 @@ function Orders ( props: any ) {
 
     useEffect(() => console.log(updateOrder));
 
-    useEffect(() => getMenu(), [addItem, updateItem]);
+    useEffect(() => {
+        getMenu()
+    }, [addItem, updateItem]);
 
     // Update newOrder | updateOrder state
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
@@ -99,43 +101,41 @@ function Orders ( props: any ) {
     // Handle submit multipart form to backend
     const handleSubmit = async (e: any, method: "add" | "update" | "delete", data: OrdersObj) => {
         e.preventDefault();
-        const itemPath = `${endpoints.prefix}${endpoints["orders"]}${slugify(String(data.id))}/`;
+        const itemPath = `${endpoints["orders"]}${slugify(String(data.id))}/`;
         switch (method) {
             case "delete":
-                await axios.delete( itemPath,
+                await props.dataAPI.delete( itemPath,
                 ).then(() => {
                     console.log(`Successfully deleted order number ${data.id}`);
                     setUpdateItem(false);
                     getOrders();
-                }).catch(error => 
+                }).catch((error: AxiosError) => 
                     console.log(error)
                 );
                 break;
             case "add":
-                await axios.postForm(
-                    `${endpoints.prefix}${endpoints["orders"]}`, {
+                await props.dataAPI.post(
+                    `${endpoints["orders"]}`, {
                         notes: newOrder.notes,
                         "menu_items[]": newOrder.menu_items,
                         "quantity{}": newOrder.quantity
-                    }, { formSerializer: { metaTokens: false, indexes: null }}
-                ).then(() => {
+                }).then(() => {
                     console.log(`Successfully added order number ${data.id}`);
                     setAddItem(false);
                     getOrders();
-                }).catch(error => {
+                }).catch((error: AxiosError) => {
                     console.log(error);
                 });
                 break;
             case "update":
-                axios.patchForm(itemPath, {
+                await props.dataAPI.patch(itemPath, {
                     notes: updateOrder.notes,
                     "menu_items[]": updateOrder.menu_items,
                     "quantity{}": updateOrder.quantity
-                }, { formSerializer: { metaTokens: false, indexes: null }}
-                ).then(() => {
+                }).then(() => {
                     setUpdateItem(false);
                     getOrders();
-                }).catch(error => {
+                }).catch((error: AxiosError) => {
                     console.log(error);
                 })
                 break;
@@ -147,11 +147,11 @@ function Orders ( props: any ) {
 
     const handleCheck = (e: any, id: number, field: string) => {
         e.preventDefault();
-        const itemPath = `${endpoints.prefix}${endpoints["orders"]}${slugify(String(id))}/`;
-        axios.patch(itemPath, {
+        const itemPath = `${endpoints["orders"]}${slugify(String(id))}/`;
+        props.dataAPI.patch(itemPath, {
             [field]: e.target.checked
         }).then(() => getOrders())
-        .catch((error) => {
+        .catch((error: AxiosError) => {
             console.log(error);
         });
 

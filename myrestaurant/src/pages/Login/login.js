@@ -5,7 +5,6 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import axios from "axios";
 import endpoints from "../../data/endpoints";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
@@ -28,7 +27,7 @@ function Login(props) {
     var handleSubmit = function (e) {
         e.preventDefault();
         // Post request to get jwt token
-        axios.post("".concat(endpoints["prefix_user"]).concat(endpoints["login"]), {
+        props.userAPI.post("".concat(endpoints["login"]), {
             email: login.email,
             password: login.password,
         }).then(function (response) {

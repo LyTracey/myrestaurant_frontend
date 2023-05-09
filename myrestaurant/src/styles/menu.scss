@@ -7,7 +7,6 @@
         @include base.card(base.$light-mode-card...);
     }
 
-
 }
 
 .menu.dark-mode {
@@ -21,16 +20,12 @@
 
 .menu {
     padding-top: 20px;
-
-    .title {
-        text-align: center;
-    }
     
     .card-body {
         margin-top: 10px;
         margin-bottom: 10px;
         padding: 10px;
-        border-radius: 10px;
+        border-radius: 5px;
         height: 400px;
         text-align: center;
 
@@ -53,15 +48,8 @@
 
     .actions {
         justify-content: center;
-
         .btn {
-            width: 125px;
-            background-color: map-get(base.$themes, "green");
-            border: none;
-    
-            &:hover {
-                color: map-get(base.$themes, "navy");
-            }
+            @include base.button(map-get(base.$themes, "green"))
         }
 
     }

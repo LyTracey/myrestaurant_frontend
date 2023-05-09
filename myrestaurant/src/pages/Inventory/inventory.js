@@ -1,14 +1,12 @@
 import { __assign, __awaiter, __generator } from "tslib";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Container from 'react-bootstrap/Container';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import placeholder from "../../images/placeholder-image.webp";
-import axios from "axios";
 import endpoints from "../../data/endpoints";
 import InventoryForm from "./inventoryForm";
 import InventoryUpdateForm from "./inventoryUpdateForm";
@@ -34,15 +32,16 @@ function Inventory(props) {
     var _e = useState(inventoryObj), updateInventory = _e[0], setUpdateInventory = _e[1];
     // Get inventory
     var getInventory = function () {
-        axios.get("".concat(endpoints.prefix).concat(endpoints["inventory"])).then(function (response) {
+        props.dataAPI.get("".concat(endpoints["inventory"])).then(function (response) {
             setInventory(response.data);
         }).catch(function (error) {
             console.log(error);
         });
     };
     // Fetch inventory on load
-    useEffect(function () { return getInventory(); }, []);
-    useEffect(function () { return console.log(newInventory); });
+    useEffect(function () {
+        getInventory();
+    }, []);
     // Handle data
     var handleData = function (item, value, method) {
         var _a, _b;
@@ -56,15 +55,15 @@ function Inventory(props) {
             switch (_c.label) {
                 case 0:
                     e.preventDefault();
-                    itemPath = "".concat(endpoints.prefix).concat(endpoints["inventory"]).concat(slugify((_b = String(data.id)) !== null && _b !== void 0 ? _b : ""), "/");
+                    itemPath = "".concat(endpoints["inventory"]).concat(slugify((_b = String(data.id)) !== null && _b !== void 0 ? _b : ""), "/");
                     _a = method;
                     switch (_a) {
                         case "delete": return [3 /*break*/, 1];
                         case "add": return [3 /*break*/, 3];
                         case "update": return [3 /*break*/, 5];
                     }
-                    return [3 /*break*/, 6];
-                case 1: return [4 /*yield*/, axios.delete(itemPath).then(function () {
+                    return [3 /*break*/, 7];
+                case 1: return [4 /*yield*/, props.dataAPI.delete(itemPath).then(function () {
                         console.log("Successfully deleted ".concat(data.ingredient));
                         setUpdateItem(!updateItem);
                         getInventory();
@@ -73,8 +72,8 @@ function Inventory(props) {
                     })];
                 case 2:
                     _c.sent();
-                    return [3 /*break*/, 7];
-                case 3: return [4 /*yield*/, axios.postForm("".concat(endpoints.prefix).concat(endpoints["inventory"]), {
+                    return [3 /*break*/, 8];
+                case 3: return [4 /*yield*/, props.dataAPI.post("".concat(endpoints["inventory"]), {
                         ingredient: newInventory.ingredient,
                         quantity: newInventory.quantity,
                         unit_price: newInventory.unit_price,
@@ -86,22 +85,23 @@ function Inventory(props) {
                     })];
                 case 4:
                     _c.sent();
-                    return [3 /*break*/, 7];
-                case 5:
-                    axios.patchForm(itemPath, {
+                    return [3 /*break*/, 8];
+                case 5: return [4 /*yield*/, props.dataAPI.patch(itemPath, {
                         quantity: updateInventory.quantity,
                         unit_price: updateInventory.unit_price,
-                    }, { formSerializer: { metaTokens: false, indexes: null } }).then(function () {
+                    }).then(function () {
                         setUpdateItem(!updateItem);
                         getInventory();
                     }).catch(function (error) {
                         console.log(error);
-                    });
-                    return [3 /*break*/, 7];
+                    })];
                 case 6:
+                    _c.sent();
+                    return [3 /*break*/, 8];
+                case 7:
                     console.log("Unrecognised method");
-                    _c.label = 7;
-                case 7: return [2 /*return*/];
+                    _c.label = 8;
+                case 8: return [2 /*return*/];
             }
         });
     }); };
