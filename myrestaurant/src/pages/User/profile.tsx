@@ -58,7 +58,7 @@ function Profile(props: any) {
 
                             <tr>
                                 <td className="key">Staff</td>
-                                <td>{user.is_staff}</td>
+                                <td>{ String(user.is_staff) }</td>
                             </tr>
                             
                             <tr>

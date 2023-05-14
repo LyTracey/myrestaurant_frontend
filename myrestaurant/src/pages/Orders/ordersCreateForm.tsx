@@ -1,22 +1,19 @@
-import { FormEvent, useState } from "react";
-import '../../styles/form.scss';
-import Modal from "react-bootstrap/Modal";
-import { ReadFieldGroup, 
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Modal from 'react-bootstrap/Modal';
+import { 
     EditFieldGroup, 
     SelectMultiFieldGroup, 
     InputMultiFieldGroup, 
-    DeleteAlert, 
-    SubmitDelete, 
-    ColumnsToRows } from "../Forms/formComponents";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { Container } from "react-bootstrap";
+    Submit, 
+    ColumnsToRows } from '../Forms/formComponents';
+import Container from "react-bootstrap/Container";
+import "../../styles/form.scss";
+import { useState, FormEvent } from 'react';
 
-function OrderUpdateForm (props: any) {
+function OrdersCreateForm (props: any) {
 
-    // Set states
-    const [deleteAlert, setDeleteAlert] = useState(false);
     const [validated, setValidated] = useState(false);
     
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -25,11 +22,10 @@ function OrderUpdateForm (props: any) {
             e.preventDefault();
             e.stopPropagation();
         } else {
-            props.handleSubmit(e, "update", props.updateOrder);
+            props.handleSubmit(e, "add", props.newOrder);
         }
         setValidated(true);
       };
-    
 
     const Availability = (
         <>
@@ -47,11 +43,11 @@ function OrderUpdateForm (props: any) {
     const MenuItems = SelectMultiFieldGroup({
         name: "menu-items",
         label: "Menu Items", 
-        data: props.updateOrder, 
+        data: props.newOrder, 
         reference: props.menu, 
         values_obj: "quantity", 
         items_list: "menu_items",
-        setObj: props.setUpdateOrder
+        setObj: props.setNewOrder
     });
 
 
@@ -59,52 +55,44 @@ function OrderUpdateForm (props: any) {
             name: "quantity",
             label: "Quantity", 
             type: "number",
-            data: props.updateOrder, 
+            data: props.newOrder, 
             reference: props.menu, 
             values_obj: "quantity", 
             items_list: "menu_items",
-            setObj: props.setUpdateOrder,
+            setObj: props.setNewOrder,
             feedback: "Quantity must be no more than the availability."
         }, {
             min: 1,
             max: props.availabilities
     });
     
-
     return (
-        <Modal className={`orders-form form ${ props.theme }`} show={ props.updateItem } onHide={() => {
-                setDeleteAlert(false);
-                props.onHide();
-                setValidated(false); 
-            }}>
+        <Modal className={`orders-form form ${ props.theme }`} show={ props.addItem } onHide={() => {
+            props.onHide();
+            setValidated(false);  
+        }}>
+            
             <Modal.Header closeButton>
-                <Modal.Title>Update Order</Modal.Title>
+                <Modal.Title>New Order</Modal.Title>
             </Modal.Header>
+
             <Modal.Body>
                 <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)}>
-                    { 
-                        ReadFieldGroup({
-                            value: props.updateOrder.id, 
-                            name: "id", 
-                            label: "ID", 
-                            type: "text"
-                        }) 
-                    }
 
                     { 
                         EditFieldGroup({
-                            value: props.updateOrder.notes, 
+                            value: props.newOrder.notes, 
                             name: "notes", 
                             label: "Notes", 
                             type: "text", 
                             dataHandler: props.handleData,
-                            method: "update",
+                            method: "add",
                             feedback: "Max character length is 200."
                         }, {
                             maxLength: 200
                         }) 
                     }
-                    
+
                     <Container className="multi-input-container">
                         <Row className="headers">
                             <Col xs={6}>Menu Items</Col>
@@ -116,15 +104,15 @@ function OrderUpdateForm (props: any) {
                             ColumnsToRows([MenuItems, Quantity, Availability], {xs: [6, 3, 3]})   
                         }
                     </Container>
-                        
-                    { SubmitDelete(setDeleteAlert) }
+                    
+                    { Submit() }
 
                 </Form>
-
-                { deleteAlert && DeleteAlert(props.updateOrder, setDeleteAlert, props.handleSubmit) }
             </Modal.Body>
-        </ Modal>
+        </Modal>
+
     )
+
 };
 
-export default OrderUpdateForm;
+export default OrdersCreateForm;

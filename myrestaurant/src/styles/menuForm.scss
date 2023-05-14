@@ -1,117 +1,88 @@
 @use 'base.scss';
 
-.menu-form, .orders-form{
-    &.light-mode {
-        .modal-content, .form-text {
-            background-color: map-get(base.$themes, "white");
-            color: map-get(base.$themes, "navy");
-        }
+// .menu-form, .orders-form{
+//     &.light-mode {
+//         .modal-content, .form-text {
+//             background-color: map-get(base.$themes, "white");
+//             color: map-get(base.$themes, "navy");
+//         }
 
-        .form-text {
-            color: map-get(base.$themes, "grey");
-        }
-    }
+//         .form-text {
+//             color: map-get(base.$themes, "grey");
+//         }
+//     }
 
-    &.dark-mode {
+//     &.dark-mode {
 
-        .modal-content, .form-text {
-            background-color: map-get(base.$themes, "blue");
-            color: map-get(base.$themes, "off-white");
-        }
+//         .modal-content, .form-text {
+//             background-color: map-get(base.$themes, "blue");
+//             color: map-get(base.$themes, "off-white");
+//         }
         
-        .form-control[disabled] {
-            background-color: map-get(base.$themes, "beige");
-        }
-    }
+//         .form-control[disabled] {
+//             background-color: map-get(base.$themes, "beige");
+//         }
+//     }
 
-    .modal-dialog {
-        margin: 0;
-        width: 80%;
-        max-width: 100%;
-        left: 10%;
-    }
-
-
-    .form-select {
-        height: 100px;
-    }
-    
-    .form-label {
-        text-align: right;
-        font-weight: 500;
-        display: block;
-    }
-
-    @media(max-width: 576px) {
-        .form-label {
-            text-align: left;
-        }
-    }
-    
-    .row {
-        justify-content: center;
-    }
-
-    .form-control:valid, .form-check-input:valid {
-       color: map-get(base.$themes, "grey")
-    }
-
-    .field-group {
-        margin-top: 10px;
-    }
-    
-    .ingredients, .units, .menu-items, .quantity {
-    
-        .field{
-            height: 40px;
-            margin-bottom: 5px;
-        }
-    }
-    
-    .form-actions > button {
-        width: 100px;
-        height: 40px;
-        margin: 10px;
-        border: none;
-
-        &.submit {
-            background-color: map-get(base.$themes, "green");            
-        }
-
-        &.delete {
-            background-color: map-get(base.$themes, "red");            
-        }
+//     .multi-input {
+//         width: 80%;
+//         padding: 0;
+//         margin-top: 10px;
         
-    }
+//         .availability {
+//             text-align: right;
+//         }
 
-    .alert {
-        border: map-get(base.$themes, "navy") solid 1px;
-        background-color: map-get(base.$themes, "white");
-        color: map-get(base.$themes, "blue");
-        text-align: center;
-        position: absolute;
-        top: 150px;
-        left: 5%;
-        width: 90%;
+//     }
 
-        .alert-heading {
-            font-size: 20px;
-        }
+//     .modal-dialog {
+//         margin: 0;
+//         width: 70%;
+//         max-width: 100%;
+//         left: 15%;
+//     }
 
-        .alert-actions > button {
-            width: 90px;
-            height: 35px;
-            margin: 10px;
-            border: none;
 
-            &.cancel {
-                background-color: map-get(base.$themes, "blue");
-            }
+//     .form-select {
+//         height: 100px;
+//     }
+    
+//     .form-label {
+//         text-align: right;
+//         font-weight: 500;
+//         display: block;
+//     }
 
-            &.yes {
-                background-color: map-get(base.$themes, "green");
-            }
-        }
-    }
+//     @media(max-width: 576px) {
+//         .form-label {
+//             text-align: left;
+//         }
+//     }
 
-}
+//     @media(min-width: 992px) {
+//         .multi-input {
+//             width: 70%;
+//         }
+//     }
+     
+//     .row {
+//         justify-content: center;
+//     }
+
+//     .form-control:valid, .form-check-input:valid {
+//        color: map-get(base.$themes, "grey")
+//     }
+
+//     .field-group {
+//         margin-top: 10px;
+//     }
+    
+//     .ingredients, .units, .menu-items, .quantity {
+    
+//         .field{
+//             height: 40px;
+//             margin-bottom: 5px;
+//         }
+//     }
+
+// }

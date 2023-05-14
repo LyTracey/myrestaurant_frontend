@@ -1,4 +1,4 @@
-import { __assign, __awaiter, __generator, __spreadArray } from "tslib";
+import { __assign, __awaiter, __generator } from "tslib";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
@@ -8,14 +8,13 @@ import endpoints from '../../data/endpoints';
 import "../../styles/orders.scss";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
-import OrdersForm from './ordersForm';
-import OrderUpdateForm from './ordersUpdateForm';
+import OrdersCreateForm from './ordersCreateForm';
+import OrderUpdateForm from "./ordersUpdateForm";
 import slugify from 'slugify';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 function Orders(props) {
     var _this = this;
-    // Set states
     var ordersObj = {
         id: null,
         menu_items: [],
@@ -28,12 +27,18 @@ function Orders(props) {
         delivered_at: null,
         complete: false
     };
+    // Set states
     var _a = useState([]), orders = _a[0], setOrders = _a[1];
     var _b = useState({}), menu = _b[0], setMenu = _b[1];
     var _c = useState(ordersObj), newOrder = _c[0], setNewOrder = _c[1];
     var _d = useState(false), addItem = _d[0], setAddItem = _d[1];
     var _e = useState(ordersObj), updateOrder = _e[0], setUpdateOrder = _e[1];
     var _f = useState(false), updateItem = _f[0], setUpdateItem = _f[1];
+    // Set contexts
+    var theme = useContext(ThemeContext);
+    // Set variables
+    var entries = Object.entries(menu).map(function (item) { return [item[0], item[1].available_quantity]; });
+    var availabilities = Object.fromEntries(entries);
     // Fetch menu data from backend
     var getOrders = function () {
         props.dataAPI.get("".concat(endpoints["orders"])).then(function (response) {
@@ -61,29 +66,16 @@ function Orders(props) {
         getOrders();
         getMenu();
     }, []);
+    // Fetch menu when adding or updating forms
     useEffect(function () {
-        getMenu();
+        if (addItem || updateItem) {
+            getMenu();
+        }
     }, [addItem, updateItem]);
-    // Update newOrder | updateOrder state
+    // Update newOrder || updateOrder state
     var handleData = function (item, value, method) {
         var _a, _b;
         method === "add" ? setNewOrder(__assign(__assign({}, newOrder), (_a = {}, _a[item] = value, _a))) : setUpdateOrder(__assign(__assign({}, updateOrder), (_b = {}, _b[item] = value, _b)));
-    };
-    // Update newMenu units and ingredients state
-    var handleQuantity = function (item, checked, method, data, value) {
-        if (checked === void 0) { checked = false; }
-        var obj = __assign({}, data);
-        if (checked) {
-            obj.quantity[item] = value !== null && value !== void 0 ? value : "";
-            if (!obj.menu_items.includes(Number(item))) {
-                obj.menu_items = __spreadArray(__spreadArray([], obj.menu_items, true), [Number(item)], false);
-            }
-        }
-        else {
-            delete obj.quantity[item];
-            obj.menu_items = obj.menu_items.filter(function (id) { return id !== Number(item); });
-        }
-        method === "add" ? setNewOrder(obj) : setUpdateOrder(obj);
     };
     // Handle submit multipart form to backend
     var handleSubmit = function (e, method, data) { return __awaiter(_this, void 0, void 0, function () {
@@ -144,6 +136,7 @@ function Orders(props) {
             }
         });
     }); };
+    // Send PATCH request every time an order is prepared, delivered, or completed
     var handleCheck = function (e, id, field) {
         var _a;
         e.preventDefault();
@@ -155,18 +148,19 @@ function Orders(props) {
             console.log(error);
         });
     };
-    return (_jsxs(Container, __assign({ className: "orders ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Orders" }) })), _jsxs(Row, __assign({ xs: 2, className: 'actions' }, { children: [_jsx(Button, __assign({ className: "add", onClick: function () {
-                            setNewOrder(ordersObj);
+    return (_jsxs(Container, __assign({ className: "orders ".concat(theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Orders" }) })), _jsxs(Row, __assign({ xs: 2, className: 'actions' }, { children: [_jsx(Button, __assign({ className: "add", onClick: function () {
+                            setNewOrder(__assign({}, ordersObj));
                             setAddItem(!addItem);
-                        } }, { children: "Add Item +" })), _jsx(Button, __assign({ className: "archive", as: "a", href: "/orders/archive" }, { children: "Archive" }))] })), _jsx(OrdersForm, { addItem: addItem, onHide: function () { return setAddItem(false); }, handleData: handleData, handleQuantity: handleQuantity, handleSubmit: handleSubmit, newOrder: newOrder, menu: menu, theme: props.theme }), _jsxs(Table, __assign({ responsive: true }, { children: [_jsx("thead", { children: _jsxs("tr", __assign({ className: 'headers' }, { children: [_jsx("th", { children: "Order ID" }), _jsx("th", { children: "Menu Items" }), _jsx("th", { children: "Notes" }), _jsx("th", { children: "Ordered At" }), _jsx("th", { children: "Prepared" }), _jsx("th", { children: "Prepared At" }), _jsx("th", { children: "Delivered" }), _jsx("th", { children: "Delivered At" }), _jsx("th", { children: "Complete" })] })) }), _jsx("tbody", { children: orders.map(function (item, i) {
+                        } }, { children: "Add Item +" })), _jsx(Button, __assign({ className: "archive", as: "a", href: "/orders/archive" }, { children: "Archive" }))] })), _jsx(OrdersCreateForm, { addItem: addItem, onHide: function () { return setAddItem(false); }, newOrder: newOrder, setNewOrder: setNewOrder, menu: menu, handleSubmit: handleSubmit, handleData: handleData, theme: theme, availabilities: availabilities }), _jsx(OrderUpdateForm, { updateItem: updateItem, onHide: function () { setUpdateItem(false); }, updateOrder: updateOrder, setUpdateOrder: setUpdateOrder, menu: menu, handleSubmit: handleSubmit, handleData: handleData, theme: theme, availabilities: availabilities }), _jsxs(Table, __assign({ responsive: true }, { children: [_jsx("thead", { children: _jsxs("tr", __assign({ className: 'headers' }, { children: [_jsx("th", { children: "Order ID" }), _jsx("th", { children: "Menu Items" }), _jsx("th", { children: "Notes" }), _jsx("th", { children: "Ordered At" }), _jsx("th", { children: "Prepared" }), _jsx("th", { children: "Prepared At" }), _jsx("th", { children: "Delivered" }), _jsx("th", { children: "Delivered At" }), _jsx("th", { children: "Complete" })] })) }), _jsx("tbody", { children: orders.map(function (item, i) {
                             return (_jsxs("tr", __assign({ className: "rows", onClick: function () {
-                                    setUpdateOrder(__assign(__assign({}, ordersObj), item));
+                                    var _a;
+                                    setUpdateOrder((_a = __assign({}, item)) !== null && _a !== void 0 ? _a : __assign({}, ordersObj));
                                     setUpdateItem(!updateItem);
-                                } }, { children: [_jsx("td", __assign({ className: 'id' }, { children: item.id })), _jsx("td", __assign({ className: 'menu-items' }, { children: item.menu_items.map(function (item, i) {
+                                } }, { children: [_jsx("td", __assign({ className: 'id' }, { children: item.id })), _jsx("td", __assign({ className: 'menu-items' }, { children: item.menu_items.map(function (item2, i) {
                                             var _a;
-                                            return (_jsx("p", { children: (_a = menu[item]) === null || _a === void 0 ? void 0 : _a["title"] }, i));
+                                            return (_jsx("p", { children: (_a = menu[item2]) === null || _a === void 0 ? void 0 : _a["title"] }, i));
                                         }) })), _jsx("td", __assign({ className: 'notes' }, { children: item.notes })), _jsx("td", __assign({ className: 'ordered-at' }, { children: String(item.ordered_at) })), _jsx("td", __assign({ className: 'prepared-at-check' }, { children: _jsx(Form.Check, { onChange: function (e) { return handleCheck(e, item.id, "prepared"); }, onClick: function (e) { return e.stopPropagation(); }, checked: item.prepared }) })), _jsx("td", __assign({ className: 'prepared-at' }, { children: String(item.prepared_at) })), _jsx("td", __assign({ className: 'delivered-at-check' }, { children: _jsx(Form.Check, { onChange: function (e) { return handleCheck(e, item.id, "delivered"); }, onClick: function (e) { return e.stopPropagation(); }, checked: item.delivered }) })), _jsx("td", __assign({ className: 'delivered-at' }, { children: String(item.delivered_at) })), _jsx("td", __assign({ className: 'complete-check' }, { children: _jsx(Form.Check, { onChange: function (e) { return handleCheck(e, item.id, "complete"); }, onClick: function (e) { return e.stopPropagation(); }, checked: item.complete }) }))] }), i));
-                        }) })] })), _jsx(OrderUpdateForm, { updateItem: updateItem, onHide: function () { return setUpdateItem(false); }, handleData: handleData, handleQuantity: handleQuantity, updateOrder: updateOrder, menu: menu, handleSubmit: handleSubmit, theme: props.theme })] })));
+                        }) })] }))] })));
 }
 ;
 export default Orders;

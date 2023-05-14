@@ -18,7 +18,6 @@ import Logout from '../User/logout';
 import PrivateRoute from './privateRoute';
 import endpoints from '../../data/endpoints';
 import Profile from '../User/profile';
-import { useEffect } from 'react';
 // Create ThemeContext
 export var ThemeContext = createContext('light-mode');
 function App() {
@@ -35,7 +34,6 @@ function App() {
         baseURL: "".concat(endpoints["prefix_user"]),
         timeout: 1000
     });
-    useEffect(function () { return console.log(isStaff); });
     var dataAPI = axios.create({
         headers: {
             "Content-Type": 'multipart/form-data',

@@ -12,5 +12,8 @@ export interface OrdersObj {
 };
 
 export interface MenuItemsObj {
-   [index: number]: {[imdex: string]: string | number}
+   [key: number]: {
+        title: string,
+        available_quantity: number
+    }
 };

@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import MenuForm from './menuForm';
+import MenuCreateForm from './menuCreateForm';
 import MenuUpdateForm from './menuUpdateForm';
 import Button from 'react-bootstrap/Button';
 import endpoints from '../../data/endpoints';
@@ -28,7 +28,7 @@ interface MenuObj {
 };
 
 interface IngredientsObj {
-    [index: number]: string
+    [key: number]: any
 };
 
 
@@ -52,6 +52,7 @@ function Menu ( props: any ) {
     const [updateMenu, setUpdateMenu ] = useState<MenuObj>(menuObj);
     const [updateItem, setUpdateItem] = useState<boolean>(false);
 
+    const theme = useContext(ThemeContext);
     
     // Fetch menu data from backend
     const getMenu = () => {
@@ -69,10 +70,10 @@ function Menu ( props: any ) {
         props.dataAPI.get(
             `${endpoints["inventory"]}`
         ).then((response: AxiosResponse) => {
-            const filteredInventory: {[key: number]: string} = {};
+            const filteredInventory: IngredientsObj = {};
             // Return object of id as key and ingredient as value fields for each inventory item
             response.data.forEach((item: any) => (
-                filteredInventory[item.id] = item.ingredient
+                filteredInventory[item.id] = {title: item.ingredient}
             ));
             setIngredients(filteredInventory);
         }).catch((error: AxiosError) => {
@@ -85,26 +86,13 @@ function Menu ( props: any ) {
        getMenu();
        getIngredients();
     }, []);
+    
 
     // Update newMenu state
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
         method === "add" ? setNewMenu({...newMenu, [item]: value}) : setUpdateMenu({...updateMenu, [item]: value})
     };
-    
-    // Update newMenu units and ingredients state
-    const handleUnits = (item: string, checked: boolean=false, method: "add" | "update", data: MenuObj, value: number | "") => {
-        let obj = {...data};
-        if (checked) {
-            obj.units[item] = value;
-            if (!obj.ingredients.includes(Number(item))) {
-                obj.ingredients = [...obj.ingredients, Number(item)];
-            }
-        } else {
-            delete obj.units[item];
-            obj.ingredients = obj.ingredients.filter(id => id !== Number(item));
-        }
-        method === "add" ? setNewMenu(obj) : setUpdateMenu(obj);
-    };
+
 
     // Handle submit multipart form to backend
     const handleSubmit = async (e: any, method: "add" | "update" | "delete", data: MenuObj) => {
@@ -161,20 +149,23 @@ function Menu ( props: any ) {
             <Row className='title'>
                 <h2>Menu</h2>
             </Row>
-            
-            <Row className='actions'>
-                <Button onClick={() => setAddItem(!addItem)}>Add Item +</Button>
-            </Row>
 
-            <MenuForm
-                handleSubmit={handleSubmit}
-                handleData={handleData}
-                handleUnits={handleUnits}
-                ingredients={ingredients}
-                newMenu={newMenu}
-                addItem={addItem}
+            <Row xs={2} className='actions'>
+                <Button className="add" onClick={() => {
+                    setNewMenu({...menuObj});
+                    setAddItem(!addItem);
+                }}>Add Item +</Button>
+            </Row>
+            
+            <MenuCreateForm
+                theme={ theme }
+                addItem={ addItem }
                 onHide={() => setAddItem(false)}
-                theme={ props.theme }
+                handleSubmit={ handleSubmit }
+                newMenu={ newMenu }
+                setNewMenu={ setNewMenu }
+                handleData={handleData}
+                ingredients={ ingredients }
             />
 
             <Row xs={1} md={2} lg={3}>
@@ -190,7 +181,7 @@ function Menu ( props: any ) {
                                 <div className='card-details'>
                                     <Card.Text>{ item.description }</Card.Text>
                                     <Card.Text>{ `£ ${ item.price }` }</Card.Text>
-                                    <Card.Text>Ingredients: { item.ingredients.map(item => ingredients[item]).join(", ") }</Card.Text>
+                                    <Card.Text>Ingredients: { item.ingredients.map(item => ingredients[item]["title"] ).join(", ") }</Card.Text>
                                 </div>
                             </Card.Body>
                         </Col>
@@ -199,14 +190,14 @@ function Menu ( props: any ) {
             </Row>
 
             <MenuUpdateForm
+                onHide={ () => setUpdateItem(false) }
                 handleSubmit={ handleSubmit }
                 updateItem={ updateItem }
-                onHide={ () => setUpdateItem(false) }
                 handleData={ handleData }
-                handleUnits={ handleUnits }
+                theme={ theme }
                 ingredients={ ingredients } 
                 updateMenu={ updateMenu }
-                theme={ props.theme }
+                setUpdateMenu={ setUpdateMenu }
             />
         </Container>
     )

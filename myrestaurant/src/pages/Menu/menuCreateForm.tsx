@@ -3,21 +3,17 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import { 
-    ReadFieldGroup,
     EditFieldGroup, 
     SelectMultiFieldGroup, 
     InputMultiFieldGroup, 
-    SubmitDelete,
-    DeleteAlert, 
+    Submit, 
     ColumnsToRows } from '../Forms/formComponents';
 import Container from "react-bootstrap/Container";
 import "../../styles/form.scss";
 import { useState, FormEvent } from 'react';
 
-function MenuUpdateForm (props: any) {
+function MenuCreateForm (props: any) {
 
-    // Set states
-    const [deleteAlert, setDeleteAlert] = useState(false);
     const [validated, setValidated] = useState(false);
     
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -26,7 +22,7 @@ function MenuUpdateForm (props: any) {
             e.preventDefault();
             e.stopPropagation();
         } else {
-            props.handleSubmit(e, "update", props.updateMenu);
+            props.handleSubmit(e, "add", props.newMenu);
         }
         setValidated(true);
       };
@@ -34,22 +30,22 @@ function MenuUpdateForm (props: any) {
     const Ingredients = SelectMultiFieldGroup({
         name: "ingredients",
         label: "Ingredients", 
-        data: props.updateMenu, 
+        data: props.newMenu, 
         reference: props.ingredients, 
         values_obj: "units", 
         items_list: "ingredients",
-        setObj: props.setUpdateMenu
+        setObj: props.setNewMenu
     });
 
     const Units = InputMultiFieldGroup({
         name: "units",
         label: "Units", 
         type: "number",
-        data: props.updateMenu, 
+        data: props.newMenu, 
         reference: props.ingredients, 
         values_obj: "units", 
         items_list: "ingredients",
-        setObj: props.setupdateMenu,
+        setObj: props.setNewMenu,
         feedback: "Unit must be greater than 0.01."
     }, {
         min: 0.01,
@@ -58,35 +54,40 @@ function MenuUpdateForm (props: any) {
 });
 
     return (
-        <Modal className={`menu-form form ${ props.theme }`} show={ props.updateItem } onHide={() => {
-            setDeleteAlert(false);
+        <Modal className={`menu-form form ${ props.theme }`} show={ props.addItem } onHide={() => {
             props.onHide();
             setValidated(false); 
         }}>
             
             <Modal.Header closeButton>
-                <Modal.Title>Update Menu Item</Modal.Title>
+                <Modal.Title>New Menu Item</Modal.Title>
             </Modal.Header>
 
             <Modal.Body>
                 <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)} >
                     { 
-                        ReadFieldGroup({
-                            value: props.updateMenu.title, 
+                        EditFieldGroup({
+                            value: props.newMenu.title, 
                             name: "title", 
-                            label: "Title", 
-                            type: "text"
+                            label: "Title*", 
+                            type: "text", 
+                            dataHandler: props.handleData,
+                            method: "add",
+                            feedback: "Required. Max character length is 100."
+                        }, {
+                            maxLength: 100,
+                            required: true
                         }) 
                     }
 
                     { 
                         EditFieldGroup({
-                            value: props.updateMenu.description, 
+                            value: props.newMenu.description, 
                             name: "description", 
                             label: "Description", 
                             type: "text", 
                             dataHandler: props.handleData,
-                            method: "update",
+                            method: "add",
                             feedback: "Max character length is 300."
                         }, {
                             maxLength: 300,
@@ -95,12 +96,12 @@ function MenuUpdateForm (props: any) {
 
                     { 
                         EditFieldGroup({
-                            value: props.updateMenu.price, 
+                            value: props.newMenu.price, 
                             name: "price", 
                             label: "Price*", 
                             type: "number", 
                             dataHandler: props.handleData,
-                            method: "update",
+                            method: "add",
                             feedback: "Required. Max character length is 100."
                         }, {
                             maxLength: 100,
@@ -119,16 +120,12 @@ function MenuUpdateForm (props: any) {
                         { ColumnsToRows([Ingredients, Units], {xs: [6, 6]}) }
                     </Container>
 
-                    { SubmitDelete(setDeleteAlert) }
-
+                    { Submit() }
                 </Form>
-
-                { deleteAlert && DeleteAlert(props.updateMenu, setDeleteAlert, props.handleSubmit) }
-
             </Modal.Body>
         </Modal>
     )
 
 };
 
-export default MenuUpdateForm;
+export default MenuCreateForm;

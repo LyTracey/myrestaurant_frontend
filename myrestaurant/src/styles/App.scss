@@ -38,6 +38,11 @@ code {
   cursor: pointer;
 }
 
+.form-check-input:checked {
+  background-color: map-get(base.$themes, "green") !important;
+  border: none;
+}
+
 .title {
   text-align: center;
 }

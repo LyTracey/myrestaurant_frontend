@@ -7,16 +7,15 @@ import endpoints from '../../data/endpoints';
 import "../../styles/orders.scss";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
-import OrdersForm from './ordersForm';
-import OrderUpdateForm from './ordersUpdateForm';
+import OrdersCreateForm from './ordersCreateForm';
+import OrderUpdateForm from "./ordersUpdateForm";
 import slugify from 'slugify';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { OrdersObj, MenuItemsObj} from "./orderTypes";
 
 function Orders ( props: any ) {
-
-    // Set states
+    
     const ordersObj = {
         id: null,
         menu_items: [],
@@ -29,14 +28,22 @@ function Orders ( props: any ) {
         delivered_at: null,
         complete: false
     };
-
+    
+    
+    // Set states
     const [orders, setOrders] = useState<Array<OrdersObj>>([]);
     const [menu, setMenu] = useState<MenuItemsObj>({});
     const [newOrder, setNewOrder] = useState<OrdersObj>(ordersObj);
     const [addItem, setAddItem] = useState<boolean>(false);
     const [updateOrder, setUpdateOrder] = useState<OrdersObj>(ordersObj);
     const [updateItem, setUpdateItem] = useState<boolean>(false);
-        
+    
+    // Set contexts
+    const theme = useContext(ThemeContext);
+
+    // Set variables
+    const entries = Object.entries(menu).map((item: any) => [item[0], item[1].available_quantity]);
+    const availabilities = Object.fromEntries(entries);
 
     // Fetch menu data from backend
     const getOrders = () => {
@@ -66,35 +73,27 @@ function Orders ( props: any ) {
         });
     };
 
+
     // Fetch menu data and ingredients data on first load
     useEffect(() => {
         getOrders();
         getMenu();
     }, []);
 
+
+    // Fetch menu when adding or updating forms
     useEffect(() => {
-        getMenu()
+        if (addItem || updateItem) {
+            getMenu();
+        }
     }, [addItem, updateItem]);
 
-    // Update newOrder | updateOrder state
+
+    // Update newOrder || updateOrder state
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
         method === "add" ? setNewOrder({...newOrder, [item]: value}) : setUpdateOrder({...updateOrder, [item]: value})
     };
 
-    // Update newMenu units and ingredients state
-    const handleQuantity = (item: string, checked: boolean=false, method: "add" | "update", data: OrdersObj, value: number | "") => {
-        let obj = {...data};
-        if (checked) {
-            obj.quantity[item] = value ?? "";
-            if (!obj.menu_items.includes(Number(item))) {
-                obj.menu_items = [...obj.menu_items, Number(item)];
-            }
-        } else {
-            delete obj.quantity[item];
-            obj.menu_items = obj.menu_items.filter(id => id !== Number(item));
-        }
-        method === "add" ? setNewOrder(obj) : setUpdateOrder(obj);
-    };
 
     // Handle submit multipart form to backend
     const handleSubmit = async (e: any, method: "add" | "update" | "delete", data: OrdersObj) => {
@@ -143,6 +142,7 @@ function Orders ( props: any ) {
 
     };
 
+    // Send PATCH request every time an order is prepared, delivered, or completed
     const handleCheck = (e: any, id: number, field: string) => {
         e.preventDefault();
         const itemPath = `${endpoints["orders"]}${slugify(String(id))}/`;
@@ -156,28 +156,42 @@ function Orders ( props: any ) {
     };
 
     return (
-        <Container className={`orders ${ useContext(ThemeContext) }`}>
+        <Container className={`orders ${ theme }`}>
+
             <Row className='title'>
                 <h2>Orders</h2>
             </Row>
             
             <Row xs={2} className='actions'>
                 <Button className="add" onClick={() => {
-                    setNewOrder(ordersObj);
+                    setNewOrder({...ordersObj});
                     setAddItem(!addItem);
                 }}>Add Item +</Button>
                 <Button className="archive" as="a" href="/orders/archive">Archive</Button>
             </Row>
 
-            <OrdersForm 
+            <OrdersCreateForm 
                 addItem={addItem}
                 onHide={() => setAddItem(false)}
-                handleData={handleData}
-                handleQuantity={handleQuantity}
-                handleSubmit={handleSubmit}
-                newOrder={newOrder}
+                newOrder={ newOrder } 
+                setNewOrder={ setNewOrder }
                 menu={menu}
-                theme={ props.theme }
+                handleSubmit={ handleSubmit }
+                handleData={ handleData }
+                theme={ theme }
+                availabilities={ availabilities }
+            />
+
+            <OrderUpdateForm
+                updateItem={ updateItem }
+                onHide={() => {setUpdateItem(false)}}
+                updateOrder={ updateOrder }
+                setUpdateOrder={ setUpdateOrder }
+                menu={ menu } 
+                handleSubmit={ handleSubmit }
+                handleData={ handleData }
+                theme={ theme }
+                availabilities={ availabilities }
             />
 
             <Table responsive>
@@ -200,16 +214,16 @@ function Orders ( props: any ) {
                         orders.map((item, i) => {
                             return (
                                 <tr className="rows" onClick={() => {
-                                    setUpdateOrder({...ordersObj, ...item});
-                                    setUpdateItem(!updateItem);
-                                }} key={i}>
+                                        setUpdateOrder({...item} ?? {...ordersObj});
+                                        setUpdateItem(!updateItem);
+                                    }} key={i}>
                                     <td className='id' >{item.id}</td>
-                                    <td className='menu-items' >{item.menu_items.map((item, i) => {
+                                    <td className='menu-items' >{item.menu_items.map((item2, i) => {
                                         return (
-                                            <p key={i}>{menu[item]?.["title"]}</p>
-                                        )
-                                    }
-                                    )}</td>
+                                            <p key={i}>{menu[item2]?.["title"]}</p>
+                                            )
+                                        }
+                                        )}</td>
                                     <td className='notes' >{item.notes}</td>
                                     <td className='ordered-at' >{String(item.ordered_at)}</td>
                                     <td className='prepared-at-check' ><Form.Check onChange={(e) => handleCheck(e, item.id!, "prepared")} onClick={e => e.stopPropagation()} checked={ item.prepared }/></td>
@@ -218,23 +232,15 @@ function Orders ( props: any ) {
                                     <td className='delivered-at' >{String(item.delivered_at)}</td>
                                     <td className='complete-check'><Form.Check onChange={(e) => handleCheck(e, item.id!, "complete")} onClick={e => e.stopPropagation()} checked={ item.complete }/></td>
                                 </tr>
-                                )
+                            )
 
                         })
                     }
                 </tbody>
             </Table>
 
-            <OrderUpdateForm
-                updateItem={ updateItem }
-                onHide={ () => setUpdateItem(false) }
-                handleData={ handleData }
-                handleQuantity={ handleQuantity }
-                updateOrder={ updateOrder }
-                menu={ menu } 
-                handleSubmit={ handleSubmit }
-                theme={ props.theme }
-            />
+
+
 
         </Container>
     )

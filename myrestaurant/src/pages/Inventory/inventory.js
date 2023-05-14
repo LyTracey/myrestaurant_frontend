@@ -8,7 +8,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import placeholder from "../../images/placeholder-image.webp";
 import endpoints from "../../data/endpoints";
-import InventoryForm from "./inventoryForm";
+import InventoryCreateForm from "./inventoryCreateForm";
 import InventoryUpdateForm from "./inventoryUpdateForm";
 import slugify from "slugify";
 import "../../styles/inventory.scss";
@@ -30,6 +30,7 @@ function Inventory(props) {
     var _c = useState(false), updateItem = _c[0], setUpdateItem = _c[1];
     var _d = useState(inventoryObj), newInventory = _d[0], setNewInventory = _d[1];
     var _e = useState(inventoryObj), updateInventory = _e[0], setUpdateInventory = _e[1];
+    var theme = useContext(ThemeContext);
     // Get inventory
     var getInventory = function () {
         props.dataAPI.get("".concat(endpoints["inventory"])).then(function (response) {
@@ -42,7 +43,6 @@ function Inventory(props) {
     useEffect(function () {
         getInventory();
     }, []);
-    useEffect(function () { return console.log(updateInventory); });
     // Handle data
     var handleData = function (item, value, method) {
         var _a, _b;
@@ -88,6 +88,7 @@ function Inventory(props) {
                     _c.sent();
                     return [3 /*break*/, 8];
                 case 5: return [4 /*yield*/, props.dataAPI.patch(itemPath, {
+                        ingredient: updateInventory.ingredient,
                         quantity: updateInventory.quantity,
                         unit_price: updateInventory.unit_price,
                     }).then(function () {
@@ -106,12 +107,15 @@ function Inventory(props) {
             }
         });
     }); };
-    return (_jsxs(Container, __assign({ className: "inventory ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Inventory" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () { return setAddItem(!addItem); } }, { children: "Add Item +" })) })), _jsx(InventoryForm, { handleSubmit: handleSubmit, handleData: handleData, newInventory: newInventory, addItem: addItem, onHide: function () { return setAddItem(false); }, theme: props.theme }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: inventory.map(function (item, i) {
+    return (_jsxs(Container, __assign({ className: "inventory ".concat(theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Inventory" }) })), _jsx(Row, __assign({ className: 'actions' }, { children: _jsx(Button, __assign({ onClick: function () {
+                        setNewInventory(__assign({}, inventoryObj));
+                        setAddItem(!addItem);
+                    } }, { children: "Add Item +" })) })), _jsx(InventoryCreateForm, { handleSubmit: handleSubmit, handleData: handleData, newInventory: newInventory, addItem: addItem, onHide: function () { return setAddItem(false); }, theme: theme }), _jsx(InventoryUpdateForm, { handleSubmit: handleSubmit, updateItem: updateItem, onHide: function () { return setUpdateItem(false); }, handleData: handleData, updateInventory: updateInventory, theme: theme }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: inventory.map(function (item, i) {
                     var _a;
                     return (_jsx(Col, { children: _jsxs(Card.Body, __assign({ onClick: function () {
                                 setUpdateInventory(__assign(__assign({}, inventoryObj), item));
                                 setUpdateItem(!updateItem);
                             } }, { children: [_jsx(Card.Title, { children: item.ingredient }), _jsx(Card.Img, { src: (_a = item.image) !== null && _a !== void 0 ? _a : placeholder }), _jsxs("div", __assign({ className: 'card-details' }, { children: [_jsxs(Card.Text, { children: ["Available: ", item.quantity] }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.unit_price) })] }))] })) }, "inventory-item-".concat(i)));
-                }) })), _jsx(InventoryUpdateForm, { handleSubmit: handleSubmit, updateItem: updateItem, onHide: function () { return setUpdateItem(false); }, handleData: handleData, updateInventory: updateInventory, theme: props.theme })] })));
+                }) }))] })));
 }
 export default Inventory;

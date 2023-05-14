@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import placeholder from "../../images/placeholder-image.webp";
 import endpoints from "../../data/endpoints";
-import InventoryForm from "./inventoryForm";
+import InventoryCreateForm from "./inventoryCreateForm";
 import InventoryUpdateForm from "./inventoryUpdateForm";
 import slugify from "slugify";
 import "../../styles/inventory.scss";
@@ -41,6 +41,7 @@ function Inventory (props: any) {
     const [newInventory, setNewInventory] = useState<InventoryObj>(inventoryObj);
     const [updateInventory, setUpdateInventory] = useState<InventoryObj>(inventoryObj);
 
+    const theme = useContext(ThemeContext);
 
     // Get inventory
     const getInventory = () => {
@@ -57,8 +58,6 @@ function Inventory (props: any) {
     useEffect(() => {
         getInventory()
     }, []);
-
-    useEffect(() =>  console.log(updateInventory));
 
     // Handle data
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
@@ -95,6 +94,7 @@ function Inventory (props: any) {
                 break;
             case "update":
                 await props.dataAPI.patch(itemPath, {
+                    ingredient: updateInventory.ingredient,
                     quantity: updateInventory.quantity,
                     unit_price: updateInventory.unit_price,
                 }).then(() => {
@@ -111,22 +111,34 @@ function Inventory (props: any) {
     };
 
     return (
-        <Container className={`inventory ${ useContext(ThemeContext) }`}>
+        <Container className={`inventory ${ theme }`}>
             <Row className='title'>
                 <h2>Inventory</h2>
             </Row>
 
             <Row className='actions'>
-                <Button onClick={() => setAddItem(!addItem)}>Add Item +</Button>
+                <Button onClick={() => {
+                    setNewInventory({...inventoryObj});
+                    setAddItem(!addItem);
+            }}>Add Item +</Button>
             </Row>
 
-            <InventoryForm
-                handleSubmit={handleSubmit}
-                handleData={handleData}
-                newInventory={newInventory}
-                addItem={addItem}
+            <InventoryCreateForm
+                handleSubmit={ handleSubmit }
+                handleData={ handleData }
+                newInventory={ newInventory }
+                addItem={ addItem }
                 onHide={() => setAddItem(false)}
-                theme={ props.theme }
+                theme={ theme }
+            />
+
+            <InventoryUpdateForm
+                handleSubmit={ handleSubmit }
+                updateItem={ updateItem }
+                onHide={ () => setUpdateItem(false) }
+                handleData={ handleData }
+                updateInventory={ updateInventory }
+                theme={ theme }
             />
 
             <Row xs={1} md={2} lg={3}>
@@ -149,14 +161,6 @@ function Inventory (props: any) {
                 }) }
             </Row>
 
-            <InventoryUpdateForm
-                handleSubmit={ handleSubmit }
-                updateItem={ updateItem }
-                onHide={ () => setUpdateItem(false) }
-                handleData={ handleData }
-                updateInventory={ updateInventory }
-                theme={ props.theme }
-            />
         </Container>
 
     )
