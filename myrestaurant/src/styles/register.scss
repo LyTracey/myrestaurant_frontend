@@ -1,0 +1,33 @@
+@use "base.scss";
+
+.register.light-mode, .login.light-mode {
+    .register-link > .btn {
+        color: map-get(base.$themes , "grey");
+    }
+}
+
+.register, .login {
+    padding: 20px 10%;
+
+    .group {
+        margin-bottom: 15px;
+    }
+
+    .submit {
+        width: 100%;
+        justify-content: center;
+        margin: 0;
+
+        .submit-button {
+            @include base.button(map-get(base.$themes, "green"));
+        }
+    }
+
+    .register-link > .btn {
+        background-color: transparent;
+        border: none;
+        text-decoration: underline;
+    }
+
+
+}
