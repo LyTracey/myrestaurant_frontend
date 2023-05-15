@@ -16,9 +16,11 @@ import Logout from '../User/logout';
 import PrivateRoute from './privateRoute';
 import endpoints from '../../data/endpoints';
 import Profile from '../User/profile';
+import { useLocation } from 'react-router-dom';
 
 // Create ThemeContext
 export const ThemeContext = createContext('light-mode');
+export const PUBLIC = ["/menu"];
 
 function App() {
 
@@ -28,14 +30,15 @@ function App() {
     const [isStaff, setIsStaff] = useState(sessionStorage.getItem("isStaff") === "true" ? true : false);
     const navigate = useNavigate();
     const navigationRef = useRef(navigate);
+    const location = useLocation();
 
     // Create axios user and restaurant instances
     const userAPI = axios.create({
         baseURL: `${endpoints["prefix_user"]}`,
         timeout: 1000
     });
-    
 
+    
     const dataAPI = axios.create({
         headers: {
             "Content-Type": 'multipart/form-data',
@@ -46,8 +49,7 @@ function App() {
         formSerializer: { metaTokens: false, indexes: null }
     });
 
-
-
+    
     const checkTokens = async () => {
         if (sessionStorage.getItem("access")) {
             // Check if access token exsits
@@ -73,7 +75,9 @@ function App() {
         } else {
             sessionStorage.setItem("loggedIn", "false");
             setLoggedIn(false);
-            navigationRef.current("/login");
+            if (!PUBLIC.includes(location.pathname)) {
+                navigationRef.current("/login");
+            }
         }
     };
 
@@ -88,10 +92,10 @@ function App() {
     return (
         <div className={`App ${ theme }`}>
             <ThemeContext.Provider value={theme}>
-                <Navbar theme={ theme } setTheme={ setTheme } loggedIn={ loggedIn } isStaff={ isStaff } />
+                <Navbar theme={ theme } setTheme={ setTheme } loggedIn={ loggedIn } isStaff={ isStaff } location={ location }/>
                     <Routes>
                         <Route index element={ <Home /> } />
-                        <Route path="/menu/" element={ <Menu dataAPI={ dataAPI } /> } /> 
+                        <Route path="/menu/" element={ <Menu dataAPI={ dataAPI } isStaff={ isStaff }/> } /> 
                         <Route path="/login/" element={ <Login setLoggedIn={ setLoggedIn } setIsStaff={ setIsStaff } userAPI={ userAPI } />} />
                         <Route path="/logout/" element={ <Logout setLoggedIn={ setLoggedIn } setIsStaff={ setIsStaff } />} />
                         <Route path="/register/" element={ <Register userAPI={ userAPI } /> } />

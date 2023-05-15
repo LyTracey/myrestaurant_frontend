@@ -18,8 +18,10 @@ import Logout from '../User/logout';
 import PrivateRoute from './privateRoute';
 import endpoints from '../../data/endpoints';
 import Profile from '../User/profile';
+import { useLocation } from 'react-router-dom';
 // Create ThemeContext
 export var ThemeContext = createContext('light-mode');
+export var PUBLIC = ["/menu"];
 function App() {
     var _this = this;
     var _a;
@@ -29,6 +31,7 @@ function App() {
     var _d = useState(sessionStorage.getItem("isStaff") === "true" ? true : false), isStaff = _d[0], setIsStaff = _d[1];
     var navigate = useNavigate();
     var navigationRef = useRef(navigate);
+    var location = useLocation();
     // Create axios user and restaurant instances
     var userAPI = axios.create({
         baseURL: "".concat(endpoints["prefix_user"]),
@@ -79,7 +82,9 @@ function App() {
                 case 2:
                     sessionStorage.setItem("loggedIn", "false");
                     setLoggedIn(false);
-                    navigationRef.current("/login");
+                    if (!PUBLIC.includes(location.pathname)) {
+                        navigationRef.current("/login");
+                    }
                     _a.label = 3;
                 case 3: return [2 /*return*/];
             }
@@ -97,6 +102,6 @@ function App() {
     }); }, function (error) {
         return Promise.reject(error);
     });
-    return (_jsx("div", __assign({ className: "App ".concat(theme) }, { children: _jsxs(ThemeContext.Provider, __assign({ value: theme }, { children: [_jsx(Navbar, { theme: theme, setTheme: setTheme, loggedIn: loggedIn, isStaff: isStaff }), _jsxs(Routes, { children: [_jsx(Route, { index: true, element: _jsx(Home, {}) }), _jsx(Route, { path: "/menu/", element: _jsx(Menu, { dataAPI: dataAPI }) }), _jsx(Route, { path: "/login/", element: _jsx(Login, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff, userAPI: userAPI }) }), _jsx(Route, { path: "/logout/", element: _jsx(Logout, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff }) }), _jsx(Route, { path: "/register/", element: _jsx(Register, { userAPI: userAPI }) }), _jsxs(Route, __assign({ path: "/", element: _jsx(PrivateRoute, { loggedIn: loggedIn }) }, { children: [_jsx(Route, { path: "/profile/", element: _jsx(Profile, { isStaff: isStaff, userAPI: userAPI }) }), _jsx(Route, { path: "/dashboard/", element: _jsx(Dashboard, { dataAPI: dataAPI }) }), _jsx(Route, { path: "/inventory/", element: _jsx(Inventory, { dataAPI: dataAPI }) }), _jsx(Route, { path: "/orders/", element: _jsx(Orders, { dataAPI: dataAPI }) }), _jsx(Route, { path: "/orders/archive", element: _jsx(ArchivedOrders, { dataAPI: dataAPI }) })] }))] }), _jsx(Footer, {})] })) })));
+    return (_jsx("div", __assign({ className: "App ".concat(theme) }, { children: _jsxs(ThemeContext.Provider, __assign({ value: theme }, { children: [_jsx(Navbar, { theme: theme, setTheme: setTheme, loggedIn: loggedIn, isStaff: isStaff, location: location }), _jsxs(Routes, { children: [_jsx(Route, { index: true, element: _jsx(Home, {}) }), _jsx(Route, { path: "/menu/", element: _jsx(Menu, { dataAPI: dataAPI, isStaff: isStaff }) }), _jsx(Route, { path: "/login/", element: _jsx(Login, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff, userAPI: userAPI }) }), _jsx(Route, { path: "/logout/", element: _jsx(Logout, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff }) }), _jsx(Route, { path: "/register/", element: _jsx(Register, { userAPI: userAPI }) }), _jsxs(Route, __assign({ path: "/", element: _jsx(PrivateRoute, { loggedIn: loggedIn }) }, { children: [_jsx(Route, { path: "/profile/", element: _jsx(Profile, { isStaff: isStaff, userAPI: userAPI }) }), _jsx(Route, { path: "/dashboard/", element: _jsx(Dashboard, { dataAPI: dataAPI }) }), _jsx(Route, { path: "/inventory/", element: _jsx(Inventory, { dataAPI: dataAPI }) }), _jsx(Route, { path: "/orders/", element: _jsx(Orders, { dataAPI: dataAPI }) }), _jsx(Route, { path: "/orders/archive", element: _jsx(ArchivedOrders, { dataAPI: dataAPI }) })] }))] }), _jsx(Footer, {})] })) })));
 }
 export default App;

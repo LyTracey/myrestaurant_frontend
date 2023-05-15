@@ -1,14 +1,15 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { AxiosError } from 'axios';
 import endpoints from "../../data/endpoints";
 import { useState } from "react";
-import "../../styles/register.scss";
+import "../../styles/form.scss";
 import { Container } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
+import { errorFormatter } from "../../utils/formatter";
 
 interface User {
     username: string,
@@ -27,6 +28,8 @@ function Register (props: any) {
         password2: "",
         is_staff: false
     });
+    const [validated, setValidated] = useState(false);
+    const [APIFeedback, setAPIFeedback] = useState<Array<string>>([]);
 
     const navigate = useNavigate();
 
@@ -39,80 +42,102 @@ function Register (props: any) {
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
-        // Check if passwords match
-        if (newUser.password1 !== newUser.password2) {
-            return "Passwords do not match."
+
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.stopPropagation();
+        } else {
+            props.userAPI.post(
+                `${endpoints["register"]}`,
+                {
+                    username: newUser.username,
+                    password: newUser.password1,
+                    is_staff: newUser.is_staff
+                }
+            ).then(() => {
+                navigate("/");
+            }).catch((error: any) => {
+                setAPIFeedback(errorFormatter(error));
+            });
         }
-
-        // Post request to create new user
-        props.userAPI.post(
-            `${endpoints["register"]}`,
-            {
-                username: newUser.username,
-                password: newUser.password1,
-                is_staff: newUser.is_staff
-            }
-        ).then(() => {
-            navigate("/");
-        }).catch((error: AxiosError) => console.log(error));
-
-        return "User created."
+        setValidated(true);
 
     };
 
     return (
-        <Container className={`register ${ useContext(ThemeContext)}`} fluid>
+        <Container className={`register-form form ${ useContext(ThemeContext)}`}>
             <h2 className="title">Register</h2>
 
-            <Form className="form" onSubmit={e => handleSubmit(e)}>
-                <Form.Group className="group username">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control 
-                        type="text" 
-                        placeholder="Enter username"
-                        name="username"
-                        onChange={e => handleData(e.target.name, e.target.value)}
-                        required
-                    />
+            <ul className="error">
+                { APIFeedback.map((item, i) => <li key={i}>{ item }</li>) }
+            </ul>
+
+
+            <Form noValidate validated={ validated } className="form" onSubmit={e => handleSubmit(e)}>
+                
+                <Form.Group as={Row} xs={1} className="group username">
+                    <Form.Label className="left-label">Username*</Form.Label>
+                    <Col className="field">
+                        <Form.Control 
+                            type="text" 
+                            placeholder="Enter username"
+                            name="username"
+                            onChange={e => handleData(e.target.name, e.target.value)}
+                            required
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Please enter a username.
+                        </Form.Control.Feedback>
+                    </Col>
                 </Form.Group>
 
-                <Form.Group className="group password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type="password" 
-                        name="password1"
-                        placeholder="Create password"
-                        onChange={e => handleData(e.target.name, e.target.value)}
-                        required
-                    />
-
+                <Form.Group as={Row} xs={1} className="group password">
+                    <Form.Label className="left-label">Password*</Form.Label>
+                    <Col className="field">
+                        <Form.Control
+                            type="password" 
+                            name="password1"
+                            placeholder="Create password"
+                            onChange={e => handleData(e.target.name, e.target.value)}
+                            required
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Please enter a password.
+                        </Form.Control.Feedback>
+                    </Col>
                 </Form.Group>
                 
-                <Form.Group className="group password">
+                <Form.Group as={Row} xs={1} className="group password">
                     
-                    <Form.Label>Re-enter Password</Form.Label>
-                    <Form.Control 
-                        type="password"
-                        name="password2"
-                        pattern={newUser.password1}
-                        placeholder="Re-enter password"
-                        title="Passwords do not match."
-                        onChange={e => handleData(e.target.name, e.target.value)}
-                        required
-                    />
+                    <Form.Label className="left-label">Re-enter Password*</Form.Label>
+                    <Col className="field">
+                        <Form.Control 
+                            type="password"
+                            name="password2"
+                            pattern={ newUser.password1 }
+                            placeholder="Re-enter password"
+                            onChange={e => handleData(e.target.name, e.target.value)}
+                            required
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Please re-enter your password. Please ensure passwords match.
+                        </Form.Control.Feedback>
+                    </Col>
                 </Form.Group>
 
-                <Form.Group className="group is-staff">
-                    <Form.Check 
-                        type="checkbox" 
-                        label="Staff View"
-                        name="is_staff"
-                        onChange={e => handleData(e.target.name, e.target.value)}
-                    />
+                <Form.Group as={Row} xs={1} className="group is-staff">
+                    <Col>
+                        <Form.Check 
+                            type="checkbox" 
+                            label="Staff View"
+                            name="is_staff"
+                            onChange={e => handleData(e.target.name, e.target.value)}
+                        />
+                    </Col>
                 </Form.Group>
                 
-                <Row className="submit">
-                    <Button className="submit-button" type="submit">Submit</Button>
+                <Row className="form-actions">
+                    <Button className="submit" type="submit">Submit</Button>
                 </Row>
 
             </Form>

@@ -44,7 +44,7 @@
         border: none;
     }
 
-    .invalid-feedback {
+    .invalid-feedback, .error {
         color: map-get(base.$themes, "red");
         text-align: left;
     }
@@ -68,8 +68,16 @@
 
     // Labels
 
+    .title {
+        padding-top: 20px;
+    }
+
     .form-label, .headers {
         font-weight: 500;
+    }
+
+    .form-label.left-label {
+        text-align: left;
     }
 
     .form-label {
@@ -114,8 +122,15 @@
         &.delete {
             background-color: map-get(base.$themes, "red");            
         }
-    
+
     }
+
+    .register-link > .btn {
+        background-color: transparent;
+        border: none;
+        text-decoration: underline;
+    }
+
 
     // Multi-input
     .multi-input-container {

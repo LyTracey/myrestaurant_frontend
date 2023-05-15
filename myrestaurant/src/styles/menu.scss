@@ -42,10 +42,13 @@
             height: 60%;
             width: 90%;
         }
-        
 
     }
-
+    
+    .card-body.default-cursor {
+        cursor: default;
+    }
+    
     .actions {
         justify-content: center;
         .btn {

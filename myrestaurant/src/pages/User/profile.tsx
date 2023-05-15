@@ -39,7 +39,7 @@ function Profile(props: any) {
     return (
         <Container className={ `profile ${ theme }` }>
             <Row className="title">
-                <h2>My Account</h2>
+                <h2>My Profile</h2>
             </Row>
 
             <Row>

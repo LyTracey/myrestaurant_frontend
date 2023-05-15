@@ -37,7 +37,7 @@ function Menu(props) {
     var theme = useContext(ThemeContext);
     // Fetch menu data from backend
     var getMenu = function () {
-        props.dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
+        props.dataAPI.get(endpoints["menu"]).then(function (response) {
             setMenu(response.data);
         }).catch(function (error) {
             console.log(error);
@@ -125,15 +125,18 @@ function Menu(props) {
             }
         });
     }); };
-    return (_jsxs(Container, __assign({ className: "menu ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Menu" }) })), _jsx(Row, __assign({ xs: 2, className: 'actions' }, { children: _jsx(Button, __assign({ className: "add", onClick: function () {
-                        setNewMenu(__assign({}, menuObj));
-                        setAddItem(!addItem);
-                    } }, { children: "Add Item +" })) })), _jsx(MenuCreateForm, { theme: theme, addItem: addItem, onHide: function () { return setAddItem(false); }, handleSubmit: handleSubmit, newMenu: newMenu, setNewMenu: setNewMenu, handleData: handleData, ingredients: ingredients }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: menu.map(function (item, i) {
+    return (_jsxs(Container, __assign({ className: "menu ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Menu" }) })), props.isStaff &&
+                _jsx(Row, __assign({ xs: 2, className: 'actions' }, { children: _jsx(Button, __assign({ className: "add", onClick: function () {
+                            setNewMenu(__assign({}, menuObj));
+                            setAddItem(!addItem);
+                        } }, { children: "Add Item +" })) })), _jsx(MenuCreateForm, { theme: theme, addItem: addItem, onHide: function () { return setAddItem(false); }, handleSubmit: handleSubmit, newMenu: newMenu, setNewMenu: setNewMenu, handleData: handleData, ingredients: ingredients }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: menu.map(function (item, i) {
                     var _a;
                     return (_jsx(Col, { children: _jsxs(Card.Body, __assign({ onClick: function () {
-                                setUpdateMenu(__assign(__assign({}, menuObj), item));
-                                setUpdateItem(!updateItem);
-                            } }, { children: [_jsx(Card.Title, { children: item.title }), _jsx(Card.Img, { src: (_a = item.image) !== null && _a !== void 0 ? _a : placeholder }), _jsxs("div", __assign({ className: 'card-details' }, { children: [_jsx(Card.Text, { children: item.description }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.price) }), _jsxs(Card.Text, { children: ["Ingredients: ", item.ingredients.map(function (item) { return ingredients[item]["title"]; }).join(", ")] })] }))] })) }, "menu-item-".concat(i)));
+                                if (props.isStaff) {
+                                    setUpdateMenu(__assign(__assign({}, menuObj), item));
+                                    setUpdateItem(!updateItem);
+                                }
+                            }, className: !props.isStaff ? "default-cursor" : "" }, { children: [_jsx(Card.Title, { children: item.title }), _jsx(Card.Img, { src: (_a = item.image) !== null && _a !== void 0 ? _a : placeholder }), _jsxs("div", __assign({ className: 'card-details' }, { children: [_jsx(Card.Text, { children: item.description }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.price) }), _jsxs(Card.Text, { children: ["Ingredients: ", item.ingredients.map(function (item) { return ingredients[item]["title"]; }).join(", ")] })] }))] })) }, "menu-item-".concat(i)));
                 }) })), _jsx(MenuUpdateForm, { onHide: function () { return setUpdateItem(false); }, handleSubmit: handleSubmit, updateItem: updateItem, handleData: handleData, theme: theme, ingredients: ingredients, updateMenu: updateMenu, setUpdateMenu: setUpdateMenu })] })));
 }
 ;

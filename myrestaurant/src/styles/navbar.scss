@@ -5,9 +5,14 @@
     @include base.theme(base.$light-mode...);
     border-bottom: 1.5px solid map-get(base.$themes, "off-white");
 
-    .navbar-brand, .icon{
+    .navbar-brand, .icon, .nav-link{
         color: map-get(base.$themes, "light-grey");
         fill: map-get(base.$themes, "light-grey");
+    }
+
+    .active {
+        border-bottom: 2px solid map-get(base.$themes, "blue");
+        color: map-get(base.$themes, "blue");
     }
 }
 
@@ -16,9 +21,14 @@
     @include base.theme(base.$dark-mode...);
     border-bottom: 1.5px solid map-get(base.$themes, "blue");
 
-    .navbar-brand, .icon {
+    .navbar-brand, .icon, .nav-link{
         color: map-get(base.$themes, "beige");
         fill: map-get(base.$themes, "beige");
+    }
+
+    .active {
+        border-bottom: 2px solid map-get(base.$themes, "yellow");
+        color: map-get(base.$themes, "yellow");
     }
 
 }
@@ -28,6 +38,10 @@
     .container-fluid {
         padding-left: 5%;
         padding-right: 5%;
+    }
+
+    .navbar-nav {
+        width: 100%;
     }
 
     // Brand
@@ -64,7 +78,6 @@
     // Links
     .nav-link{
         padding: 4px;
-        border-radius: 3em;
         width: fit-content;
         margin: auto;
     }

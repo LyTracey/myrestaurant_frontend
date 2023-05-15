@@ -9,8 +9,8 @@ import { ReactComponent as MoonIcon } from '../../images/icons/moon.svg';
 import { ReactComponent as Collapse } from '../../images/icons/collapsed-navbar.svg';
 import Button from 'react-bootstrap/Button';
 import { ReactComponent as Logo } from "../../images/moonlight-logo.svg";
-import { useContext } from 'react';
 import { ThemeContext } from './App';
+import { useContext } from 'react';
 function Navigate(props) {
     var handleTheme = function () {
         if (localStorage.getItem("theme") === "light-mode") {
@@ -22,9 +22,9 @@ function Navigate(props) {
             localStorage.setItem("theme", "light-mode");
         }
     };
-    return (_jsx(Navbar, __assign({ className: useContext(ThemeContext), collapseOnSelect: true, sticky: "top", expand: "md" }, { children: _jsxs(Container, __assign({ fluid: true }, { children: [_jsxs(Navbar.Brand, __assign({ href: "/" }, { children: ["MOONLIGHT CAFE", _jsx(Logo, { className: "icon logo" })] })), _jsx(Navbar.Toggle, __assign({ "aria-controls": "responsive-navbar-nav" }, { children: _jsx(Collapse, { className: "icon" }) })), _jsxs(Navbar.Collapse, __assign({ role: "navigation" }, { children: [!props.isStaff && _jsx(Nav.Link, __assign({ href: "/" }, { children: "Home" })), _jsx(Nav.Link, __assign({ href: "/menu/" }, { children: "Menu" })), props.isStaff && _jsx(Nav.Link, __assign({ href: "/dashboard/" }, { children: "Dashboard" })), props.isStaff && _jsx(Nav.Link, __assign({ href: "/orders/" }, { children: "Orders" })), props.isStaff && _jsx(Nav.Link, __assign({ href: "/inventory/" }, { children: "Inventory" })), props.loggedIn && _jsx(Nav.Link, __assign({ href: "/profile/" }, { children: "Profile" })), props.loggedIn ?
-                            _jsx(Nav.Link, __assign({ href: "/logout/" }, { children: "Logout" }))
-                            : _jsx(Nav.Link, __assign({ href: "/login/" }, { children: "Login" })), _jsx(Button, __assign({ className: "".concat(props.theme, " theme-toggle"), onClick: function () { return handleTheme(); } }, { children: props.theme === "light-mode" ?
+    return (_jsx(Navbar, __assign({ className: useContext(ThemeContext), collapseOnSelect: true, sticky: "top", expand: "md" }, { children: _jsxs(Container, __assign({ fluid: true }, { children: [_jsxs(Navbar.Brand, __assign({ href: "/" }, { children: ["MOONLIGHT CAFE", _jsx(Logo, { className: "icon logo" })] })), _jsx(Navbar.Toggle, __assign({ "aria-controls": "responsive-navbar-nav" }, { children: _jsx(Collapse, { className: "icon" }) })), _jsxs(Navbar.Collapse, __assign({ role: "navigation" }, { children: [_jsxs(Nav, __assign({ activeKey: props.location.pathname }, { children: [!props.isStaff && _jsx(Nav.Link, __assign({ href: "/" }, { children: "Home" })), _jsx(Nav.Link, __assign({ href: "/menu" }, { children: "Menu" })), props.isStaff && _jsx(Nav.Link, __assign({ href: "/dashboard" }, { children: "Dashboard" })), props.isStaff && _jsx(Nav.Link, __assign({ href: "/orders" }, { children: "Orders" })), props.isStaff && _jsx(Nav.Link, __assign({ href: "/inventory" }, { children: "Inventory" })), props.loggedIn && _jsx(Nav.Link, __assign({ href: "/profile" }, { children: "Profile" })), props.loggedIn ?
+                                    _jsx(Nav.Link, __assign({ href: "/logout" }, { children: "Logout" }))
+                                    : _jsx(Nav.Link, __assign({ href: "/login" }, { children: "Login" }))] })), _jsx(Button, __assign({ className: "".concat(props.theme, " theme-toggle"), onClick: function () { return handleTheme(); } }, { children: props.theme === "light-mode" ?
                                 (_jsxs("div", { children: [_jsx(SunIcon, { className: "theme-icon light fade-in" }), _jsx(MoonIcon, { className: "theme-icon dark fade-out" })] })) :
                                 (_jsxs("div", { children: [_jsx(SunIcon, { className: "theme-icon light fade-out" }), _jsx(MoonIcon, { className: "theme-icon dark fade-in" })] })) }))] }))] })) })));
 }

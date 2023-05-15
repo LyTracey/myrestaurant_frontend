@@ -14,6 +14,7 @@ import { useState, FormEvent } from 'react';
 
 function MenuCreateForm (props: any) {
 
+    // Set states
     const [validated, setValidated] = useState(false);
     
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

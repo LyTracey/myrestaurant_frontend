@@ -7,8 +7,8 @@ import { ReactComponent as MoonIcon } from '../../images/icons/moon.svg';
 import { ReactComponent as Collapse } from '../../images/icons/collapsed-navbar.svg';
 import Button from 'react-bootstrap/Button';
 import { ReactComponent as Logo } from "../../images/moonlight-logo.svg";
-import { useContext } from 'react';
 import { ThemeContext } from './App';
+import { useContext } from 'react';
 
 function Navigate(props: any) {
 
@@ -31,21 +31,22 @@ function Navigate(props: any) {
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav"><Collapse className="icon" /></Navbar.Toggle>
                 <Navbar.Collapse role="navigation">
+                    <Nav activeKey={ props.location.pathname }>
+                        { !props.isStaff && <Nav.Link href="/">Home</Nav.Link> }
+                        
+                        <Nav.Link href="/menu">Menu</Nav.Link>
 
-                    { !props.isStaff && <Nav.Link href="/">Home</Nav.Link> }
-                    
-                    <Nav.Link href="/menu/">Menu</Nav.Link>
+                        { props.isStaff && <Nav.Link href="/dashboard">Dashboard</Nav.Link> }
+                        { props.isStaff && <Nav.Link href="/orders">Orders</Nav.Link> }
+                        { props.isStaff && <Nav.Link href="/inventory">Inventory</Nav.Link> }
+                        { props.loggedIn && <Nav.Link href="/profile">Profile</Nav.Link>}
+                        {
+                            props.loggedIn ? 
+                            <Nav.Link href="/logout">Logout</Nav.Link>
+                            : <Nav.Link href="/login">Login</Nav.Link>
+                        }
 
-                    { props.isStaff && <Nav.Link href="/dashboard/">Dashboard</Nav.Link> }
-                    { props.isStaff && <Nav.Link href="/orders/">Orders</Nav.Link> }
-                    { props.isStaff && <Nav.Link href="/inventory/">Inventory</Nav.Link> }
-                    { props.loggedIn && <Nav.Link href="/profile/">Profile</Nav.Link>}
-                    {
-                        props.loggedIn ? 
-                        <Nav.Link href="/logout/">Logout</Nav.Link>
-                        : <Nav.Link href="/login/">Login</Nav.Link>
-                    }
-
+                    </Nav>
                     <Button className={`${ props.theme } theme-toggle`} onClick={() => handleTheme() }>
                         {   
                             props.theme === "light-mode" ?
@@ -63,6 +64,7 @@ function Navigate(props: any) {
                                 )
                         }
                     </Button>
+
                 </Navbar.Collapse>
             </Container>
         </Navbar>

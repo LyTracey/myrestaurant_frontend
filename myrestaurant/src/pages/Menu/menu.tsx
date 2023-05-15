@@ -57,7 +57,7 @@ function Menu ( props: any ) {
     // Fetch menu data from backend
     const getMenu = () => {
         props.dataAPI.get(
-            `${endpoints["menu"]}`
+            endpoints["menu"]
         ).then((response: AxiosResponse) => {
             setMenu(response.data);
         }).catch((error: AxiosError) => {
@@ -83,8 +83,8 @@ function Menu ( props: any ) {
     
     // Fetch menu data and ingredients data on first load
     useEffect(() => {
-       getMenu();
-       getIngredients();
+        getMenu();
+        getIngredients();
     }, []);
     
 
@@ -92,7 +92,6 @@ function Menu ( props: any ) {
     const handleData = (item: string, value: string | number, method: "add" | "update") => {
         method === "add" ? setNewMenu({...newMenu, [item]: value}) : setUpdateMenu({...updateMenu, [item]: value})
     };
-
 
     // Handle submit multipart form to backend
     const handleSubmit = async (e: any, method: "add" | "update" | "delete", data: MenuObj) => {
@@ -150,13 +149,16 @@ function Menu ( props: any ) {
                 <h2>Menu</h2>
             </Row>
 
-            <Row xs={2} className='actions'>
-                <Button className="add" onClick={() => {
-                    setNewMenu({...menuObj});
-                    setAddItem(!addItem);
-                }}>Add Item +</Button>
-            </Row>
-            
+            {
+                props.isStaff &&
+                <Row xs={2} className='actions'>
+                    <Button className="add" onClick={() => {
+                        setNewMenu({...menuObj});
+                        setAddItem(!addItem);
+                    }}>Add Item +</Button>
+                </Row>
+            }
+
             <MenuCreateForm
                 theme={ theme }
                 addItem={ addItem }
@@ -173,9 +175,11 @@ function Menu ( props: any ) {
                     return (
                         <Col key={`menu-item-${i}`}>
                             <Card.Body onClick={() => {
-                                    setUpdateMenu({...menuObj, ...item});
-                                    setUpdateItem(!updateItem);
-                                }}>
+                                    if (props.isStaff) {
+                                        setUpdateMenu({...menuObj, ...item});
+                                        setUpdateItem(!updateItem);
+                                    }
+                                }} className={!props.isStaff ? "default-cursor" : ""}>
                                 <Card.Title>{ item.title }</Card.Title>
                                 <Card.Img src={ item.image ?? placeholder } />
                                 <div className='card-details'>

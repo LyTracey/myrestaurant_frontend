@@ -9,6 +9,7 @@ import Container from "react-bootstrap/Container";
 import "../../styles/form.scss";
 import { useState } from 'react';
 function MenuCreateForm(props) {
+    // Set states
     var _a = useState(false), validated = _a[0], setValidated = _a[1];
     var handleSubmit = function (e) {
         var form = e.currentTarget;
