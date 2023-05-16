@@ -11,6 +11,11 @@
 
 .profile {
 
+    // Table
+    tr {
+        height: 50px;
+    }
+
     .title {
         margin-top: 20px;
     }
@@ -34,6 +39,22 @@
 
     .profile-details {
         color: inherit;
+    }
+
+    // Inputs
+    .form-select {
+        background-color: inherit;
+        color: inherit;
+    }
+
+    // Validation
+    .error {
+        color: map-get(base.$themes, "red");
+        padding: 10px 10%;
+
+        ul {
+            margin: 0;
+        }
     }
 
 }

@@ -13,8 +13,9 @@ import slugify from 'slugify';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { OrdersObj, MenuItemsObj} from "./orderTypes";
+import { dataAPI } from '../Base/App';
 
-function Orders ( props: any ) {
+function Orders () {
     
     const ordersObj = {
         id: null,
@@ -47,7 +48,7 @@ function Orders ( props: any ) {
 
     // Fetch menu data from backend
     const getOrders = () => {
-        props.dataAPI.get(
+        dataAPI.get(
             `${endpoints["orders"]}`
         ).then((response: AxiosResponse) => {
             setOrders(response.data);
@@ -58,7 +59,7 @@ function Orders ( props: any ) {
     
     // Fetch ingredients from backend
     const getMenu = () => {
-        props.dataAPI.get(
+        dataAPI.get(
             `${endpoints["menu"]}`
         ).then((response: AxiosResponse) => {
             const filteredMenu: MenuItemsObj = {};
@@ -101,7 +102,7 @@ function Orders ( props: any ) {
         const itemPath = `${endpoints["orders"]}${slugify(String(data.id))}/`;
         switch (method) {
             case "delete":
-                await props.dataAPI.delete( itemPath,
+                await dataAPI.delete( itemPath,
                 ).then(() => {
                     console.log(`Successfully deleted order number ${data.id}`);
                     setUpdateItem(false);
@@ -111,7 +112,7 @@ function Orders ( props: any ) {
                 );
                 break;
             case "add":
-                await props.dataAPI.post(
+                await dataAPI.post(
                     `${endpoints["orders"]}`, {
                         notes: newOrder.notes,
                         "menu_items[]": newOrder.menu_items,
@@ -125,7 +126,7 @@ function Orders ( props: any ) {
                 });
                 break;
             case "update":
-                await props.dataAPI.patch(itemPath, {
+                await dataAPI.patch(itemPath, {
                     notes: updateOrder.notes,
                     "menu_items[]": updateOrder.menu_items,
                     "quantity{}": updateOrder.quantity
@@ -146,7 +147,7 @@ function Orders ( props: any ) {
     const handleCheck = (e: any, id: number, field: string) => {
         e.preventDefault();
         const itemPath = `${endpoints["orders"]}${slugify(String(id))}/`;
-        props.dataAPI.patch(itemPath, {
+        dataAPI.patch(itemPath, {
             [field]: e.target.checked
         }).then(() => getOrders())
         .catch((error: AxiosError) => {

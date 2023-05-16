@@ -11,7 +11,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
-function Dashboard(props) {
+import { dataAPI } from '../Base/App';
+function Dashboard() {
     // Set states
     var _a = useState({
         low_stock: [],
@@ -32,7 +33,7 @@ function Dashboard(props) {
     // API call to get statistics data
     var getStats = function (data) {
         if (data === void 0) { data = undefined; }
-        props.dataAPI.patch("".concat(endpoints["dashboard"]), __assign({}, data)).then(function (response) {
+        dataAPI.patch("".concat(endpoints["dashboard"]), __assign({}, data)).then(function (response) {
             setStatistics(__assign({}, response.data));
         }).catch(function (error) {
             console.log(error);
@@ -51,7 +52,7 @@ function Dashboard(props) {
     // Create cards
     var createAccordion = function (status, title, statistic, comment) {
         return (_jsx(Accordion, __assign({ className: "stats" }, { children: _jsxs(Accordion.Item, __assign({ eventKey: "0" }, { children: [_jsx(Accordion.Header, __assign({ className: status }, { children: _jsxs("div", { children: [_jsx("b", { children: title }), _jsx("br", {}), statistic.length] }) })), _jsx(Accordion.Body, { children: Array.isArray(statistic) ?
-                            (statistic.length != 0 ?
+                            (statistic.length !== 0 ?
                                 (statistic.map(function (item, i) {
                                     return _jsx("div", { children: item }, i);
                                 })) : comment) :

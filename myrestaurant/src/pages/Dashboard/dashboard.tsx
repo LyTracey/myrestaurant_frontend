@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
+import { dataAPI } from '../Base/App';
 
 interface StatisticsObj {
     [key: string]: number
@@ -29,7 +30,7 @@ interface DateRange {
 }
 
 
-function Dashboard (props: any) {
+function Dashboard () {
 
     // Set states
     const [statistics, setStatistics] = useState<Statistics>({
@@ -54,7 +55,7 @@ function Dashboard (props: any) {
 
     // API call to get statistics data
     const getStats = (data: DateRange | undefined = undefined) => {
-        props.dataAPI.patch(
+        dataAPI.patch(
             `${endpoints["dashboard"]}`,
             {...data}
         ).then((response: any) => {
@@ -93,7 +94,7 @@ function Dashboard (props: any) {
                     <Accordion.Body>
                         {   
                             Array.isArray(statistic) ? 
-                                (statistic.length != 0 ? 
+                                (statistic.length !== 0 ? 
                                     (statistic.map((item: string, i: number) => {
                                             return <div key={ i }>{ item }</div>
                                         })

@@ -125,14 +125,14 @@ function Menu(props) {
             }
         });
     }); };
-    return (_jsxs(Container, __assign({ className: "menu ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Menu" }) })), props.isStaff &&
+    return (_jsxs(Container, __assign({ className: "menu ".concat(useContext(ThemeContext)) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Menu" }) })), (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) &&
                 _jsx(Row, __assign({ xs: 2, className: 'actions' }, { children: _jsx(Button, __assign({ className: "add", onClick: function () {
                             setNewMenu(__assign({}, menuObj));
                             setAddItem(!addItem);
                         } }, { children: "Add Item +" })) })), _jsx(MenuCreateForm, { theme: theme, addItem: addItem, onHide: function () { return setAddItem(false); }, handleSubmit: handleSubmit, newMenu: newMenu, setNewMenu: setNewMenu, handleData: handleData, ingredients: ingredients }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: menu.map(function (item, i) {
                     var _a;
                     return (_jsx(Col, { children: _jsxs(Card.Body, __assign({ onClick: function () {
-                                if (props.isStaff) {
+                                if (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) {
                                     setUpdateMenu(__assign(__assign({}, menuObj), item));
                                     setUpdateItem(!updateItem);
                                 }

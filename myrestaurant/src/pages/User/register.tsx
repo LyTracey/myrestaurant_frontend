@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { errorFormatter } from "../../utils/formatter";
+import { userAPI } from "../Base/App";
 
 interface User {
     username: string,
@@ -19,7 +20,7 @@ interface User {
 };
 
 
-function Register (props: any) {
+function Register () {
 
     // Set states
     const [newUser, setNewUser] = useState<User>({
@@ -42,12 +43,15 @@ function Register (props: any) {
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
-
+        const passwordsMatch = (newUser.password1 === newUser.password2);
         const form = e.currentTarget;
-        if (form.checkValidity() === false) {
+        if (form.checkValidity() === false || !passwordsMatch) {
             e.stopPropagation();
+            if (!passwordsMatch) {
+                setAPIFeedback(["Please ensure passwords match."]);
+            }
         } else {
-            props.userAPI.post(
+            userAPI.post(
                 `${endpoints["register"]}`,
                 {
                     username: newUser.username,
@@ -57,6 +61,7 @@ function Register (props: any) {
             ).then(() => {
                 navigate("/");
             }).catch((error: any) => {
+                console.log(error);
                 setAPIFeedback(errorFormatter(error));
             });
         }
@@ -97,12 +102,13 @@ function Register (props: any) {
                         <Form.Control
                             type="password" 
                             name="password1"
+                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
                             placeholder="Create password"
-                            onChange={e => handleData(e.target.name, e.target.value)}
+                            onChange={e => { handleData(e.target.name, e.target.value) }}
                             required
                         />
                         <Form.Control.Feedback type="invalid">
-                            Please enter a password.
+                            Required. Must contain at least one number, one uppercase letter, one lowercase letter, and at least 6 or more characters.
                         </Form.Control.Feedback>
                     </Col>
                 </Form.Group>
@@ -114,14 +120,10 @@ function Register (props: any) {
                         <Form.Control 
                             type="password"
                             name="password2"
-                            pattern={ newUser.password1 }
                             placeholder="Re-enter password"
-                            onChange={e => handleData(e.target.name, e.target.value)}
+                            onChange={e => handleData(e.target.name, e.target.value) }
                             required
                         />
-                        <Form.Control.Feedback type="invalid">
-                            Please re-enter your password. Please ensure passwords match.
-                        </Form.Control.Feedback>
                     </Col>
                 </Form.Group>
 
@@ -138,6 +140,10 @@ function Register (props: any) {
                 
                 <Row className="form-actions">
                     <Button className="submit" type="submit">Submit</Button>
+                </Row>
+
+                <Row className="extra-link">
+                    <Button as="a" href="/login">Login</Button>
                 </Row>
 
             </Form>

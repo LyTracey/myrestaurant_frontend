@@ -13,6 +13,7 @@ import "../../styles/inventory.scss";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { AxiosResponse, AxiosError } from 'axios';
+import { dataAPI } from "../Base/App";
 
 
 interface InventoryObj {
@@ -24,7 +25,7 @@ interface InventoryObj {
     image?: string | null
 };
 
-function Inventory (props: any) {
+function Inventory () {
 
     // Set states
     const inventoryObj = {
@@ -45,7 +46,7 @@ function Inventory (props: any) {
 
     // Get inventory
     const getInventory = () => {
-        props.dataAPI.get(
+        dataAPI.get(
             `${endpoints["inventory"]}`
         ).then((response: AxiosResponse) => {
             setInventory(response.data);
@@ -56,7 +57,7 @@ function Inventory (props: any) {
 
     // Fetch inventory on load
     useEffect(() => {
-        getInventory()
+        getInventory();
     }, []);
 
     // Handle data
@@ -70,7 +71,7 @@ function Inventory (props: any) {
         const itemPath = `${endpoints["inventory"]}${slugify(String(data.id) ?? "")}/`;
         switch (method) {
             case "delete":
-                await props.dataAPI.delete( itemPath,
+                await dataAPI.delete( itemPath,
                 ).then(() => {
                     console.log(`Successfully deleted ${data.ingredient}`);
                     setUpdateItem(!updateItem);
@@ -80,7 +81,7 @@ function Inventory (props: any) {
                 );
                 break;
             case "add":
-                await props.dataAPI.post(
+                await dataAPI.post(
                     `${endpoints["inventory"]}`, {
                         ingredient: newInventory.ingredient,
                         quantity: newInventory.quantity,
@@ -93,7 +94,7 @@ function Inventory (props: any) {
                     });
                 break;
             case "update":
-                await props.dataAPI.patch(itemPath, {
+                await dataAPI.patch(itemPath, {
                     ingredient: updateInventory.ingredient,
                     quantity: updateInventory.quantity,
                     unit_price: updateInventory.unit_price,
@@ -105,7 +106,7 @@ function Inventory (props: any) {
                 })
                 break;
             default:
-                console.log("Unrecognised method");  
+                console.log("Unrecognised method");
         }  
 
     };

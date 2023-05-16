@@ -13,6 +13,7 @@ import slugify from 'slugify';
 import placeholder from "../../images/placeholder-image.webp";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
+import { dataAPI } from '../Base/App';
 
 interface MenuObj {
     [index: string]: any,
@@ -56,8 +57,8 @@ function Menu ( props: any ) {
     
     // Fetch menu data from backend
     const getMenu = () => {
-        props.dataAPI.get(
-            endpoints["menu"]
+        dataAPI.get(
+            `${endpoints["menu"]}`
         ).then((response: AxiosResponse) => {
             setMenu(response.data);
         }).catch((error: AxiosError) => {
@@ -67,7 +68,7 @@ function Menu ( props: any ) {
     
     // Fetch ingredients from backend
     const getIngredients = () => {
-        props.dataAPI.get(
+        dataAPI.get(
             `${endpoints["inventory"]}`
         ).then((response: AxiosResponse) => {
             const filteredInventory: IngredientsObj = {};
@@ -99,7 +100,7 @@ function Menu ( props: any ) {
         const itemPath = `${endpoints["menu"]}${slugify(data.title ?? "")}/`;
         switch (method) {
             case "delete":
-                await props.dataAPI.delete( itemPath,
+                await dataAPI.delete( itemPath,
                 ).then(() => {
                     console.log(`Successfully deleted ${data.title}`);
                     setUpdateItem(false);
@@ -109,7 +110,7 @@ function Menu ( props: any ) {
                 );
                 break;
             case "add":
-                await props.dataAPI.post(
+                await dataAPI.post(
                     `${endpoints["menu"]}`, {
                         title: newMenu.title,
                         description: newMenu.description,
@@ -125,7 +126,7 @@ function Menu ( props: any ) {
                 });
                 break;
             case "update":
-                props.dataAPI.patch(itemPath, {
+                dataAPI.patch(itemPath, {
                     description: updateMenu.description,
                     price: updateMenu.price,
                     "ingredients[]": updateMenu.ingredients,
@@ -150,7 +151,7 @@ function Menu ( props: any ) {
             </Row>
 
             {
-                props.isStaff &&
+                (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) &&
                 <Row xs={2} className='actions'>
                     <Button className="add" onClick={() => {
                         setNewMenu({...menuObj});
@@ -175,7 +176,7 @@ function Menu ( props: any ) {
                     return (
                         <Col key={`menu-item-${i}`}>
                             <Card.Body onClick={() => {
-                                    if (props.isStaff) {
+                                    if (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) {        // Only render update form if user isStaff and has a role of MANAGER | CHEF
                                         setUpdateMenu({...menuObj, ...item});
                                         setUpdateItem(!updateItem);
                                     }

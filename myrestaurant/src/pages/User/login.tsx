@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import "../../styles/form.scss";
 import { FormEvent } from "react";
 import { errorFormatter } from "../../utils/formatter";
+import { userAPI } from "../Base/App";
 
 export interface LoginUser {
     username: string,
@@ -44,7 +45,7 @@ function Login (props: any) {
             e.stopPropagation();
         } else {
             // Post request to get jwt token
-            props.userAPI.post(
+            userAPI.post(
                 `${endpoints["login"]}`,
                 {
                     username: login.username,
@@ -57,8 +58,11 @@ function Login (props: any) {
                 sessionStorage.setItem("isStaff", response.data.isStaff);
                 props.setIsStaff(response.data.isStaff);
                 sessionStorage.setItem("username", login.username);
+                props.setRole(response.data.role);
+                sessionStorage.setItem("role", response.data.role);
                 navigate("/profile");
             }).catch((error: any) => {
+                console.log(error);
                 setAPIFeedback(errorFormatter(error));
             });
         }
@@ -114,7 +118,7 @@ function Login (props: any) {
                 </Row>
             </Form>
 
-            <Row className="register-link">
+            <Row className="extra-link">
                 <Button as="a" href="/register">Register</Button>
             </Row>
         </Container>

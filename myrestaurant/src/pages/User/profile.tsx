@@ -7,42 +7,72 @@ import { ThemeContext } from "../Base/App";
 import Placeholder from "../../images/placeholder-image.webp";
 import { useEffect, useState } from "react";
 import endpoints from "../../data/endpoints";
-import { AxiosResponse, AxiosError } from "axios";
+import { AxiosResponse } from "axios";
 import "../../styles/profile.scss";
+import Form from "react-bootstrap/Form";
+import { errorFormatter } from "../../utils/formatter";
+import { userAPI } from "../Base/App";
 
 interface User {
     [key: string]: any,
     username: string,
-    is_staff: boolean | null,
+    is_staff: boolean,
     join_date?: string,
     role?: string
 }
 
-function Profile(props: any) {
+function Profile (props: any) {
 
     const theme = useContext(ThemeContext);
     const [user, setUser] = useState<User>({
         username: "",
-        is_staff: null
+        is_staff: false,
+        role: ""
     });
-
-
+    const [APIFeedback, setAPIFeedback] = useState<Array<string>>([]);
+    
     const getUser = () => {
-        props.userAPI.get(
+        userAPI.get(
             `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`
-        ).then((response: AxiosResponse) => setUser(response.data))
-        .catch((error: AxiosError) => console.log(error));
+            ).then((response: AxiosResponse) => {
+                const data = response.data;
+                setUser(data);
+                sessionStorage.setItem("isStaff", data.is_staff.toString());
+                props.setIsStaff(data.is_staff);
+                props.setRole(data.role);
+                sessionStorage.setItem("role", data.role!);
+            }).catch((error: any) => {
+                setAPIFeedback(errorFormatter(error));            
+            });
+        };
+        
+    useEffect(() => getUser(), []);
+    
+    const patchUser = (data: object) => {
+        userAPI.patch(
+            `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`,
+            data
+        ).then(() => {
+            getUser();    
+        }).catch((error: any) => setAPIFeedback(errorFormatter(error)));
     };
 
-    useEffect(() => getUser(), []);
 
+    
+    
     return (
         <Container className={ `profile ${ theme }` }>
             <Row className="title">
                 <h2>My Profile</h2>
             </Row>
 
-            <Row>
+            <Row className="error">
+                <ul>
+                    { APIFeedback.map((item, i) => <li key={i}>{ item }</li>) }
+                </ul>
+            </Row>
+
+            <Row xs={1} sm={2}>
                 <Col className="profile-image">
                     <img src={ Placeholder } />
 
@@ -58,18 +88,38 @@ function Profile(props: any) {
 
                             <tr>
                                 <td className="key">Staff</td>
-                                <td>{ String(user.is_staff) }</td>
+                                <td>
+                                    <Form.Check 
+                                        type="checkbox"
+                                        label="Staff View"
+                                        name="is_staff"
+                                        checked={ user.is_staff }
+                                        onChange={(e: any) => patchUser({is_staff: e.target.checked})}
+                                    />
+                                </td>
                             </tr>
                             
-                            <tr>
-                                <td className="key">Role</td>
-                                <td>{user.role ?? ""}</td>
-                            </tr>
+                            {   user.is_staff &&
+                                <tr>
+                                    <td className="key">Role</td>
+                                    <td>
+                                        <Form.Select name="role" value={ user.role } onChange={({target}) => patchUser({role: target.value.toUpperCase()})}>
+                                            <option></option>
+                                            <option>SALES</option>
+                                            <option>MANAGER</option>
+                                            <option>CHEF</option>
+                                        </Form.Select>
+                                    </td>
+                                </tr>
+                            }
 
-                            <tr>
-                                <td className="key">Date joined</td>
-                                <td>{user.join_date ?? ""}</td>
-                            </tr>
+                            {
+                                user.is_staff &&
+                                <tr>
+                                    <td className="key">Date joined</td>
+                                    <td>{user.join_date ?? ""}</td>
+                                </tr>
+                            }
 
                         </tbody>
                     </Table>
