@@ -2,10 +2,18 @@
 
 .profile.light-mode {
     @include base.theme(base.$light-mode...);
+
+    .icon {
+        fill: map-get(base.$themes, "blue");
+    }
 }
 
 .profile.dark-mode {
     @include base.theme(base.$dark-mode...);
+
+    .icon {
+        fill: map-get(base.$themes, "beige");
+    }
 }
 
 
@@ -28,12 +36,8 @@
         margin-top: 20px;
     }
 
-    .profile-image > img {
-        width: 250px;
-        height: 250px;
-    }
-
     .profile-image {
+        height: 150px;
         text-align: center;
     }
 

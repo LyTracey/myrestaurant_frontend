@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import placeholder from "../../images/placeholder-image.webp";
+import { ReactComponent as CoffeeBeans } from "../../images/icons/coffee-beans.svg";
 import endpoints from "../../data/endpoints";
 import InventoryCreateForm from "./inventoryCreateForm";
 import InventoryUpdateForm from "./inventoryUpdateForm";
@@ -14,8 +14,9 @@ import slugify from "slugify";
 import "../../styles/inventory.scss";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
+import { dataAPI } from "../Base/App";
 ;
-function Inventory(props) {
+function Inventory() {
     var _this = this;
     // Set states
     var inventoryObj = {
@@ -33,7 +34,7 @@ function Inventory(props) {
     var theme = useContext(ThemeContext);
     // Get inventory
     var getInventory = function () {
-        props.dataAPI.get("".concat(endpoints["inventory"])).then(function (response) {
+        dataAPI.get("".concat(endpoints["inventory"])).then(function (response) {
             setInventory(response.data);
         }).catch(function (error) {
             console.log(error);
@@ -64,7 +65,7 @@ function Inventory(props) {
                         case "update": return [3 /*break*/, 5];
                     }
                     return [3 /*break*/, 7];
-                case 1: return [4 /*yield*/, props.dataAPI.delete(itemPath).then(function () {
+                case 1: return [4 /*yield*/, dataAPI.delete(itemPath).then(function () {
                         console.log("Successfully deleted ".concat(data.ingredient));
                         setUpdateItem(!updateItem);
                         getInventory();
@@ -74,7 +75,7 @@ function Inventory(props) {
                 case 2:
                     _c.sent();
                     return [3 /*break*/, 8];
-                case 3: return [4 /*yield*/, props.dataAPI.post("".concat(endpoints["inventory"]), {
+                case 3: return [4 /*yield*/, dataAPI.post("".concat(endpoints["inventory"]), {
                         ingredient: newInventory.ingredient,
                         quantity: newInventory.quantity,
                         unit_price: newInventory.unit_price,
@@ -87,7 +88,7 @@ function Inventory(props) {
                 case 4:
                     _c.sent();
                     return [3 /*break*/, 8];
-                case 5: return [4 /*yield*/, props.dataAPI.patch(itemPath, {
+                case 5: return [4 /*yield*/, dataAPI.patch(itemPath, {
                         ingredient: updateInventory.ingredient,
                         quantity: updateInventory.quantity,
                         unit_price: updateInventory.unit_price,
@@ -111,11 +112,10 @@ function Inventory(props) {
                         setNewInventory(__assign({}, inventoryObj));
                         setAddItem(!addItem);
                     } }, { children: "Add Item +" })) })), _jsx(InventoryCreateForm, { handleSubmit: handleSubmit, handleData: handleData, newInventory: newInventory, addItem: addItem, onHide: function () { return setAddItem(false); }, theme: theme }), _jsx(InventoryUpdateForm, { handleSubmit: handleSubmit, updateItem: updateItem, onHide: function () { return setUpdateItem(false); }, handleData: handleData, updateInventory: updateInventory, theme: theme }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: inventory.map(function (item, i) {
-                    var _a;
                     return (_jsx(Col, { children: _jsxs(Card.Body, __assign({ onClick: function () {
                                 setUpdateInventory(__assign(__assign({}, inventoryObj), item));
                                 setUpdateItem(!updateItem);
-                            } }, { children: [_jsx(Card.Title, { children: item.ingredient }), _jsx(Card.Img, { src: (_a = item.image) !== null && _a !== void 0 ? _a : placeholder }), _jsxs("div", __assign({ className: 'card-details' }, { children: [_jsxs(Card.Text, { children: ["Available: ", item.quantity] }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.unit_price) })] }))] })) }, "inventory-item-".concat(i)));
+                            } }, { children: [_jsx(Card.Title, { children: item.ingredient }), _jsx(CoffeeBeans, { className: "icon" }), _jsxs("div", __assign({ className: 'card-details' }, { children: [_jsxs(Card.Text, { children: ["Available: ", item.quantity] }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.unit_price) })] }))] })) }, "inventory-item-".concat(i)));
                 }) }))] })));
 }
 export default Inventory;

@@ -7,6 +7,10 @@
         @include base.card(base.$light-mode-card...);
     }
 
+    .icon {
+        fill: map-get(base.$themes, "blue");
+    }
+
 
 }
 
@@ -17,6 +21,9 @@
         @include base.card(base.$dark-mode-card...);
     }
 
+    .icon {
+        fill: map-get(base.$themes, "beige");
+    }
 }
 
 .inventory {
@@ -39,7 +46,7 @@
             margin-bottom: 0;
         }
 
-        .card-img {
+        .icon {
             height: 65%;
             width: 90%;
         }

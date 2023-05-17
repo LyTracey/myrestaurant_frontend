@@ -13,6 +13,7 @@ function Logout(props) {
         sessionStorage.removeItem("isStaff");
         props.setIsStaff(false);
         sessionStorage.removeItem("username");
+        sessionStorage.removeItem("role");
     };
     useEffect(function () {
         logout();

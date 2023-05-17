@@ -12,8 +12,9 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { errorFormatter } from "../../utils/formatter";
+import { userAPI } from "../Base/App";
 ;
-function Register(props) {
+function Register() {
     // Set states
     var _a = useState({
         username: "",
@@ -41,7 +42,7 @@ function Register(props) {
             }
         }
         else {
-            props.userAPI.post("".concat(endpoints["register"]), {
+            userAPI.post("".concat(endpoints["register"]), {
                 username: newUser.username,
                 password: newUser.password1,
                 is_staff: newUser.is_staff

@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 import endpoints from '../../data/endpoints';
 import "../../styles/menu.scss";
 import slugify from 'slugify';
-import placeholder from "../../images/placeholder-image.webp";
+import {ReactComponent as CoffeeCup} from "../../images/icons/coffee-cup.svg";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { dataAPI } from '../Base/App';
@@ -182,7 +182,7 @@ function Menu ( props: any ) {
                                     }
                                 }} className={!props.isStaff ? "default-cursor" : ""}>
                                 <Card.Title>{ item.title }</Card.Title>
-                                <Card.Img src={ item.image ?? placeholder } />
+                                <CoffeeCup className="icon" />
                                 <div className='card-details'>
                                     <Card.Text>{ item.description }</Card.Text>
                                     <Card.Text>{ `£ ${ item.price }` }</Card.Text>

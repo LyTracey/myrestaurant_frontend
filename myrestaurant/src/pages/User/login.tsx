@@ -60,10 +60,13 @@ function Login (props: any) {
                 sessionStorage.setItem("username", login.username);
                 props.setRole(response.data.role);
                 sessionStorage.setItem("role", response.data.role);
-                navigate("/profile");
             }).catch((error: any) => {
                 console.log(error);
                 setAPIFeedback(errorFormatter(error));
+            }).finally(() => {
+                if (sessionStorage.getItem("loggedIn")) {
+                    navigate("/profile");
+                }
             });
         }
         setValidated(true);

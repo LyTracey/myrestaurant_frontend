@@ -12,6 +12,7 @@ import { ThemeContext } from '../Base/App';
 import { useNavigate } from 'react-router-dom';
 import "../../styles/form.scss";
 import { errorFormatter } from "../../utils/formatter";
+import { userAPI } from "../Base/App";
 ;
 function Login(props) {
     // Set states
@@ -37,7 +38,7 @@ function Login(props) {
         }
         else {
             // Post request to get jwt token
-            props.userAPI.post("".concat(endpoints["login"]), {
+            userAPI.post("".concat(endpoints["login"]), {
                 username: login.username,
                 password: login.password,
             }).then(function (response) {
@@ -49,10 +50,13 @@ function Login(props) {
                 sessionStorage.setItem("username", login.username);
                 props.setRole(response.data.role);
                 sessionStorage.setItem("role", response.data.role);
-                navigate("/profile");
             }).catch(function (error) {
                 console.log(error);
                 setAPIFeedback(errorFormatter(error));
+            }).finally(function () {
+                if (sessionStorage.getItem("loggedIn")) {
+                    navigate("/profile");
+                }
             });
         }
         setValidated(true);

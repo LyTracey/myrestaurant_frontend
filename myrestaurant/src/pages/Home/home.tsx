@@ -3,8 +3,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import HomeImageLight from "../../images/home-image-light.png";
 import HomeImageDark from "../../images/home-image-dark.png";
-import HomeBackgroundDark from "../../images/home-background-dark.png";
 import HomeBackgroundLight from "../../images/home-background-light.png";
+import HomeBackgroundDark from "../../images/home-background-dark.png";
 import "../../styles/home.scss";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
@@ -16,19 +16,20 @@ function Home () {
     return (
         <Container className={`home ${theme}`}>
             <Row className="home-screen">
-                <img className="home-background" src={ theme === "light-mode" ? HomeBackgroundLight : HomeBackgroundDark }></img>
+                <div className="gradient"></div>
                 <img className="home-image" src={ theme === "light-mode" ? HomeImageLight : HomeImageDark }></img>
+                <img className="home-background" src={ theme === "light-mode" ? HomeBackgroundLight : HomeBackgroundDark }></img>
             </Row>
 
             
             <Container className="text-block">
                 <Row>
                     <Col className="text greeting">
+                        <h3>Welcome!</h3>
                         <p>
-                            Hi there!<br/>
                             <br/>
-                            This is a website for a fictitious cafe built to put into practice my full-stack development skills. As a foodie, I chose a cafe as a real-world scenario to develop my use cases around.
-                            Please feel free to explore the site and its functionalities.<br/>
+                            This is a website for a fictitious cafe built to put into practice my full-stack development skills. I chose a cafe as a real-world scenario to develop my use cases around.
+                            Please feel free to explore the site and its functionalities. Some <br/>
                             <br/>
                             - Tracey
                         </p>

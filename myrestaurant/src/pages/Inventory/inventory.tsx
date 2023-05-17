@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import placeholder from "../../images/placeholder-image.webp";
+import {ReactComponent as CoffeeBeans} from "../../images/icons/coffee-beans.svg";
 import endpoints from "../../data/endpoints";
 import InventoryCreateForm from "./inventoryCreateForm";
 import InventoryUpdateForm from "./inventoryUpdateForm";
@@ -151,7 +151,7 @@ function Inventory () {
                                     setUpdateItem(!updateItem);
                                 }}>
                                 <Card.Title>{ item.ingredient }</Card.Title>
-                                <Card.Img src={ item.image ?? placeholder } />
+                                <CoffeeBeans className="icon"/>
                                 <div className='card-details'>
                                     <Card.Text>Available: { item.quantity }</Card.Text>
                                     <Card.Text>{ `£ ${ item.unit_price }` }</Card.Text>

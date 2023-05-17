@@ -11,9 +11,10 @@ import Button from 'react-bootstrap/Button';
 import endpoints from '../../data/endpoints';
 import "../../styles/menu.scss";
 import slugify from 'slugify';
-import placeholder from "../../images/placeholder-image.webp";
+import { ReactComponent as CoffeeCup } from "../../images/icons/coffee-cup.svg";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
+import { dataAPI } from '../Base/App';
 ;
 ;
 function Menu(props) {
@@ -37,7 +38,7 @@ function Menu(props) {
     var theme = useContext(ThemeContext);
     // Fetch menu data from backend
     var getMenu = function () {
-        props.dataAPI.get(endpoints["menu"]).then(function (response) {
+        dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
             setMenu(response.data);
         }).catch(function (error) {
             console.log(error);
@@ -45,7 +46,7 @@ function Menu(props) {
     };
     // Fetch ingredients from backend
     var getIngredients = function () {
-        props.dataAPI.get("".concat(endpoints["inventory"])).then(function (response) {
+        dataAPI.get("".concat(endpoints["inventory"])).then(function (response) {
             var filteredInventory = {};
             // Return object of id as key and ingredient as value fields for each inventory item
             response.data.forEach(function (item) { return (filteredInventory[item.id] = { title: item.ingredient }); });
@@ -80,7 +81,7 @@ function Menu(props) {
                         case "update": return [3 /*break*/, 5];
                     }
                     return [3 /*break*/, 6];
-                case 1: return [4 /*yield*/, props.dataAPI.delete(itemPath).then(function () {
+                case 1: return [4 /*yield*/, dataAPI.delete(itemPath).then(function () {
                         console.log("Successfully deleted ".concat(data.title));
                         setUpdateItem(false);
                         getMenu();
@@ -90,7 +91,7 @@ function Menu(props) {
                 case 2:
                     _c.sent();
                     return [3 /*break*/, 7];
-                case 3: return [4 /*yield*/, props.dataAPI.post("".concat(endpoints["menu"]), {
+                case 3: return [4 /*yield*/, dataAPI.post("".concat(endpoints["menu"]), {
                         title: newMenu.title,
                         description: newMenu.description,
                         price: newMenu.price,
@@ -106,7 +107,7 @@ function Menu(props) {
                     _c.sent();
                     return [3 /*break*/, 7];
                 case 5:
-                    props.dataAPI.patch(itemPath, {
+                    dataAPI.patch(itemPath, {
                         description: updateMenu.description,
                         price: updateMenu.price,
                         "ingredients[]": updateMenu.ingredients,
@@ -130,13 +131,12 @@ function Menu(props) {
                             setNewMenu(__assign({}, menuObj));
                             setAddItem(!addItem);
                         } }, { children: "Add Item +" })) })), _jsx(MenuCreateForm, { theme: theme, addItem: addItem, onHide: function () { return setAddItem(false); }, handleSubmit: handleSubmit, newMenu: newMenu, setNewMenu: setNewMenu, handleData: handleData, ingredients: ingredients }), _jsx(Row, __assign({ xs: 1, md: 2, lg: 3 }, { children: menu.map(function (item, i) {
-                    var _a;
                     return (_jsx(Col, { children: _jsxs(Card.Body, __assign({ onClick: function () {
-                                if (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) {
+                                if (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) { // Only render update form if user isStaff and has a role of MANAGER | CHEF
                                     setUpdateMenu(__assign(__assign({}, menuObj), item));
                                     setUpdateItem(!updateItem);
                                 }
-                            }, className: !props.isStaff ? "default-cursor" : "" }, { children: [_jsx(Card.Title, { children: item.title }), _jsx(Card.Img, { src: (_a = item.image) !== null && _a !== void 0 ? _a : placeholder }), _jsxs("div", __assign({ className: 'card-details' }, { children: [_jsx(Card.Text, { children: item.description }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.price) }), _jsxs(Card.Text, { children: ["Ingredients: ", item.ingredients.map(function (item) { return ingredients[item]["title"]; }).join(", ")] })] }))] })) }, "menu-item-".concat(i)));
+                            }, className: !props.isStaff ? "default-cursor" : "" }, { children: [_jsx(Card.Title, { children: item.title }), _jsx(CoffeeCup, { className: "icon" }), _jsxs("div", __assign({ className: 'card-details' }, { children: [_jsx(Card.Text, { children: item.description }), _jsx(Card.Text, { children: "\u00A3 ".concat(item.price) }), _jsxs(Card.Text, { children: ["Ingredients: ", item.ingredients.map(function (item) { return ingredients[item]["title"]; }).join(", ")] })] }))] })) }, "menu-item-".concat(i)));
                 }) })), _jsx(MenuUpdateForm, { onHide: function () { return setUpdateItem(false); }, handleSubmit: handleSubmit, updateItem: updateItem, handleData: handleData, theme: theme, ingredients: ingredients, updateMenu: updateMenu, setUpdateMenu: setUpdateMenu })] })));
 }
 ;

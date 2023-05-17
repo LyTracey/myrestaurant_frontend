@@ -10,14 +10,15 @@ import Table from 'react-bootstrap/Table';
 import slugify from 'slugify';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
-function ArchivedOrders(props) {
+import { dataAPI } from '../Base/App';
+function ArchivedOrders() {
     var _this = this;
     // Set states
     var _a = useState([]), orders = _a[0], setOrders = _a[1];
     var _b = useState({}), menu = _b[0], setMenu = _b[1];
     // Fetch menu data from backend
     var getOrders = function () {
-        props.dataAPI.get("".concat(endpoints["archivedOrders"])).then(function (response) {
+        dataAPI.get("".concat(endpoints["archivedOrders"])).then(function (response) {
             setOrders(response.data);
         }).catch(function (error) {
             console.log(error);
@@ -25,7 +26,7 @@ function ArchivedOrders(props) {
     };
     // Fetch ingredients from backend
     var getMenu = function () {
-        props.dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
+        dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
             var filteredMenu = {};
             // Return object of id as key and ingredient as value fields for each inventory item 
             response.data.forEach(function (item) {
@@ -49,7 +50,7 @@ function ArchivedOrders(props) {
         return __generator(this, function (_a) {
             e.preventDefault();
             itemPath = "".concat(endpoints["orders"]).concat(slugify(String(id)), "/");
-            props.DataAPI.patch(itemPath, {
+            dataAPI.patch(itemPath, {
                 complete: false
             }).then(function () {
                 getOrders();

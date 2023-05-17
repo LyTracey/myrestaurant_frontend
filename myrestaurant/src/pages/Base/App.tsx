@@ -27,14 +27,10 @@ export const ThemeContext = createContext('light-mode');
 const PUBLIC = ["/menu"];
 
 // Create axios user and restaurant instances
-const HEADERS = sessionStorage.getItem("access") ? 
-{    
+const HEADERS = {    
     "Content-Type": 'multipart/form-data',
     "Authorization": `Bearer ${sessionStorage.getItem("access")}`
-} :
-{
-    "Content-Type": 'multipart/form-data'
-}
+};
 const FORMSERIALIZER = { metaTokens: false, indexes: null };
 
 export const userAPI = axios.create({

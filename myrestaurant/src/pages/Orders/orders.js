@@ -13,7 +13,8 @@ import OrderUpdateForm from "./ordersUpdateForm";
 import slugify from 'slugify';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
-function Orders(props) {
+import { dataAPI } from '../Base/App';
+function Orders() {
     var _this = this;
     var ordersObj = {
         id: null,
@@ -41,7 +42,7 @@ function Orders(props) {
     var availabilities = Object.fromEntries(entries);
     // Fetch menu data from backend
     var getOrders = function () {
-        props.dataAPI.get("".concat(endpoints["orders"])).then(function (response) {
+        dataAPI.get("".concat(endpoints["orders"])).then(function (response) {
             setOrders(response.data);
         }).catch(function (error) {
             console.log(error);
@@ -49,7 +50,7 @@ function Orders(props) {
     };
     // Fetch ingredients from backend
     var getMenu = function () {
-        props.dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
+        dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
             var filteredMenu = {};
             response.data.forEach(function (item) {
                 if (item.in_stock) {
@@ -92,7 +93,7 @@ function Orders(props) {
                         case "update": return [3 /*break*/, 5];
                     }
                     return [3 /*break*/, 7];
-                case 1: return [4 /*yield*/, props.dataAPI.delete(itemPath).then(function () {
+                case 1: return [4 /*yield*/, dataAPI.delete(itemPath).then(function () {
                         console.log("Successfully deleted order number ".concat(data.id));
                         setUpdateItem(false);
                         getOrders();
@@ -102,7 +103,7 @@ function Orders(props) {
                 case 2:
                     _b.sent();
                     return [3 /*break*/, 8];
-                case 3: return [4 /*yield*/, props.dataAPI.post("".concat(endpoints["orders"]), {
+                case 3: return [4 /*yield*/, dataAPI.post("".concat(endpoints["orders"]), {
                         notes: newOrder.notes,
                         "menu_items[]": newOrder.menu_items,
                         "quantity{}": newOrder.quantity
@@ -116,7 +117,7 @@ function Orders(props) {
                 case 4:
                     _b.sent();
                     return [3 /*break*/, 8];
-                case 5: return [4 /*yield*/, props.dataAPI.patch(itemPath, {
+                case 5: return [4 /*yield*/, dataAPI.patch(itemPath, {
                         notes: updateOrder.notes,
                         "menu_items[]": updateOrder.menu_items,
                         "quantity{}": updateOrder.quantity
@@ -141,7 +142,7 @@ function Orders(props) {
         var _a;
         e.preventDefault();
         var itemPath = "".concat(endpoints["orders"]).concat(slugify(String(id)), "/");
-        props.dataAPI.patch(itemPath, (_a = {},
+        dataAPI.patch(itemPath, (_a = {},
             _a[field] = e.target.checked,
             _a)).then(function () { return getOrders(); })
             .catch(function (error) {

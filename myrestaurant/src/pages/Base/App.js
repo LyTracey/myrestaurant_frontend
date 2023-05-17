@@ -26,14 +26,10 @@ export var ThemeContext = createContext('light-mode');
 // Define public pages
 var PUBLIC = ["/menu"];
 // Create axios user and restaurant instances
-var HEADERS = sessionStorage.getItem("access") ?
-    {
-        "Content-Type": 'multipart/form-data',
-        "Authorization": "Bearer ".concat(sessionStorage.getItem("access"))
-    } :
-    {
-        "Content-Type": 'multipart/form-data'
-    };
+var HEADERS = {
+    "Content-Type": 'multipart/form-data',
+    "Authorization": "Bearer ".concat(sessionStorage.getItem("access"))
+};
 var FORMSERIALIZER = { metaTokens: false, indexes: null };
 export var userAPI = axios.create({
     headers: HEADERS,
@@ -57,24 +53,6 @@ function App() {
     var _e = useState(sessionStorage.getItem("role")), role = _e[0], setRole = _e[1];
     var navigationRef = useRef(useNavigate());
     var location = useLocation();
-    // const errorCallback = (error: AxiosError) => {
-    //     switch (error.response?.status) {
-    //         case 401:
-    //             navigationRef.current("/unauthorised");
-    //             break;
-    //         case 403:
-    //             navigationRef.current("/forbidden");
-    //             break;
-    //         case 404:
-    //             navigationRef.current("/not-found");
-    //             break;
-    //         case 500:
-    //             navigationRef.current("internal-error");
-    //             break;
-    //         default:
-    //             navigationRef.current("/bad-request");
-    //     }
-    // };
     var checkTokens = function () { return __awaiter(_this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
@@ -156,6 +134,6 @@ function App() {
                 console.log("Error");
         }
     });
-    return (_jsx("div", __assign({ className: "App ".concat(theme) }, { children: _jsxs(ThemeContext.Provider, __assign({ value: theme }, { children: [_jsx(Navbar, { theme: theme, setTheme: setTheme, loggedIn: loggedIn, isStaff: isStaff, role: role, location: location }), _jsxs(Routes, { children: [_jsx(Route, { index: true, element: _jsx(Home, {}) }), _jsx(Route, { path: "/menu", element: _jsx(Menu, { dataAPI: dataAPI, isStaff: isStaff, role: role }) }), _jsx(Route, { path: "/login", element: _jsx(Login, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff, userAPI: userAPI, setRole: setRole }) }), _jsx(Route, { path: "/logout", element: _jsx(Logout, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff }) }), _jsx(Route, { path: "/register", element: _jsx(Register, { userAPI: userAPI }) }), _jsx(Route, { path: "/unauthorised", element: _jsx(Unauthorised, {}) }), _jsx(Route, { path: "/forbidden", element: _jsx(Forbidden, {}) }), _jsx(Route, { path: "/not-found", element: _jsx(NotFound, {}) }), _jsx(Route, { path: "/internal-error", element: _jsx(InternalError, {}) }), _jsxs(Route, __assign({ path: "/", element: _jsx(PrivateRoute, { loggedIn: loggedIn }) }, { children: [_jsx(Route, { path: "/profile", element: _jsx(Profile, { setIsStaff: setIsStaff, setRole: setRole, userAPI: userAPI }) }), _jsx(Route, { path: "/dashboard", element: _jsx(Dashboard, {}) }), _jsx(Route, { path: "/inventory", element: _jsx(Inventory, { dataAPI: dataAPI }) }), _jsx(Route, { path: "/orders", element: _jsx(Orders, { dataAPI: dataAPI }) }), _jsx(Route, { path: "/orders/archive", element: _jsx(ArchivedOrders, { dataAPI: dataAPI }) })] }))] }), _jsx(Footer, {})] })) })));
+    return (_jsx("div", __assign({ className: "App ".concat(theme) }, { children: _jsxs(ThemeContext.Provider, __assign({ value: theme }, { children: [_jsx(Navbar, { theme: theme, setTheme: setTheme, loggedIn: loggedIn, isStaff: isStaff, role: role, location: location }), _jsxs(Routes, { children: [_jsx(Route, { index: true, element: _jsx(Home, {}) }), _jsx(Route, { path: "/menu", element: _jsx(Menu, { isStaff: isStaff, role: role }) }), _jsx(Route, { path: "/login", element: _jsx(Login, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff, setRole: setRole }) }), _jsx(Route, { path: "/logout", element: _jsx(Logout, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff }) }), _jsx(Route, { path: "/register", element: _jsx(Register, {}) }), _jsx(Route, { path: "/unauthorised", element: _jsx(Unauthorised, {}) }), _jsx(Route, { path: "/forbidden", element: _jsx(Forbidden, {}) }), _jsx(Route, { path: "/not-found", element: _jsx(NotFound, {}) }), _jsx(Route, { path: "/internal-error", element: _jsx(InternalError, {}) }), _jsxs(Route, __assign({ path: "/", element: _jsx(PrivateRoute, { loggedIn: loggedIn }) }, { children: [_jsx(Route, { path: "/profile", element: _jsx(Profile, { setIsStaff: setIsStaff, setRole: setRole }) }), _jsx(Route, { path: "/dashboard", element: _jsx(Dashboard, {}) }), _jsx(Route, { path: "/inventory", element: _jsx(Inventory, {}) }), _jsx(Route, { path: "/orders", element: _jsx(Orders, {}) }), _jsx(Route, { path: "/orders/archive", element: _jsx(ArchivedOrders, {}) })] }))] }), _jsx(Footer, {})] })) })));
 }
 export default App;

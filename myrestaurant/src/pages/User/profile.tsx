@@ -4,7 +4,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { useContext } from "react";
 import { ThemeContext } from "../Base/App";
-import Placeholder from "../../images/placeholder-image.webp";
+import {ReactComponent as Person} from "../../images/icons/person.svg";
 import { useEffect, useState } from "react";
 import endpoints from "../../data/endpoints";
 import { AxiosResponse } from "axios";
@@ -74,8 +74,7 @@ function Profile (props: any) {
 
             <Row xs={1} sm={2}>
                 <Col className="profile-image">
-                    <img src={ Placeholder } />
-
+                    <Person className="icon"/>
                 </Col>
                 
                 <Col>

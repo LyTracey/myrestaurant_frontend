@@ -10,7 +10,8 @@ $themes: (
     "light-grey": #7A7A7A,
     "red": #E07A5F,
     "yellow": #F2CC8F,
-    "green": #9FB798
+    "green": #9FB798,
+    "light-yellow": #F3ECD2
 );
 
 @mixin theme ($background, $text) {
