@@ -41,7 +41,7 @@ function Menu(props) {
         dataAPI.get("".concat(endpoints["menu"])).then(function (response) {
             setMenu(response.data);
         }).catch(function (error) {
-            console.log(error);
+            return console.log(error);
         });
     };
     // Fetch ingredients from backend
@@ -52,7 +52,7 @@ function Menu(props) {
             response.data.forEach(function (item) { return (filteredInventory[item.id] = { title: item.ingredient }); });
             setIngredients(filteredInventory);
         }).catch(function (error) {
-            console.log(error);
+            return console.log(error);
         });
     };
     // Fetch menu data and ingredients data on first load
@@ -101,7 +101,7 @@ function Menu(props) {
                         setAddItem(false);
                         getMenu();
                     }).catch(function (error) {
-                        console.log(error);
+                        return console.log(error);
                     })];
                 case 4:
                     _c.sent();
@@ -116,7 +116,7 @@ function Menu(props) {
                         setUpdateItem(false);
                         getMenu();
                     }).catch(function (error) {
-                        console.log(error);
+                        return console.log(error);
                     });
                     return [3 /*break*/, 7];
                 case 6:

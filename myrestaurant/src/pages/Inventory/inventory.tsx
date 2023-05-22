@@ -66,7 +66,7 @@ function Inventory () {
     };
 
     // Handle submit
-    const handleSubmit = async (e: any, method: "add" | "update" | "delete", data: InventoryObj) => {
+    const handleSubmit = async (e: SubmitEvent, method: "add" | "update" | "delete", data: InventoryObj) => {
         e.preventDefault();
         const itemPath = `${endpoints["inventory"]}${slugify(String(data.id) ?? "")}/`;
         switch (method) {

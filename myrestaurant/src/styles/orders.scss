@@ -68,4 +68,9 @@
 
     }
 
+    .feedback {
+        color: map-get(base.$themes, "red");
+        padding-top: 10px;
+    }
+
 }

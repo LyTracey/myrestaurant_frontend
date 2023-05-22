@@ -14,6 +14,7 @@ import slugify from 'slugify';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { dataAPI } from '../Base/App';
+import { errorFormatter } from '../../utils/formatter';
 function Orders() {
     var _this = this;
     var ordersObj = {
@@ -35,6 +36,7 @@ function Orders() {
     var _d = useState(false), addItem = _d[0], setAddItem = _d[1];
     var _e = useState(ordersObj), updateOrder = _e[0], setUpdateOrder = _e[1];
     var _f = useState(false), updateItem = _f[0], setUpdateItem = _f[1];
+    var _g = useState([]), feedback = _g[0], setFeedback = _g[1];
     // Set contexts
     var theme = useContext(ThemeContext);
     // Set variables
@@ -138,21 +140,34 @@ function Orders() {
         });
     }); };
     // Send PATCH request every time an order is prepared, delivered, or completed
-    var handleCheck = function (e, id, field) {
+    var handleCheck = function (e, id, field, index) {
         var _a;
+        var _b, _c, _d;
         e.preventDefault();
+        // Rest feedback
+        setFeedback([]);
+        // Check if checkboxes are ticked in the order prepared > delivered > complete
+        if (field === "delivered" && !((_b = orders[index]) === null || _b === void 0 ? void 0 : _b.prepared)) {
+            setFeedback(["Please ensure order is prepared."]);
+            return;
+        }
+        else if (field === "complete" && (!((_c = orders[index]) === null || _c === void 0 ? void 0 : _c.prepared) || !((_d = orders[index]) === null || _d === void 0 ? void 0 : _d.delivered))) {
+            setFeedback(["Please ensure order is prepared and delivered."]);
+            return;
+        }
+        // Send patch request if the correct checkboxes are checked
         var itemPath = "".concat(endpoints["orders"]).concat(slugify(String(id)), "/");
         dataAPI.patch(itemPath, (_a = {},
             _a[field] = e.target.checked,
             _a)).then(function () { return getOrders(); })
             .catch(function (error) {
-            console.log(error);
+            setFeedback(errorFormatter(error));
         });
     };
     return (_jsxs(Container, __assign({ className: "orders ".concat(theme) }, { children: [_jsx(Row, __assign({ className: 'title' }, { children: _jsx("h2", { children: "Orders" }) })), _jsxs(Row, __assign({ xs: 2, className: 'actions' }, { children: [_jsx(Button, __assign({ className: "add", onClick: function () {
                             setNewOrder(__assign({}, ordersObj));
                             setAddItem(!addItem);
-                        } }, { children: "Add Item +" })), _jsx(Button, __assign({ className: "archive", as: "a", href: "/orders/archive" }, { children: "Archive" }))] })), _jsx(OrdersCreateForm, { addItem: addItem, onHide: function () { return setAddItem(false); }, newOrder: newOrder, setNewOrder: setNewOrder, menu: menu, handleSubmit: handleSubmit, handleData: handleData, theme: theme, availabilities: availabilities }), _jsx(OrderUpdateForm, { updateItem: updateItem, onHide: function () { setUpdateItem(false); }, updateOrder: updateOrder, setUpdateOrder: setUpdateOrder, menu: menu, handleSubmit: handleSubmit, handleData: handleData, theme: theme, availabilities: availabilities }), _jsxs(Table, __assign({ responsive: true }, { children: [_jsx("thead", { children: _jsxs("tr", __assign({ className: 'headers' }, { children: [_jsx("th", { children: "Order ID" }), _jsx("th", { children: "Menu Items" }), _jsx("th", { children: "Notes" }), _jsx("th", { children: "Ordered At" }), _jsx("th", { children: "Prepared" }), _jsx("th", { children: "Prepared At" }), _jsx("th", { children: "Delivered" }), _jsx("th", { children: "Delivered At" }), _jsx("th", { children: "Complete" })] })) }), _jsx("tbody", { children: orders.map(function (item, i) {
+                        } }, { children: "Add Item +" })), _jsx(Button, __assign({ className: "archive", as: "a", href: "/orders/archive" }, { children: "Archive" }))] })), _jsx(OrdersCreateForm, { addItem: addItem, onHide: function () { return setAddItem(false); }, newOrder: newOrder, setNewOrder: setNewOrder, menu: menu, handleSubmit: handleSubmit, handleData: handleData, theme: theme, availabilities: availabilities }), _jsx(OrderUpdateForm, { updateItem: updateItem, onHide: function () { setUpdateItem(false); }, updateOrder: updateOrder, setUpdateOrder: setUpdateOrder, menu: menu, handleSubmit: handleSubmit, handleData: handleData, theme: theme, availabilities: availabilities }), _jsx(Row, __assign({ as: "ul", className: "feedback" }, { children: feedback.map(function (message, i) { return _jsx("li", { children: message }, i); }) })), _jsxs(Table, __assign({ responsive: true }, { children: [_jsx("thead", { children: _jsxs("tr", __assign({ className: 'headers' }, { children: [_jsx("th", { children: "Order ID" }), _jsx("th", { children: "Menu Items" }), _jsx("th", { children: "Notes" }), _jsx("th", { children: "Ordered At" }), _jsx("th", { children: "Prepared" }), _jsx("th", { children: "Prepared At" }), _jsx("th", { children: "Delivered" }), _jsx("th", { children: "Delivered At" }), _jsx("th", { children: "Complete" })] })) }), _jsx("tbody", { children: orders.map(function (item, i) {
                             return (_jsxs("tr", __assign({ className: "rows", onClick: function () {
                                     var _a;
                                     setUpdateOrder((_a = __assign({}, item)) !== null && _a !== void 0 ? _a : __assign({}, ordersObj));
@@ -160,7 +175,7 @@ function Orders() {
                                 } }, { children: [_jsx("td", __assign({ className: 'id' }, { children: item.id })), _jsx("td", __assign({ className: 'menu-items' }, { children: item.menu_items.map(function (item2, i) {
                                             var _a;
                                             return (_jsx("p", { children: (_a = menu[item2]) === null || _a === void 0 ? void 0 : _a["title"] }, i));
-                                        }) })), _jsx("td", __assign({ className: 'notes' }, { children: item.notes })), _jsx("td", __assign({ className: 'ordered-at' }, { children: String(item.ordered_at) })), _jsx("td", __assign({ className: 'prepared-at-check' }, { children: _jsx(Form.Check, { onChange: function (e) { return handleCheck(e, item.id, "prepared"); }, onClick: function (e) { return e.stopPropagation(); }, checked: item.prepared }) })), _jsx("td", __assign({ className: 'prepared-at' }, { children: String(item.prepared_at) })), _jsx("td", __assign({ className: 'delivered-at-check' }, { children: _jsx(Form.Check, { onChange: function (e) { return handleCheck(e, item.id, "delivered"); }, onClick: function (e) { return e.stopPropagation(); }, checked: item.delivered }) })), _jsx("td", __assign({ className: 'delivered-at' }, { children: String(item.delivered_at) })), _jsx("td", __assign({ className: 'complete-check' }, { children: _jsx(Form.Check, { onChange: function (e) { return handleCheck(e, item.id, "complete"); }, onClick: function (e) { return e.stopPropagation(); }, checked: item.complete }) }))] }), i));
+                                        }) })), _jsx("td", __assign({ className: 'notes' }, { children: item.notes })), _jsx("td", __assign({ className: 'ordered-at' }, { children: String(item.ordered_at) })), _jsx("td", __assign({ className: 'prepared-at-check' }, { children: _jsx(Form.Check, { onChange: function (e) { return handleCheck(e, item.id, "prepared", i); }, onClick: function (e) { return e.stopPropagation(); }, checked: item.prepared }) })), _jsx("td", __assign({ className: 'prepared-at' }, { children: String(item.prepared_at) })), _jsx("td", __assign({ className: 'delivered-at-check' }, { children: _jsx(Form.Check, { onChange: function (e) { return handleCheck(e, item.id, "delivered", i); }, onClick: function (e) { return e.stopPropagation(); }, checked: item.delivered }) })), _jsx("td", __assign({ className: 'delivered-at' }, { children: String(item.delivered_at) })), _jsx("td", __assign({ className: 'complete-check' }, { children: _jsx(Form.Check, { onChange: function (e) { return handleCheck(e, item.id, "complete", i); }, onClick: function (e) { return e.stopPropagation(); }, checked: item.complete }) }))] }), i));
                         }) })] }))] })));
 }
 ;

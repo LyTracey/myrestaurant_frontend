@@ -14,6 +14,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { OrdersObj, MenuItemsObj} from "./orderTypes";
 import { dataAPI } from '../Base/App';
+import { errorFormatter } from '../../utils/formatter';
 
 function Orders () {
     
@@ -38,6 +39,7 @@ function Orders () {
     const [addItem, setAddItem] = useState<boolean>(false);
     const [updateOrder, setUpdateOrder] = useState<OrdersObj>(ordersObj);
     const [updateItem, setUpdateItem] = useState<boolean>(false);
+    const [feedback, setFeedback] = useState<Array<string>>([]);
     
     // Set contexts
     const theme = useContext(ThemeContext);
@@ -144,14 +146,29 @@ function Orders () {
     };
 
     // Send PATCH request every time an order is prepared, delivered, or completed
-    const handleCheck = (e: any, id: number, field: string) => {
+    const handleCheck = (e: any, id: number, field: string, index: number) => {
         e.preventDefault();
+        
+        // Rest feedback
+        setFeedback([]);
+
+        // Check if checkboxes are ticked in the order prepared > delivered > complete
+        if (field === "delivered" && !orders[index]?.prepared) {
+            setFeedback(["Please ensure order is prepared."])
+            return
+        } else if (field === "complete" && (!orders[index]?.prepared || !orders[index]?.delivered)) {
+            setFeedback(["Please ensure order is prepared and delivered."])
+            return
+        }
+
+
+        // Send patch request if the correct checkboxes are checked
         const itemPath = `${endpoints["orders"]}${slugify(String(id))}/`;
         dataAPI.patch(itemPath, {
             [field]: e.target.checked
         }).then(() => getOrders())
         .catch((error: AxiosError) => {
-            console.log(error);
+            setFeedback(errorFormatter(error));
         });
 
     };
@@ -195,6 +212,10 @@ function Orders () {
                 availabilities={ availabilities }
             />
 
+            <Row as="ul" className="feedback">
+                {feedback.map((message, i) => <li key={i}>{message}</li>)}
+            </Row>
+
             <Table responsive>
                 <thead>
                     <tr className='headers'>
@@ -227,11 +248,11 @@ function Orders () {
                                         )}</td>
                                     <td className='notes' >{item.notes}</td>
                                     <td className='ordered-at' >{String(item.ordered_at)}</td>
-                                    <td className='prepared-at-check' ><Form.Check onChange={(e) => handleCheck(e, item.id!, "prepared")} onClick={e => e.stopPropagation()} checked={ item.prepared }/></td>
+                                    <td className='prepared-at-check' ><Form.Check onChange={(e) => handleCheck(e, item.id!, "prepared", i)} onClick={e => e.stopPropagation()} checked={ item.prepared }/></td>
                                     <td className='prepared-at' >{String(item.prepared_at)}</td>
-                                    <td className='delivered-at-check'><Form.Check onChange={(e) => handleCheck(e, item.id!, "delivered")} onClick={e => e.stopPropagation()} checked={ item.delivered }/></td>
+                                    <td className='delivered-at-check'><Form.Check onChange={(e) => handleCheck(e, item.id!, "delivered", i)} onClick={e => e.stopPropagation()} checked={ item.delivered }/></td>
                                     <td className='delivered-at' >{String(item.delivered_at)}</td>
-                                    <td className='complete-check'><Form.Check onChange={(e) => handleCheck(e, item.id!, "complete")} onClick={e => e.stopPropagation()} checked={ item.complete }/></td>
+                                    <td className='complete-check'><Form.Check onChange={(e) => handleCheck(e, item.id!, "complete", i)} onClick={e => e.stopPropagation()} checked={ item.complete }/></td>
                                 </tr>
                             )
 

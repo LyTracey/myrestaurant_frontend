@@ -12,6 +12,7 @@ import "../../styles/form.scss";
 import { FormEvent } from "react";
 import { errorFormatter } from "../../utils/formatter";
 import { userAPI } from "../Base/App";
+import { AxiosResponse } from "axios";
 
 export interface LoginUser {
     username: string,
@@ -51,21 +52,22 @@ function Login (props: any) {
                     username: login.username,
                     password: login.password,
                 }
-            ).then((response: any) => {
+            ).then((response: AxiosResponse) => {
                 sessionStorage.setItem("access", response.data.access);
-                sessionStorage.setItem("loggedIn", "true");
-                props.setLoggedIn(true);
                 sessionStorage.setItem("isStaff", response.data.isStaff);
                 props.setIsStaff(response.data.isStaff);
                 sessionStorage.setItem("username", login.username);
                 props.setRole(response.data.role);
                 sessionStorage.setItem("role", response.data.role);
+                sessionStorage.setItem("loggedIn", "true");
+                props.setLoggedIn(true);
             }).catch((error: any) => {
                 console.log(error);
                 setAPIFeedback(errorFormatter(error));
             }).finally(() => {
-                if (sessionStorage.getItem("loggedIn")) {
+                if (sessionStorage.getItem("loggedIn") ?? false) {
                     navigate("/profile");
+                    window.location.reload();
                 }
             });
         }

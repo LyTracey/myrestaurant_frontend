@@ -21,7 +21,7 @@ import Profile from '../User/profile';
 import { useLocation } from 'react-router-dom';
 import { Unauthorised, Forbidden, NotFound, InternalError } from '../Errors/errors';
 // Define constants
-// Create ThemeContext
+// Create Contexts
 export var ThemeContext = createContext('light-mode');
 // Define public pages
 var PUBLIC = ["/menu"];
@@ -127,11 +127,8 @@ function App() {
             case 404:
                 navigationRef.current("/not-found");
                 break;
-            case 500:
-                navigationRef.current("internal-error");
-                break;
             default:
-                console.log("Error");
+                console.log(error);
         }
     });
     return (_jsx("div", __assign({ className: "App ".concat(theme) }, { children: _jsxs(ThemeContext.Provider, __assign({ value: theme }, { children: [_jsx(Navbar, { theme: theme, setTheme: setTheme, loggedIn: loggedIn, isStaff: isStaff, role: role, location: location }), _jsxs(Routes, { children: [_jsx(Route, { index: true, element: _jsx(Home, {}) }), _jsx(Route, { path: "/menu", element: _jsx(Menu, { isStaff: isStaff, role: role }) }), _jsx(Route, { path: "/login", element: _jsx(Login, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff, setRole: setRole }) }), _jsx(Route, { path: "/logout", element: _jsx(Logout, { setLoggedIn: setLoggedIn, setIsStaff: setIsStaff }) }), _jsx(Route, { path: "/register", element: _jsx(Register, {}) }), _jsx(Route, { path: "/unauthorised", element: _jsx(Unauthorised, {}) }), _jsx(Route, { path: "/forbidden", element: _jsx(Forbidden, {}) }), _jsx(Route, { path: "/not-found", element: _jsx(NotFound, {}) }), _jsx(Route, { path: "/internal-error", element: _jsx(InternalError, {}) }), _jsxs(Route, __assign({ path: "/", element: _jsx(PrivateRoute, { loggedIn: loggedIn }) }, { children: [_jsx(Route, { path: "/profile", element: _jsx(Profile, { setIsStaff: setIsStaff, setRole: setRole }) }), _jsx(Route, { path: "/dashboard", element: _jsx(Dashboard, {}) }), _jsx(Route, { path: "/inventory", element: _jsx(Inventory, {}) }), _jsx(Route, { path: "/orders", element: _jsx(Orders, {}) }), _jsx(Route, { path: "/orders/archive", element: _jsx(ArchivedOrders, {}) })] }))] }), _jsx(Footer, {})] })) })));

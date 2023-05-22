@@ -2,7 +2,7 @@ import '../../styles/dashboard.scss';
 import endpoints from "../../data/endpoints";
 import { ThemeContext } from '../Base/App';
 import { BarChart, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer} from 'recharts';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, ChangeEvent } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -10,6 +10,7 @@ import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
 import { dataAPI } from '../Base/App';
+import { AxiosError, AxiosResponse } from 'axios';
 
 interface StatisticsObj {
     [key: string]: number
@@ -58,9 +59,9 @@ function Dashboard () {
         dataAPI.patch(
             `${endpoints["dashboard"]}`,
             {...data}
-        ).then((response: any) => {
+        ).then((response: AxiosResponse) => {
             setStatistics({...response.data});
-        }).catch((error: any) => {
+        }).catch((error: AxiosError) => {
             console.log(error);
         });
     };
@@ -73,7 +74,7 @@ function Dashboard () {
 
     
     // Handle date input
-    const handleDate = ({ target }: any) => {
+    const handleDate = ({ target }: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setDateRange({
             ...dateRange,
             [target.name]: target.value
@@ -159,7 +160,7 @@ function Dashboard () {
             <Row>
                 <Col className={`date-range`}>
                     <input type="date" id="start-date" name="start_date" value={ dateRange.start_date } onChange={e => handleDate(e)}/>
-                    <input type="date" id="end-date" name="end_date"value={ dateRange.end_date }onChange={e => handleDate(e)}/>
+                    <input type="date" id="end-date" name="end_date" value={ dateRange.end_date } onChange={e => handleDate(e)}/>
                     <Form.Select name='frequency' onChange={e => handleDate(e)}>
                         <option value="W">Weekly</option>
                         <option value="M">Monthly</option>

@@ -20,8 +20,9 @@ import { useLocation } from 'react-router-dom';
 import { Unauthorised, Forbidden, NotFound, InternalError } from '../Errors/errors';
 
 // Define constants
-// Create ThemeContext
-export const ThemeContext = createContext('light-mode');
+// Create Contexts
+export const ThemeContext = createContext<string>('light-mode');
+
 
 // Define public pages
 const PUBLIC = ["/menu"];
@@ -58,7 +59,7 @@ function App() {
     const [role, setRole] = useState(sessionStorage.getItem("role"));
     const navigationRef = useRef(useNavigate());
     const location = useLocation();
-    
+     
     const checkTokens = async () => {
         if (sessionStorage.getItem("access")) {
             // Check if access token exsits
@@ -100,7 +101,7 @@ function App() {
     });
 
     // Create repsonse interceptor to redirect when certain errors appear
-    dataAPI.interceptors.response.use(async (response: any) => {
+    dataAPI.interceptors.response.use(async (response: AxiosResponse) => {
         return response
     }, (error: AxiosError) => {
         
@@ -114,11 +115,8 @@ function App() {
             case 404:
                 navigationRef.current("/not-found");
                 break;
-            case 500:
-                navigationRef.current("internal-error");
-                break;
             default:
-                console.log("Error");
+                console.log(error);
         }   
     } );
     

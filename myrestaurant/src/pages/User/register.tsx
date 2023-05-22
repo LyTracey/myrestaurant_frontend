@@ -1,7 +1,7 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import endpoints from "../../data/endpoints";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import "../../styles/form.scss";
 import { Container } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
@@ -40,7 +40,7 @@ function Register () {
     };
 
     // Handle form submit
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const passwordsMatch = (newUser.password1 === newUser.password2);

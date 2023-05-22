@@ -33,7 +33,7 @@ function OrderUpdateForm (props: any) {
 
     const Availability = (
         <>
-            { Object.entries(props.menu).map((item: any, i) => {
+            { Object.entries(props.menu).map((item: Array<any>, i) => {
                 return (
                     <Form.Text as="div" className="multi-read-field availability" key={`availability_${i}`}>
                         { item[1].available_quantity }

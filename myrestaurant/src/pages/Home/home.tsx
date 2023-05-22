@@ -29,7 +29,7 @@ function Home () {
                         <p>
                             <br/>
                             This is a website for a fictitious cafe built to put into practice my full-stack development skills. I chose a cafe as a real-world scenario to develop my use cases around.
-                            Please feel free to explore the site and its functionalities. Some <br/>
+                            Please feel free to explore the site and its functionalities.<br/>
                             <br/>
                             - Tracey
                         </p>
@@ -42,7 +42,7 @@ function Home () {
                         <h3>The Tech-Stack</h3>
 
                         <p>
-                            The source code for this project can be found on my GitHub: XXX
+                            The source code for this project can be found on my GitHub: XXX.
                         </p>
                         
                         <ul>

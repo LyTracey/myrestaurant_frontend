@@ -43,19 +43,21 @@ function Login(props) {
                 password: login.password,
             }).then(function (response) {
                 sessionStorage.setItem("access", response.data.access);
-                sessionStorage.setItem("loggedIn", "true");
-                props.setLoggedIn(true);
                 sessionStorage.setItem("isStaff", response.data.isStaff);
                 props.setIsStaff(response.data.isStaff);
                 sessionStorage.setItem("username", login.username);
                 props.setRole(response.data.role);
                 sessionStorage.setItem("role", response.data.role);
+                sessionStorage.setItem("loggedIn", "true");
+                props.setLoggedIn(true);
             }).catch(function (error) {
                 console.log(error);
                 setAPIFeedback(errorFormatter(error));
             }).finally(function () {
-                if (sessionStorage.getItem("loggedIn")) {
+                var _a;
+                if ((_a = sessionStorage.getItem("loggedIn")) !== null && _a !== void 0 ? _a : false) {
                     navigate("/profile");
+                    window.location.reload();
                 }
             });
         }

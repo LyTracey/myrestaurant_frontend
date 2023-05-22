@@ -2,7 +2,7 @@ import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import { useContext } from "react";
+import { useContext, ChangeEvent } from "react";
 import { ThemeContext } from "../Base/App";
 import {ReactComponent as Person} from "../../images/icons/person.svg";
 import { useEffect, useState } from "react";
@@ -34,6 +34,7 @@ function Profile (props: any) {
     const getUser = () => {
         userAPI.get(
             `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`
+            
             ).then((response: AxiosResponse) => {
                 const data = response.data;
                 setUser(data);
@@ -93,7 +94,7 @@ function Profile (props: any) {
                                         label="Staff View"
                                         name="is_staff"
                                         checked={ user.is_staff }
-                                        onChange={(e: any) => patchUser({is_staff: e.target.checked})}
+                                        onChange={(e: ChangeEvent<HTMLInputElement>) => patchUser({is_staff: e.target.checked})}
                                     />
                                 </td>
                             </tr>

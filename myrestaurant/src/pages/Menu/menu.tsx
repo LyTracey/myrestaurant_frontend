@@ -52,7 +52,6 @@ function Menu ( props: any ) {
     const [addItem, setAddItem] = useState<boolean>(false);
     const [updateMenu, setUpdateMenu ] = useState<MenuObj>(menuObj);
     const [updateItem, setUpdateItem] = useState<boolean>(false);
-
     const theme = useContext(ThemeContext);
     
     // Fetch menu data from backend
@@ -61,9 +60,9 @@ function Menu ( props: any ) {
             `${endpoints["menu"]}`
         ).then((response: AxiosResponse) => {
             setMenu(response.data);
-        }).catch((error: AxiosError) => {
-            console.log(error);
-        });
+        }).catch((error: AxiosError) => 
+            console.log(error)
+        );
     };
     
     // Fetch ingredients from backend
@@ -77,9 +76,9 @@ function Menu ( props: any ) {
                 filteredInventory[item.id] = {title: item.ingredient}
             ));
             setIngredients(filteredInventory);
-        }).catch((error: AxiosError) => {
-            console.log(error);
-        });
+        }).catch((error: AxiosError) => 
+        console.log(error)
+        );
     };
     
     // Fetch menu data and ingredients data on first load
@@ -106,7 +105,7 @@ function Menu ( props: any ) {
                     setUpdateItem(false);
                     getMenu();
                 }).catch((error: AxiosError) => 
-                    console.log(error)
+                console.log(error)
                 );
                 break;
             case "add":
@@ -121,9 +120,9 @@ function Menu ( props: any ) {
                 ).then(() => {
                     setAddItem(false);
                     getMenu();
-                }).catch((error: AxiosError )=> {
-                    console.log(error);
-                });
+                }).catch((error: AxiosError) => 
+                console.log(error)
+                );
                 break;
             case "update":
                 dataAPI.patch(itemPath, {
@@ -134,9 +133,9 @@ function Menu ( props: any ) {
                 }).then(() => {
                     setUpdateItem(false);
                     getMenu();
-                }).catch((error: AxiosError) => {
-                    console.log(error);
-                })
+                }).catch((error: AxiosError) => 
+                    console.log(error)
+                );
                 break;
             default:
                 console.log("Unrecognised method");  
