@@ -15,6 +15,7 @@ function Logout (props: any) {
         sessionStorage.removeItem("isStaff");
         props.setIsStaff(false);
         sessionStorage.removeItem("username");
+        sessionStorage.removeItem("role");
     };
 
     useEffect(() => {

@@ -36,9 +36,9 @@ function Navigate(props: any) {
                         
                         <Nav.Link href="/menu">Menu</Nav.Link>
 
-                        { props.isStaff && <Nav.Link href="/dashboard">Dashboard</Nav.Link> }
-                        { props.isStaff && <Nav.Link href="/orders">Orders</Nav.Link> }
-                        { props.isStaff && <Nav.Link href="/inventory">Inventory</Nav.Link> }
+                        { (props.isStaff && ["MANAGER", "SALES"].includes(props.role)) && <Nav.Link href="/dashboard">Dashboard</Nav.Link> }
+                        { (props.isStaff && ["MANAGER", "SALES"].includes(props.role)) && <Nav.Link href="/orders">Orders</Nav.Link> }
+                        { (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) && <Nav.Link href="/inventory">Inventory</Nav.Link> }
                         { props.loggedIn && <Nav.Link href="/profile">Profile</Nav.Link>}
                         {
                             props.loggedIn ? 

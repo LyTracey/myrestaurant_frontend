@@ -41,7 +41,7 @@
     }
 
     .was-validated .form-check-input:valid {
-        border: none;
+        border: map-get(base.$themes, "light-grey") solid 1px;
     }
 
     .invalid-feedback, .error {
@@ -125,12 +125,12 @@
 
     }
 
-    .register-link > .btn {
+    .extra-link > .btn {
         background-color: transparent;
         border: none;
         text-decoration: underline;
+        color: inherit;
     }
-
 
     // Multi-input
     .multi-input-container {

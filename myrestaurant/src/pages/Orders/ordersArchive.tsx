@@ -10,9 +10,10 @@ import slugify from 'slugify';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
 import { OrdersObj, MenuItemsObj} from "./orderTypes";
+import { dataAPI } from '../Base/App';
 
 
-function ArchivedOrders (props: any) {
+function ArchivedOrders () {
     
     // Set states
     const [orders, setOrders] = useState<Array<OrdersObj>>([]);
@@ -20,7 +21,7 @@ function ArchivedOrders (props: any) {
         
     // Fetch menu data from backend
     const getOrders = () => {
-        props.dataAPI.get(
+        dataAPI.get(
             `${endpoints["archivedOrders"]}`
         ).then((response: AxiosResponse) => {
             setOrders(response.data);
@@ -31,7 +32,7 @@ function ArchivedOrders (props: any) {
     
     // Fetch ingredients from backend
     const getMenu = () => {
-        props.dataAPI.get(
+        dataAPI.get(
             `${endpoints["menu"]}`
         ).then((response: AxiosResponse) => {
             const filteredMenu: MenuItemsObj = {};
@@ -57,7 +58,7 @@ function ArchivedOrders (props: any) {
     const handleSubmit = async (e: any, id: number) => {
         e.preventDefault();
         const itemPath = `${endpoints["orders"]}${slugify(String(id))}/`;
-            props.DataAPI.patch(itemPath, {
+            dataAPI.patch(itemPath, {
                 complete: false
             }).then(() => {
                 getOrders();

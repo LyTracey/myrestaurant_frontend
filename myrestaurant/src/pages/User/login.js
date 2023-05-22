@@ -12,6 +12,7 @@ import { ThemeContext } from '../Base/App';
 import { useNavigate } from 'react-router-dom';
 import "../../styles/form.scss";
 import { errorFormatter } from "../../utils/formatter";
+import { userAPI } from "../Base/App";
 ;
 function Login(props) {
     // Set states
@@ -37,23 +38,31 @@ function Login(props) {
         }
         else {
             // Post request to get jwt token
-            props.userAPI.post("".concat(endpoints["login"]), {
+            userAPI.post("".concat(endpoints["login"]), {
                 username: login.username,
                 password: login.password,
             }).then(function (response) {
                 sessionStorage.setItem("access", response.data.access);
-                sessionStorage.setItem("loggedIn", "true");
-                props.setLoggedIn(true);
                 sessionStorage.setItem("isStaff", response.data.isStaff);
                 props.setIsStaff(response.data.isStaff);
                 sessionStorage.setItem("username", login.username);
-                navigate("/profile");
+                props.setRole(response.data.role);
+                sessionStorage.setItem("role", response.data.role);
+                sessionStorage.setItem("loggedIn", "true");
+                props.setLoggedIn(true);
             }).catch(function (error) {
+                console.log(error);
                 setAPIFeedback(errorFormatter(error));
+            }).finally(function () {
+                var _a;
+                if ((_a = sessionStorage.getItem("loggedIn")) !== null && _a !== void 0 ? _a : false) {
+                    navigate("/profile");
+                    window.location.reload();
+                }
             });
         }
         setValidated(true);
     };
-    return (_jsxs(Container, __assign({ className: "login-form form ".concat(useContext(ThemeContext)) }, { children: [_jsxs(Form, __assign({ noValidate: true, validated: validated, onSubmit: function (e) { return handleSubmit(e); } }, { children: [_jsx("h2", __assign({ className: "title" }, { children: "Login" })), _jsx("ul", __assign({ className: "error" }, { children: APIFeedback.map(function (item, i) { return _jsx("li", { children: item }, i); }) })), _jsxs(Form.Group, __assign({ as: Row, xs: 1, className: "group username" }, { children: [_jsx(Form.Label, __assign({ className: "left-label" }, { children: "Username" })), _jsxs(Col, __assign({ className: "field" }, { children: [_jsx(Form.Control, { type: "text", placeholder: "Enter username", name: "username", onChange: function (e) { return handleData(e.target.name, e.target.value); }, required: true }), _jsx(Form.Control.Feedback, __assign({ type: 'invalid' }, { children: "Please enter a username." }))] }))] })), _jsxs(Form.Group, __assign({ as: Row, xs: 1, className: "group password" }, { children: [_jsx(Form.Label, __assign({ className: "left-label" }, { children: "Password" })), _jsxs(Col, __assign({ className: "field" }, { children: [_jsx(Form.Control, { type: "password", name: "password", placeholder: "Enter password", onChange: function (e) { return handleData(e.target.name, e.target.value); }, required: true }), _jsx(Form.Control.Feedback, __assign({ type: 'invalid' }, { children: "Please enter a password." }))] }))] })), _jsx(Row, __assign({ className: "form-actions" }, { children: _jsx(Button, __assign({ className: "submit", type: "submit" }, { children: "Submit" })) }))] })), _jsx(Row, __assign({ className: "register-link" }, { children: _jsx(Button, __assign({ as: "a", href: "/register" }, { children: "Register" })) }))] })));
+    return (_jsxs(Container, __assign({ className: "login-form form ".concat(useContext(ThemeContext)) }, { children: [_jsxs(Form, __assign({ noValidate: true, validated: validated, onSubmit: function (e) { return handleSubmit(e); } }, { children: [_jsx("h2", __assign({ className: "title" }, { children: "Login" })), _jsx("ul", __assign({ className: "error" }, { children: APIFeedback.map(function (item, i) { return _jsx("li", { children: item }, i); }) })), _jsxs(Form.Group, __assign({ as: Row, xs: 1, className: "group username" }, { children: [_jsx(Form.Label, __assign({ className: "left-label" }, { children: "Username" })), _jsxs(Col, __assign({ className: "field" }, { children: [_jsx(Form.Control, { type: "text", placeholder: "Enter username", name: "username", onChange: function (e) { return handleData(e.target.name, e.target.value); }, required: true }), _jsx(Form.Control.Feedback, __assign({ type: 'invalid' }, { children: "Please enter a username." }))] }))] })), _jsxs(Form.Group, __assign({ as: Row, xs: 1, className: "group password" }, { children: [_jsx(Form.Label, __assign({ className: "left-label" }, { children: "Password" })), _jsxs(Col, __assign({ className: "field" }, { children: [_jsx(Form.Control, { type: "password", name: "password", placeholder: "Enter password", onChange: function (e) { return handleData(e.target.name, e.target.value); }, required: true }), _jsx(Form.Control.Feedback, __assign({ type: 'invalid' }, { children: "Please enter a password." }))] }))] })), _jsx(Row, __assign({ className: "form-actions" }, { children: _jsx(Button, __assign({ className: "submit", type: "submit" }, { children: "Submit" })) }))] })), _jsx(Row, __assign({ className: "extra-link" }, { children: _jsx(Button, __assign({ as: "a", href: "/register" }, { children: "Register" })) }))] })));
 }
 export default Login;

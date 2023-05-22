@@ -189,7 +189,7 @@ export function InputMultiFieldGroup ({type, reference, data, values_obj, items_
     return (
         <>
             { 
-                Object.entries(reference).map((item: any, i) => {
+                Object.entries(reference).map((item: Array<any>, i) => {
                     
                     const new_options = Object.fromEntries(Object.entries(options).map((entry) => {
                         if (typeof(entry[1]) === "object") {

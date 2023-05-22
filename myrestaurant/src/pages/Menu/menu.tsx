@@ -10,9 +10,10 @@ import Button from 'react-bootstrap/Button';
 import endpoints from '../../data/endpoints';
 import "../../styles/menu.scss";
 import slugify from 'slugify';
-import placeholder from "../../images/placeholder-image.webp";
+import {ReactComponent as CoffeeCup} from "../../images/icons/coffee-cup.svg";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
+import { dataAPI } from '../Base/App';
 
 interface MenuObj {
     [index: string]: any,
@@ -51,23 +52,22 @@ function Menu ( props: any ) {
     const [addItem, setAddItem] = useState<boolean>(false);
     const [updateMenu, setUpdateMenu ] = useState<MenuObj>(menuObj);
     const [updateItem, setUpdateItem] = useState<boolean>(false);
-
     const theme = useContext(ThemeContext);
     
     // Fetch menu data from backend
     const getMenu = () => {
-        props.dataAPI.get(
-            endpoints["menu"]
+        dataAPI.get(
+            `${endpoints["menu"]}`
         ).then((response: AxiosResponse) => {
             setMenu(response.data);
-        }).catch((error: AxiosError) => {
-            console.log(error);
-        });
+        }).catch((error: AxiosError) => 
+            console.log(error)
+        );
     };
     
     // Fetch ingredients from backend
     const getIngredients = () => {
-        props.dataAPI.get(
+        dataAPI.get(
             `${endpoints["inventory"]}`
         ).then((response: AxiosResponse) => {
             const filteredInventory: IngredientsObj = {};
@@ -76,9 +76,9 @@ function Menu ( props: any ) {
                 filteredInventory[item.id] = {title: item.ingredient}
             ));
             setIngredients(filteredInventory);
-        }).catch((error: AxiosError) => {
-            console.log(error);
-        });
+        }).catch((error: AxiosError) => 
+        console.log(error)
+        );
     };
     
     // Fetch menu data and ingredients data on first load
@@ -99,17 +99,17 @@ function Menu ( props: any ) {
         const itemPath = `${endpoints["menu"]}${slugify(data.title ?? "")}/`;
         switch (method) {
             case "delete":
-                await props.dataAPI.delete( itemPath,
+                await dataAPI.delete( itemPath,
                 ).then(() => {
                     console.log(`Successfully deleted ${data.title}`);
                     setUpdateItem(false);
                     getMenu();
                 }).catch((error: AxiosError) => 
-                    console.log(error)
+                console.log(error)
                 );
                 break;
             case "add":
-                await props.dataAPI.post(
+                await dataAPI.post(
                     `${endpoints["menu"]}`, {
                         title: newMenu.title,
                         description: newMenu.description,
@@ -120,12 +120,12 @@ function Menu ( props: any ) {
                 ).then(() => {
                     setAddItem(false);
                     getMenu();
-                }).catch((error: AxiosError )=> {
-                    console.log(error);
-                });
+                }).catch((error: AxiosError) => 
+                console.log(error)
+                );
                 break;
             case "update":
-                props.dataAPI.patch(itemPath, {
+                dataAPI.patch(itemPath, {
                     description: updateMenu.description,
                     price: updateMenu.price,
                     "ingredients[]": updateMenu.ingredients,
@@ -133,9 +133,9 @@ function Menu ( props: any ) {
                 }).then(() => {
                     setUpdateItem(false);
                     getMenu();
-                }).catch((error: AxiosError) => {
-                    console.log(error);
-                })
+                }).catch((error: AxiosError) => 
+                    console.log(error)
+                );
                 break;
             default:
                 console.log("Unrecognised method");  
@@ -150,7 +150,7 @@ function Menu ( props: any ) {
             </Row>
 
             {
-                props.isStaff &&
+                (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) &&
                 <Row xs={2} className='actions'>
                     <Button className="add" onClick={() => {
                         setNewMenu({...menuObj});
@@ -175,13 +175,13 @@ function Menu ( props: any ) {
                     return (
                         <Col key={`menu-item-${i}`}>
                             <Card.Body onClick={() => {
-                                    if (props.isStaff) {
+                                    if (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) {        // Only render update form if user isStaff and has a role of MANAGER | CHEF
                                         setUpdateMenu({...menuObj, ...item});
                                         setUpdateItem(!updateItem);
                                     }
                                 }} className={!props.isStaff ? "default-cursor" : ""}>
                                 <Card.Title>{ item.title }</Card.Title>
-                                <Card.Img src={ item.image ?? placeholder } />
+                                <CoffeeCup className="icon" />
                                 <div className='card-details'>
                                     <Card.Text>{ item.description }</Card.Text>
                                     <Card.Text>{ `£ ${ item.price }` }</Card.Text>
