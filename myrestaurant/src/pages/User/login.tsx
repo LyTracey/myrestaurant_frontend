@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import endpoints from "../../data/endpoints";
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
@@ -30,7 +30,7 @@ function Login (props: any) {
     const [feedback, setFeedback] = useState<Array<string>>([]);
 
     // Set variables
-    const navigate = useNavigate();
+    const navigationRef = useRef(useNavigate());
 
     // Handle state
     const handleData = (property: string, value: string | boolean) => {
@@ -68,7 +68,7 @@ function Login (props: any) {
             }).finally(() => {
                 console.log("in finally");
                 if (sessionStorage.getItem("loggedIn") === "true" ? true : false) {
-                    navigate("/profile");
+                    navigationRef.current("/profile");
                     window.location.reload();
                 }
             });

@@ -1,6 +1,6 @@
 import '../../styles/App.scss';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { useState, createContext, useRef } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { useState, createContext, useRef, useEffect } from 'react';
 import axios, { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from "axios";
 import Dashboard from '../Dashboard/dashboard';
 import Navbar from '../Base/navbar';
@@ -16,22 +16,22 @@ import Logout from '../User/logout';
 import PrivateRoute from './privateRoute';
 import endpoints from '../../data/endpoints';
 import Profile from '../User/profile';
-import { useLocation } from 'react-router-dom';
 import { Unauthorised, Forbidden, NotFound, InternalError } from '../Errors/errors';
+import { checkTokens } from './baseUtils';
 
 // Define constants
 // Create Contexts
 export const ThemeContext = createContext<string>('light-mode');
 
-
 // Define public pages
-const PUBLIC = ["/menu", "/login", "/register", "/"];
+export const PUBLIC = ["/menu", "/login", "/register", "/"];
 
 // Create axios user and restaurant instances
 export const HEADERS = {    
     "Content-Type": 'multipart/form-data',
     "Authorization": `Bearer ${sessionStorage.getItem("access")}`
 };
+
 const FORMSERIALIZER = { metaTokens: false, indexes: null };
 
 export const userAPI = axios.create({
@@ -57,67 +57,39 @@ function App() {
     const [isStaff, setIsStaff] = useState(sessionStorage.getItem("isStaff") === "true" ? true : false);
     const [role, setRole] = useState(sessionStorage.getItem("role"));
     const navigationRef = useRef(useNavigate());
-    const location = useLocation();
-     
-    const checkTokens = async () => {
-        if (sessionStorage.getItem("access")) {
-            // Check if access token exsits
-            await userAPI.post(
-                `${endpoints["verify"]}`,
-                {token: sessionStorage.getItem("access")}
-            ).catch(async () => {
-                // If access token is invalid, try refreshing token
-                await userAPI.post(
-                    `${endpoints["refresh"]}`,
-                ).then((response: AxiosResponse) => {
-                    // If refresh token valid, set new access token
-                    sessionStorage.setItem("access", response.data.access);
-                    sessionStorage.setItem("loggedIn", "true");
-                    setLoggedIn(true);
-                })
-                .catch(() => {
-                    // If refresh token invalid, remove access token and make loggedIn false
-                    navigationRef.current("/logout");
-                });
-            }
-            );
-        } else {
-            sessionStorage.setItem("loggedIn", "false");
-            setLoggedIn(false);
-            if (!PUBLIC.includes(location.pathname)) {
-                navigationRef.current("/login");
-            }
-        }
-    };
+    const location = useRef(useLocation());
+    
 
+    useEffect(() => {
+        // Create request interceptor to check if tokens are valid
+        dataAPI.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+            await checkTokens(navigationRef, setLoggedIn, location);
+            return config
+        }, (error: AxiosError) => {
+            return Promise.reject(error);
+        });
+    
+        // Create repsonse interceptor to redirect when certain errors appear
+        dataAPI.interceptors.response.use(async (response: AxiosResponse) => {
+            return response
+        }, (error: AxiosError) => {
+            
+            switch (error.response?.status) {
+                case 401:
+                    navigationRef.current("/unauthorised");
+                    break;
+                case 403:
+                    navigationRef.current("/forbidden");
+                    break;
+                case 404:
+                    navigationRef.current("/not-found");
+                    break;
+                default:
+                    console.log(error);
+            }   
+        } );
+    }, []);
 
-    // Create request interceptor to check if tokens are valid
-    dataAPI.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
-        await checkTokens();
-        return config
-    }, (error: AxiosError) => {
-        return Promise.reject(error);
-    });
-
-    // Create repsonse interceptor to redirect when certain errors appear
-    dataAPI.interceptors.response.use(async (response: AxiosResponse) => {
-        return response
-    }, (error: AxiosError) => {
-        
-        switch (error.response?.status) {
-            case 401:
-                navigationRef.current("/unauthorised");
-                break;
-            case 403:
-                navigationRef.current("/forbidden");
-                break;
-            case 404:
-                navigationRef.current("/not-found");
-                break;
-            default:
-                console.log(error);
-        }   
-    } );
     
     
     return (
