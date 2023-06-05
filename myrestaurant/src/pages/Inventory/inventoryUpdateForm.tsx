@@ -23,7 +23,7 @@ function InventoryUpdateForm (props: any) {
     
 
     return (
-        <Modal className={`inventory-form form ${ props.theme }`} show={ props.updateItem } onHide={() => {
+        <Modal className={`inventory-form page-form ${ props.theme }`} show={ props.updateItem } onHide={() => {
                 setDeleteAlert(false);
                 props.onHide();
                 setValidated(false); 

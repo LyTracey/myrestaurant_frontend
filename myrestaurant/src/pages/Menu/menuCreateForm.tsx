@@ -55,7 +55,7 @@ function MenuCreateForm (props: any) {
 });
 
     return (
-        <Modal className={`menu-form form ${ props.theme }`} show={ props.addItem } onHide={() => {
+        <Modal className={`menu-form page-form ${ props.theme }`} show={ props.addItem } onHide={() => {
             props.onHide();
             setValidated(false); 
         }}>

@@ -1,7 +1,6 @@
 @use 'base.scss';
 
-
-.form {
+.page-form {
 
     // Light-mode
     &.light-mode {
@@ -56,7 +55,11 @@
 
     // Field groups
     .row {
-        margin-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .form-control {
+        width: 100%;
     }
 
     // Modal
@@ -67,11 +70,6 @@
 
 
     // Labels
-
-    .title {
-        padding-top: 20px;
-    }
-
     .form-label, .headers {
         font-weight: 500;
     }

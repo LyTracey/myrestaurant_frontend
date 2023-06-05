@@ -11,7 +11,7 @@ import { AxiosResponse } from "axios";
 import "../../styles/profile.scss";
 import Form from "react-bootstrap/Form";
 import { errorFormatter } from "../../utils/formatter";
-import { userAPI } from "../Base/App";
+import { userAPI, HEADERS } from "../Base/App";
 
 interface User {
     [key: string]: any,
@@ -29,12 +29,12 @@ function Profile (props: any) {
         is_staff: false,
         role: ""
     });
-    const [APIFeedback, setAPIFeedback] = useState<Array<string>>([]);
+    const [feedback, setFeedback] = useState<Array<string>>([]);
     
     const getUser = () => {
         userAPI.get(
-            `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`
-            
+            `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`,
+            {headers: HEADERS}
             ).then((response: AxiosResponse) => {
                 const data = response.data;
                 setUser(data);
@@ -43,7 +43,7 @@ function Profile (props: any) {
                 props.setRole(data.role);
                 sessionStorage.setItem("role", data.role!);
             }).catch((error: any) => {
-                setAPIFeedback(errorFormatter(error));            
+                setFeedback(errorFormatter(error));            
             });
         };
         
@@ -52,10 +52,11 @@ function Profile (props: any) {
     const patchUser = (data: object) => {
         userAPI.patch(
             `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`,
-            data
+            data,
+            {headers: HEADERS}
         ).then(() => {
             getUser();    
-        }).catch((error: any) => setAPIFeedback(errorFormatter(error)));
+        }).catch((error: any) => setFeedback(errorFormatter(error)));
     };
 
 
@@ -69,7 +70,7 @@ function Profile (props: any) {
 
             <Row className="error">
                 <ul>
-                    { APIFeedback.map((item, i) => <li key={i}>{ item }</li>) }
+                    { feedback.map((item, i) => <li key={i}>{ item }</li>) }
                 </ul>
             </Row>
 

@@ -2,12 +2,13 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "module": "ES2022",
-    "target": "ES5",
-    "jsx": "react-jsx",
+    "target": "ES6",
+    "jsx": "preserve",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,             /* Allow 'import x from y' when a module doesn't have a default export. */
     "importHelpers": true,                            /* Allow importing helper functions from tslib once per project, instead of including them per-file. */
-    
+    "outDir": "dist",
+
     //Type checking
     "strict": true,                                   /* Enable all strict type-checking options. */
     "noImplicitThis": true,                           /* Enable error reporting when 'this' is given the type 'any'. */

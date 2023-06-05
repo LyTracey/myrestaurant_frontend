@@ -21,7 +21,7 @@ function InventoryCreateForm (props: any) {
       };
 
     return (
-        <Modal className={`inventory-form form ${ props.theme }`} show={ props.addItem } onHide={() => {
+        <Modal className={`inventory-form page-form ${ props.theme }`} show={ props.addItem } onHide={() => {
             props.onHide();
             setValidated(false); 
         }}>
