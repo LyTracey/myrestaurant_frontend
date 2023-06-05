@@ -67,7 +67,7 @@ function OrdersCreateForm (props: any) {
     });
     
     return (
-        <Modal className={`orders-form form ${ props.theme }`} show={ props.addItem } onHide={() => {
+        <Modal className={`orders-form page-form ${ props.theme }`} show={ props.addItem } onHide={() => {
             props.onHide();
             setValidated(false);  
         }}>

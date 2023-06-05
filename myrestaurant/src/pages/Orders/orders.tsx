@@ -66,7 +66,7 @@ function Orders () {
         ).then((response: AxiosResponse) => {
             const filteredMenu: MenuItemsObj = {};
             response.data.forEach((item: any) => {
-                if (item.in_stock) {
+                if (item.available_quantity > 0) {
                     filteredMenu[item.id] = {title: item.title, available_quantity: item.available_quantity}
                 }
             });

@@ -58,7 +58,7 @@ function MenuUpdateForm (props: any) {
 });
 
     return (
-        <Modal className={`menu-form form ${ props.theme }`} show={ props.updateItem } onHide={() => {
+        <Modal className={`menu-form page-form ${ props.theme }`} show={ props.updateItem } onHide={() => {
             setDeleteAlert(false);
             props.onHide();
             setValidated(false); 

@@ -72,7 +72,7 @@ function OrderUpdateForm (props: any) {
     
 
     return (
-        <Modal className={`orders-form form ${ props.theme }`} show={ props.updateItem } onHide={() => {
+        <Modal className={`orders-form page-form ${ props.theme }`} show={ props.updateItem } onHide={() => {
                 setDeleteAlert(false);
                 props.onHide();
                 setValidated(false); 

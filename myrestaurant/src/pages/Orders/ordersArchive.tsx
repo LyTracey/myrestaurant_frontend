@@ -38,7 +38,7 @@ function ArchivedOrders () {
             const filteredMenu: MenuItemsObj = {};
             // Return object of id as key and ingredient as value fields for each inventory item 
             response.data.forEach((item: any) => {
-                if (item.in_stock) {
+                if (item.available_quantity > 0) {
                     filteredMenu[item.id] = {title: item.title, available_quantity: item.available_quantity}
                 }
             });

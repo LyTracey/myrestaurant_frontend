@@ -24,7 +24,6 @@ interface MenuObj {
     image?: string | null,
     description: string,
     price: number | null,
-    in_stock?: boolean,
     available_quantity?: number
 };
 
