@@ -2,7 +2,7 @@ import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import { useContext, ChangeEvent } from "react";
+import { useContext, ChangeEvent, useRef } from "react";
 import { ThemeContext } from "../Base/App";
 import {ReactComponent as Person} from "../../images/icons/person.svg";
 import { useEffect, useState } from "react";
@@ -12,6 +12,8 @@ import "../../styles/profile.scss";
 import Form from "react-bootstrap/Form";
 import { errorFormatter } from "../../utils/formatter";
 import { userAPI, HEADERS } from "../Base/App";
+import { checkTokens } from "../Base/baseUtils";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface User {
     [key: string]: any,
@@ -30,6 +32,8 @@ function Profile (props: any) {
         role: ""
     });
     const [feedback, setFeedback] = useState<Array<string>>([]);
+    const location = useRef(useLocation());
+    const navigationRef = useRef(useNavigate());
     
     const getUser = () => {
         userAPI.get(
@@ -50,6 +54,7 @@ function Profile (props: any) {
     useEffect(() => getUser(), []);
     
     const patchUser = (data: object) => {
+        checkTokens(navigationRef, props.setLoggedIn, location);
         userAPI.patch(
             `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`,
             data,

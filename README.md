@@ -1,70 +1,91 @@
-# Getting Started with Create React App
+# **Moonlight Cafe**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A website for small cafe owners. 
 
-## Available Scripts
+> **NOTE:** This repository is for the frontend only. Visit [backend](https://github.com/LyTracey/myrestaurant_backend) to view the repository for the backend of this project.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## **Contents**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- [Purpose](#purpose)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [Tech Stack](#tech-stack)
 
-### `npm test`
+    - [Backend](#backend)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    - [Frontend](#frontend)
 
-### `npm run build`
+- [Features](#features)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    - [Design](#design)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    - [Security](#security)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    - [Interactivity](#interactivity)
 
-### `npm run eject`
+- [Feedback](#feedback)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## **Purpose**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Moonlight Cafe was built to practice my full-stack engineering skills. I chose a cafe as a real-world scenario to develop my use cases around from the perspective of managing and running a small cafe shop. Please note that this is a fictitious cafe!
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The main use cases I developed this website around are:
+> As a manager, I would like to have an overview of the cafe's sales, revenue, profits, and be warned of anything I should be aware of.
 
-## Learn More
+> As a sales staff member, I require an application I can use to record orders. I also need an overview of the cafe's sales and be warned of anything that's out of stock.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+> As a chef, I need to be able to edit the menu as I curate the menu and need to be able to manage the inventory.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## **Tech Stack**
+ 
+### Backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The backed was built using Django and Django Rest Framework (DRF) connected to a MYSQL database. I opted to use DRF wherever possibe as it provides many useful classes that abstracts Django for many common use cases, making the code more maintainable.
 
-### Analyzing the Bundle Size
+The image below depicts the relationships between the user-defined models of the backend.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
+### Frontend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The frontend was built using React.js, TypeScript, React-Bootstrap, and SCSS. 
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## **How to Run**
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## **Features**
 
-### `npm run build` fails to minify
+### Design
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The design theme of this website and cafe is day and night. Select whichever them  you like best using the theme toggle.
+
+### Security
+
+<ins>Authentication</ins>
+
+For 'non-public' pages, JWT is used to authenticate users in the backend, developed using the `Simple JWT` package ([Simple JWT]: https://django-rest-framework-simplejwt.readthedocs.io/en/latest/).
+
+For the frontend, tokens are stored as `SessionTokens` or `HTTP only` cookies.
+
+<ins>Permissions and Customised Views</ins>
+
+### Interactivity
+
+A key aspect of this project is providing an interactive platform for small cafe owners to easily retrieve summary metrics of their business
+
+#### Integrated Data
+
+### Updates
+1. 
+
+
+### Feedback
+
+If you experience any issues with this project, please open an issue.
