@@ -62,11 +62,8 @@ function Login (props: any) {
                 sessionStorage.setItem("loggedIn", "true");
                 props.setLoggedIn(true);
             }).catch((error: any) => {
-                console.log("in error");
-                console.log(error);
                 setFeedback(errorFormatter(error));
             }).finally(() => {
-                console.log("in finally");
                 if (sessionStorage.getItem("loggedIn") === "true" ? true : false) {
                     navigationRef.current("/profile");
                     window.location.reload();
