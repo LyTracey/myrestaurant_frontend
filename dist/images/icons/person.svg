@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 32 32" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs/>
+<clipPath id="ArtboardFrame">
+<rect height="32" width="32" x="0" y="0"/>
+</clipPath>
+<g clip-path="url(#ArtboardFrame)" id="Layer-3">
+<path d="M9 12C9 8.13401 12.134 5 16 5C19.866 5 23 8.13401 23 12C23 15.866 19.866 19 16 19C12.134 19 9 15.866 9 12Z" fill="current" fill-rule="nonzero" opacity="1" stroke="none"/>
+<path d="M4 32C4 25.3726 9.37258 20 16 20C22.6274 20 28 25.3726 28 32C28 38.6274 22.6274 44 16 44C9.37258 44 4 38.6274 4 32Z" fill="current" fill-rule="nonzero" opacity="1" stroke="none"/>
+</g>
+</svg>
