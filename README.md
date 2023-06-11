@@ -45,7 +45,7 @@ The main use cases I developed this website around are:
  
 ### Backend
 
-The backed was built using Django and Django Rest Framework (DRF) connected to a MYSQL database. I opted to use DRF wherever possibe as it provides many useful classes that abstracts Django for many common use cases, making the code more maintainable.
+The backed was built using Django and Django Rest Framework (DRF) connected to a PostgreSQL database. I opted to use DRF wherever possibe as it provides many useful classes that abstracts Django for many common use cases, making the code more maintainable.
 
 The image below depicts the relationships between the user-defined models of the backend.
 

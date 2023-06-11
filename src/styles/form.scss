@@ -32,6 +32,11 @@
     
     }
 
+    form {
+        max-width: 60%;
+        margin: 0 auto;
+    }
+
     // Validity
 
     .was-validated .form-control:valid {
