@@ -62,6 +62,8 @@ function Login (props: any) {
                 sessionStorage.setItem("loggedIn", "true");
                 props.setLoggedIn(true);
             }).catch((error: any) => {
+                console.log(login);
+                console.log(error);
                 setFeedback(errorFormatter(error));
             }).finally(() => {
                 if (sessionStorage.getItem("loggedIn") === "true" ? true : false) {

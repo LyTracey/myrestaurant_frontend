@@ -36,7 +36,7 @@ const FORMSERIALIZER = { metaTokens: false, indexes: null };
 
 export const userAPI = axios.create({
     baseURL: `${endpoints["prefix_user"]}`,
-    timeout: 1000,
+    timeout: 5000,
     formSerializer: FORMSERIALIZER
 });
 
@@ -44,7 +44,7 @@ export const userAPI = axios.create({
 export const dataAPI = axios.create({
     headers: HEADERS,
     baseURL: `${endpoints["prefix"]}`,
-    timeout: 1000,
+    timeout: 5000,
     formSerializer: FORMSERIALIZER
 });
 
