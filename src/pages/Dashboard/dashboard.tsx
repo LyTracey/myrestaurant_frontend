@@ -50,7 +50,7 @@ function Dashboard () {
     const [dateRange, setDateRange] = useState<DateRange>({
         start_date: lastWeek.toISOString().split('T')[0],
         end_date: today.toISOString().split('T')[0],
-        frequency: "W-MON"
+        frequency: "B"
     });
 
 
@@ -61,6 +61,9 @@ function Dashboard () {
             {...data}
         ).then((response: AxiosResponse) => {
             setStatistics({...response.data});
+            console.log(response.data);
+            console.log(dateRange); 
+            console.log(today);
         }).catch((error: AxiosError) => {
             console.log(error);
         });
@@ -162,6 +165,7 @@ function Dashboard () {
                     <input type="date" id="start-date" name="start_date" value={ dateRange.start_date } onChange={e => handleDate(e)}/>
                     <input type="date" id="end-date" name="end_date" value={ dateRange.end_date } onChange={e => handleDate(e)}/>
                     <Form.Select name='frequency' onChange={e => handleDate(e)}>
+                        <option value="B">Daily</option>
                         <option value="W-MON">Weekly</option>
                         <option value="MS">Monthly</option>
                         <option value="QS">Quarterly</option>

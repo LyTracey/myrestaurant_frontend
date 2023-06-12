@@ -82,8 +82,8 @@ function Menu ( props: any ) {
     
     // Fetch menu data and ingredients data on first load
     useEffect(() => {
-        getMenu();
         getIngredients();
+        getMenu();
     }, []);
     
 
@@ -184,7 +184,7 @@ function Menu ( props: any ) {
                                 <div className='card-details'>
                                     <Card.Text>{ item.description }</Card.Text>
                                     <Card.Text>{ `£ ${ item.price }` }</Card.Text>
-                                    <Card.Text>Ingredients: { item.ingredients.map(item => ingredients[item]["title"] ).join(", ") }</Card.Text>
+                                    <Card.Text>Ingredients: { item.ingredients.map(i => ingredients[i]["title"] ).join(", ") }</Card.Text>
                                 </div>
                             </Card.Body>
                         </Col>
