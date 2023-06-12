@@ -1,6 +1,8 @@
 # **Moonlight Cafe**
 
-A website for small cafe owners. 
+Description: A website for small cafe owners.
+
+The deployed version of this website can be found at [here](https://www.tea-ly.co.uk).
 
 > **NOTE:** This repository is for the frontend only. Visit [backend](https://github.com/LyTracey/myrestaurant_backend) to view the repository for the backend of this project.
 
@@ -30,10 +32,10 @@ A website for small cafe owners.
 
 ## **Purpose**
 
-Moonlight Cafe was built to practice my full-stack engineering skills. I chose a cafe as a real-world scenario to develop my use cases around from the perspective of managing and running a small cafe shop. Please note that this is a fictitious cafe!
+I built this website to develop and practice my full-stack engineering skills. I chose a cafe as a real-world scenario to develop my use cases around from the perspective of managing and running a small cafe shop. Please note that Moonlight Cafe is a fictitious cafe!
 
-The main use cases I developed this website around are:
-> As a manager, I would like to have an overview of the cafe's sales, revenue, profits, and be warned of anything I should be aware of.
+I developed this website around these main use cases:
+> As a manager, I would like to have an overview of the cafe's sales, revenue, profits, and be warned of anything that's out of stock.
 
 > As a sales staff member, I require an application I can use to record orders. I also need an overview of the cafe's sales and be warned of anything that's out of stock.
 
@@ -45,9 +47,10 @@ The main use cases I developed this website around are:
  
 ### Backend
 
-The backed was built using Django and Django Rest Framework (DRF) connected to a PostgreSQL database. I opted to use DRF wherever possibe as it provides many useful classes that abstracts Django for many common use cases, making the code more maintainable.
+The backed was built using Django and Django Rest Framework (DRF) connected to a MySQL database. I opted to use DRF wherever possibe as it provides many useful classes that abstracts Django for many common use cases applicable to this project.
 
 The image below depicts the relationships between the user-defined models of the backend.
+
 
 
 ### Frontend
