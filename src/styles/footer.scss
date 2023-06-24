@@ -22,8 +22,7 @@
 .footer {
     height: 125px;
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: -125px;
     width: 100%;
 
     .navbar-brand:hover, .nav-link:hover {

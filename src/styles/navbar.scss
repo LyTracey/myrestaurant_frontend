@@ -10,7 +10,7 @@
         fill: map-get(base.$themes, "light-grey");
     }
 
-    .active {
+    a:active {
         border-bottom: 2px solid map-get(base.$themes, "blue");
         color: map-get(base.$themes, "blue");
     }
@@ -26,10 +26,10 @@
         fill: map-get(base.$themes, "beige");
     }
 
-    .active {
-        border-bottom: 2px solid map-get(base.$themes, "beige");
-        color: map-get(base.$themes, "beige");
-    }
+    // .active {
+    //     border-bottom: 2px solid map-get(base.$themes, "beige");
+    //     color: map-get(base.$themes, "beige");
+    // }
 
 }
 

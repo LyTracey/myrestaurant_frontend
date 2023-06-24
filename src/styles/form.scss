@@ -33,8 +33,14 @@
     }
 
     form {
-        max-width: 60%;
         margin: 0 auto;
+        max-width: 60%;
+    }
+
+    .modal-body {
+        form {
+            max-width: 100%;
+        }
     }
 
     // Validity
