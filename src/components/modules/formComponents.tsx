@@ -3,7 +3,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-import React, { MutableRefObject, SetStateAction} from "react";
+import { MutableRefObject, SetStateAction, MouseEvent} from "react";
 
 interface ReadFieldGroupInput {
     value: number | string,       // value of field
@@ -375,8 +375,34 @@ export function InputMultiFieldGroup2 ({type, reference, items_list, name, ref, 
 
 
 type SetDeleteAlert = (confirm: boolean) => void;
-type HandleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, method: string, data: object) => void;
 
+type OnClickYes = (e: MouseEvent<HTMLElement>) => void;
+type OnClickCancel = () => void;
+
+export function DeleteAlert2 (onClickYes: OnClickYes, onClickCancel: OnClickCancel) {
+    /*
+    Returns an alert that confirms the user wants to delete the item.
+    1. If cancel, dismiss alert and return to modal.
+    2. If yes, send a delete request to the backend API and close modal.
+    */
+   
+   return (
+       <Alert onClose={() => onClickCancel() } dismissible>
+            <Alert.Heading>
+                Are you sure you want to delete this item?
+            </Alert.Heading>
+            <div className='alert-actions'>
+                <Button type="button" className="cancel" onClick={() => onClickCancel() }>Cancel</Button>
+                <Button type="button" className="yes" onClick={(e) => {
+                    onClickYes(e);
+                    onClickCancel();
+                }}>Yes</Button>
+            </div>
+        </Alert>
+    )
+};
+
+type HandleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, method: string, data: object) => void;
 export function DeleteAlert (data: object, setDeleteAlert: SetDeleteAlert, handleSubmit: HandleSubmit) {
     /*
         Returns an alert that confirms the user wants to delete the item.
@@ -385,14 +411,14 @@ export function DeleteAlert (data: object, setDeleteAlert: SetDeleteAlert, handl
     */
 
     return (
-        <Alert onClose={() => setDeleteAlert(false)} dismissible>
+        <Alert onClose={() => setDeleteAlert(false) } dismissible>
             <Alert.Heading>
                 Are you sure you want to delete this item?
             </Alert.Heading>
             <div className='alert-actions'>
                 <Button type="button" className="cancel" onClick={() => setDeleteAlert(false) }>Cancel</Button>
-                <Button type="button" className="yes" onClick={(e) => {
-                    handleSubmit(e, "delete", data);
+                <Button type="button" className="yes" onClick={(e: any) => {
+                    handleSubmit(e, "delete", data)
                     setDeleteAlert(false);
                 }}>Yes</Button>
             </div>

@@ -1,5 +1,13 @@
-import { useState, useEffect } from 'react';
-import { AxiosError } from 'axios';
+import { 
+    useState, 
+    useEffect, 
+    useContext, 
+    useRef,
+    useMemo, 
+    FormEvent,
+    SetStateAction, 
+    Dispatch, 
+} from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -8,18 +16,16 @@ import MenuCreateForm from './menuCreateForm';
 import MenuUpdateForm from './menuUpdateForm';
 import Button from 'react-bootstrap/Button';
 import endpoints from '../../../data/endpoints';
-import "../../../styles/menu.scss";
+import axios, { AxiosError } from 'axios';
 import slugify from 'slugify';
 import { ReactComponent as CoffeeCup } from "../../../images/icons/coffee-cup.svg";
-import { useContext, useMemo, SetStateAction, Dispatch, useRef } from 'react';
 import { ThemeContext } from '../Base/App';
 import { dataAPI } from '../Base/App';
 import { submitDataRequest } from '../../../utils/baseUtils';
-import { InventoryObj} from '../Inventory/inventory';
-import axios from "axios";
+import { InventoryObj } from '../Inventory/inventory';
+import "../../../styles/menu.scss";
 
 interface MenuObj {
-    [index: string]: any,
     id?: number | null,
     title: string | null,
     ingredients: Array<number>,
@@ -30,12 +36,21 @@ interface MenuObj {
     available_quantity?: number
 };
 
-interface IngredientsObj {
-    [key: number]: any
+
+// Default menu object
+const MENU_OBJ = {
+    id: null,
+    title: "",
+    description: "",
+    price: null,
+    image: null,
+    ingredients: [],
+    units: {}
 };
 
+
+// Fetch menu data and ingredients data
 export function fetchData (setMenu: Dispatch<SetStateAction<Array<MenuObj>>>, setInventory: Dispatch<SetStateAction<Array<InventoryObj>>>) {
-    // Fetch menu data and ingredients data on render
     axios.all([
         dataAPI.get(`${endpoints["menu"]}`),
         dataAPI.get(`${endpoints["inventory"]}`)
@@ -50,67 +65,47 @@ export function fetchData (setMenu: Dispatch<SetStateAction<Array<MenuObj>>>, se
     }))    
 };
 
-// Set states
-const menuObj = {
-    id: null,
-    title: "",
-    description: "",
-    price: null,
-    image: null,
-    ingredients: [],
-    units: {}
-};
 
 function Menu ( props: any ) {
-
+    
+    // External data states
     const [menu, setMenu] = useState<Array<MenuObj>>([]);
-    // const [ingredients, setIngredients] = useState<IngredientsObj>({});
     const [inventory, setInventory] = useState<Array<InventoryObj>>([]);
-    // const [newMenu, setNewMenu] = useState<MenuObj>(menuObj);
-    const [addItem, setAddItem] = useState<boolean>(false);
-    // const [updateMenu, setUpdateMenu ] = useState<MenuObj>(menuObj);
-    const updateMenu = useRef<MenuObj>(structuredClone(menuObj));
-    const [updateItem, setUpdateItem] = useState<boolean>(false);
+
+
+    // Form states
+    const [openForm, setOpenForm] = useState<"add" | "update" | "none">("none")
     const theme = useContext(ThemeContext);
+    const updateMenu = useRef<MenuObj>(structuredClone(MENU_OBJ));
 
 
+    // Fetch menu and invenotry data on load
     useEffect(() => fetchData(setMenu, setInventory), []);
     
-    const ingredients: IngredientsObj = useMemo(() => {
-        // Return object of id as key and ingredient as value fields for each inventory item
+
+    // Filter map invenotry items to an object as id: title key-values when inventory state changes
+    const ingredients: {[key: number]: string} = useMemo(() => {
         return Object.fromEntries(inventory.map((ingredient: InventoryObj) => (
             [ingredient.id, ingredient.ingredient]
         )))
     }, [inventory]);
-    
 
-    // // Update newMenu state
-    // const handleData = (item: string, value: string | number, method: "add" | "update") => {
-    //     method === "add" ? setNewMenu({...newMenu, [item]: value}) : setUpdateMenu({...updateMenu, [item]: value})
-    // };
 
     // Handle submit to backend
-    const handleSubmit = async (e: Event, method: string, data: MenuObj) => {
-        let dataObj = {
-            ...(method === "add" && { title: data.title }),
-            description: data.description,
-            price: data.price,
-            "ingredients[]": data.ingredients,
-            "units{}": data.units
-        };
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>, method: string, data: MenuObj, setValidated: Dispatch<SetStateAction<boolean>>) => {
 
         await submitDataRequest({
             event: e,
             method: method,
-            data: dataObj,
+            data: data,
             url: method === "add" ? `${endpoints["menu"]}` : `${endpoints["menu"]}${slugify(data.title ?? "")}/`,
             resolve: () => {
-                setAddItem(false);
-                setUpdateItem(false);
+                setOpenForm("none");
                 fetchData(setMenu, setInventory);
             },
-            reject: (error: AxiosError) => console.log(error) 
-        })  
+            reject: (error: AxiosError) => console.log(error),
+            setValidated: setValidated
+        })
     };
 
     return (
@@ -122,22 +117,27 @@ function Menu ( props: any ) {
             {
                 (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) &&
                 <Row xs={2} className='actions'>
-                    <Button className="add" onClick={() => {
-                        // setNewMenu({...menuObj});
-                        setAddItem(!addItem);
-                    }}>Add Item +</Button>
+                    <Button className="add" onClick={() =>
+                        setOpenForm("add")
+                    }>Add Item +</Button>
                 </Row>
             }
 
             <MenuCreateForm
                 theme={ theme }
-                addItem={ addItem }
-                onHide={() => setAddItem(false)}
+                openForm={ openForm }
+                onHide={() => setOpenForm("none")}
                 handleSubmit={ handleSubmit }
-                // newMenu={ newMenu }
-                // setNewMenu={ setNewMenu }
-                // handleData={ handleData }
                 ingredients={ ingredients }
+            />
+
+            <MenuUpdateForm
+                theme={ theme }
+                openForm={ openForm }
+                onHide={ () => setOpenForm("none") }
+                handleSubmit={ handleSubmit }
+                ingredients={ ingredients } 
+                updateMenu={ updateMenu }
             />
 
             <Row xs={1} md={2} lg={3}>
@@ -145,9 +145,10 @@ function Menu ( props: any ) {
                     return (
                         <Col key={`menu-item-${i}`}>
                             <Card.Body onClick={() => {
-                                    if (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) {        // Only render update form if user isStaff and has a role of MANAGER | CHEF
-                                        updateMenu.current = {...menuObj, ...item};
-                                        setUpdateItem(!updateItem);
+                                    // Only render update form if user isStaff and has a role of MANAGER | CHEF
+                                    if (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) {       
+                                        updateMenu.current = {...MENU_OBJ, ...item};
+                                        setOpenForm("update");
                                     }
                                 }} className={!props.isStaff ? "default-cursor" : ""}>
                                 <Card.Title>{ item.title }</Card.Title>
@@ -163,16 +164,6 @@ function Menu ( props: any ) {
                 }) }
             </Row>
 
-            <MenuUpdateForm
-                updateItem={ updateItem }
-                onHide={ () => setUpdateItem(false) }
-                handleSubmit={ handleSubmit }
-                theme={ theme }
-                ingredients={ ingredients } 
-                updateMenu={ updateMenu }
-                // handleData={ handleData }
-                // setUpdateMenu={ setUpdateMenu }
-            />
         </Container>
     )
 };

@@ -3,7 +3,7 @@ interface Endpoint {
 };
 
 const endpoints: Endpoint = {
-    prefix: "https://tly.pythonanywhere.com//myrestaurant/",
+    prefix: "https://tly.pythonanywhere.com/myrestaurant/",
     prefix_user: "https://tly.pythonanywhere.com/user/",
     dashboard: "dashboard/",
     menu: "menu/",

@@ -8,49 +8,50 @@ import {
     SelectMultiFieldGroup2, 
     InputMultiFieldGroup2, 
     SubmitDelete,
-    DeleteAlert, 
+    DeleteAlert2, 
     ColumnsToRows } from '../../modules/formComponents';
 import Container from "react-bootstrap/Container";
 import "../../../styles/form.scss";
-import { useState, FormEvent, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, FormEvent, MouseEvent } from 'react';
 
 function MenuUpdateForm (props: any) {
 
-    // Set states
+    // Form states
     const [deleteAlert, setDeleteAlert] = useState(false);
-    const [validated, setValidated] = useState(false);
+    const [validated, setValidated] = useState<boolean>(false);
+
+    // Input field states
     const description = useRef<HTMLInputElement>(null);
     const price = useRef<HTMLInputElement>(null);
     const [ingredients, setIngredients] = useState<Array<number>>([]);
-    const units = useRef<{[key: string]: number}>();
-    
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        const form = e.currentTarget;
-        if (form.checkValidity() === false) {
-            e.preventDefault();
-            e.stopPropagation();
-        } else {
-            props.handleSubmit(e, "update", props.updateMenu);
-        }
-        setValidated(true);
-      };
+    const units = useRef<{[key: string]: number}>({});
 
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement> |  MouseEvent<HTMLElement>, method: "update" | "delete") => {
+        props.handleSubmit(e, method, {
+            title: props.updateMenu.current.title ,
+            description: description.current!.value,
+            price: Number(price.current!.value),
+            "ingredients[]": ingredients,
+            "units{}": units.current
+        }, setValidated);
+    };
+
+
+    // Reset ingredients and units states when update dialogue is opened
     useEffect(() => {
-        setIngredients([...props.updateMenu.current.ingredients]);
-        units.current = structuredClone(props.updateMenu.current.units);
-        
-    }, [props.updateItem]);
+        if (props.openForm === "update" ) {
+            setIngredients([...props.updateMenu.current.ingredients]);
+            units.current = structuredClone(props.updateMenu.current.units);
+        }
+    }, [props.openForm]);
+
 
     const Ingredients = SelectMultiFieldGroup2({
         name: "ingredients",
         reference: props.ingredients,
         state: ingredients,
         stateSetter: setIngredients
-        // label: "Ingredients", 
-        // data: props.updateMenu, 
-        // values_obj: "units", 
-        // items_list: "ingredients÷",
-        // setObj: props.setUpdateMenu
     });
 
     const Units = InputMultiFieldGroup2({
@@ -60,10 +61,6 @@ function MenuUpdateForm (props: any) {
         ref: units,
         type: "number",
         feedback: "Unit must be greater than 0.01."
-        // label: "Units", 
-        // data: props.updateMenu, 
-        // values_obj: "units", 
-        // setObj: props.setupdateMenu,
     }, {
         min: 0.01,
         required: true,
@@ -71,7 +68,7 @@ function MenuUpdateForm (props: any) {
 });
 
     return (
-        <Modal className={`menu-form page-form ${ props.theme }`} show={ props.updateItem } onHide={() => {
+        <Modal className={`menu-form page-form ${ props.theme }`} show={ props.openForm === "update" } onHide={() => {
             setDeleteAlert(false);
             props.onHide();
             setValidated(false); 
@@ -82,7 +79,7 @@ function MenuUpdateForm (props: any) {
             </Modal.Header>
 
             <Modal.Body>
-                <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)} >
+                <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e, "update")}>
                     { 
                         ReadFieldGroup({
                             value: props.updateMenu.current.title, 
@@ -100,9 +97,6 @@ function MenuUpdateForm (props: any) {
                             defaultValue: props.updateMenu.current.description,
                             ref: description,
                             feedback: "Max character length is 300."
-                            // dataHandler: props.handleData,
-                            // method: "update",
-                            // value: props.updateMenu.description, 
                         }, {
                             maxLength: 300,
                         }) 
@@ -116,9 +110,6 @@ function MenuUpdateForm (props: any) {
                             defaultValue: props.updateMenu.current.price,
                             ref: price,
                             feedback: "Required. Max character length is 100."
-                            // method: "update",
-                            // dataHandler: props.handleData,
-                            // value: props.updateMenu.price, 
                         }, {
                             maxLength: 100,
                             required: true,
@@ -140,7 +131,10 @@ function MenuUpdateForm (props: any) {
 
                 </Form>
 
-                { deleteAlert && DeleteAlert(props.updateMenu, setDeleteAlert, props.handleSubmit) }
+                { deleteAlert && DeleteAlert2(
+                    (e: MouseEvent<HTMLElement>) => handleSubmit(e, "delete"),
+                    () => setDeleteAlert(false) 
+                )}
 
             </Modal.Body>
         </Modal>

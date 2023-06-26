@@ -22,39 +22,30 @@ function MenuCreateForm (props: any) {
     const [ingredients, setIngredients] = useState<Array<number>>([]);
     const units = useRef<{[key: string]: number}>({});
 
-    useEffect(() => setIngredients([]), [props.addItem]);
-
-    
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        const form = e.currentTarget;
-
-        console.log(title.current)
-        if (form.checkValidity() === false) {
-            e.preventDefault();
-            e.stopPropagation();
-        } else {
-            // const newNewMenu = {...props.newMenu, description: description.current}
-            props.handleSubmit(e, "add", {
-                title: title.current!.value,
-                description: description.current!.value,
-                price: Number(price.current!.value),
-                ingredients: ingredients,
-                units: units.current
-            });
+    // Reset ingredients and units states when add dialogue is opened
+    useEffect(() => {
+        if (props.openForm === "add") {
+            setIngredients([]);
+            units.current = {};
         }
-        setValidated(true);
-      };
+    }, [props.openForm]);
+
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        props.handleSubmit(e, "add", {
+            title: title.current!.value,
+            description: description.current!.value,
+            price: Number(price.current!.value),
+            "ingredients[]": ingredients,
+            "units{}": units.current
+        }, setValidated);
+    };
       
       const Ingredients = SelectMultiFieldGroup2({
         name: "ingredients",
         reference: props.ingredients, 
         state: ingredients,
         stateSetter: setIngredients
-        // label: "Ingredients",
-        // values_obj: "units", 
-        // items_list: "ingredients",
-        // data: props.newMenu, 
-        // setObj: props.setNewMenu
     });
 
     const Units = InputMultiFieldGroup2({
@@ -64,8 +55,6 @@ function MenuCreateForm (props: any) {
         ref: units,
         type: "number",
         feedback: "Unit must be greater than 0.01."
-        // data: props.newMenu,
-        // values_obj: "units", 
     }, {
         min: 0.01,
         required: true,
@@ -73,7 +62,7 @@ function MenuCreateForm (props: any) {
 });
 
     return (
-        <Modal className={`menu-form page-form ${ props.theme }`} show={ props.addItem } onHide={() => {
+        <Modal className={`menu-form page-form ${ props.theme }`} show={ props.openForm === "add" } onHide={() => {
             props.onHide();
             setValidated(false); 
         }}>
@@ -86,7 +75,6 @@ function MenuCreateForm (props: any) {
                 <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)} >
                     { 
                         EditFieldGroup2({
-                            // value: props.newMenu.title, 
                             name: "title", 
                             label: "Title*", 
                             type: "text", 
@@ -101,7 +89,6 @@ function MenuCreateForm (props: any) {
 
                     { 
                         EditFieldGroup2({
-                            // value: props.newMenu.description, 
                             name: "description", 
                             label: "Description", 
                             type: "text",
@@ -115,7 +102,6 @@ function MenuCreateForm (props: any) {
 
                     { 
                         EditFieldGroup2({
-                            // value: props.newMenu.price, 
                             name: "price", 
                             label: "Price*", 
                             type: "number", 

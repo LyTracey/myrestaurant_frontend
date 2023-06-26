@@ -1,4 +1,12 @@
-import { useState, useEffect } from "react";
+import {
+        useState, 
+        useEffect, 
+        useContext, 
+        FormEvent,
+        Dispatch,
+        SetStateAction,
+        useRef
+} from "react";
 import Container from 'react-bootstrap/Container';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,10 +18,9 @@ import InventoryCreateForm from "./inventoryCreateForm";
 import InventoryUpdateForm from "./inventoryUpdateForm";
 import slugify from "slugify";
 import "../../../styles/inventory.scss";
-import { useContext } from 'react';
-import { ThemeContext } from '../Base/App';
+import { ThemeContext, dataAPI } from '../Base/App';
 import { AxiosResponse, AxiosError } from 'axios';
-import { dataAPI } from "../Base/App";
+import { submitDataRequest } from "../../../utils/baseUtils";
 
 
 export interface InventoryObj {
@@ -33,83 +40,49 @@ export const INVENTORY_OBJ = {
     image: null
 };
 
+// Fetch inventory data
+export function fetchData (setInventory: Dispatch<SetStateAction<Array<InventoryObj>>>) {
+    dataAPI.get(`${endpoints["inventory"]}`)
+    .then((inventoryResponse: AxiosResponse) =>
+        setInventory(inventoryResponse.data)
+    )
+    .catch((inventoryError: AxiosError) =>
+        console.log(inventoryError)
+    )
+};
+
+
+
 function Inventory () {
 
-    // Set states
-    
+    // External data states
     const [inventory, setInventory] = useState<Array<InventoryObj>>([]);
-    const [addItem, setAddItem] = useState<boolean>(false);
-    const [updateItem, setUpdateItem] = useState<boolean>(false);
-    const [newInventory, setNewInventory] = useState<InventoryObj>(INVENTORY_OBJ);
-    const [updateInventory, setUpdateInventory] = useState<InventoryObj>(INVENTORY_OBJ);
 
+    // Form states
+    const [openForm, setOpenForm] = useState<"add" | "update" | "none">("none")
+    const updateInventory = useRef<InventoryObj>(structuredClone(INVENTORY_OBJ));
     const theme = useContext(ThemeContext);
 
-    // Get inventory
-    const getInventory = async () => {
-        await dataAPI.get(
-            `${endpoints["inventory"]}`
-        ).then((response: AxiosResponse) => {
-            setInventory(response.data);
-        }).catch((error: AxiosError) => {
-            console.log(error);
-        });
-    };
 
     // Fetch inventory on load
-    useEffect(() => {
-        getInventory();
-    }, []);
+    useEffect(() => fetchData(setInventory), []);
 
-    // Handle data
-    const handleData = (item: string, value: string | number, method: "add" | "update") => {
-        method === "add" ? setNewInventory({...newInventory, [item]: value}) : setUpdateInventory({...updateInventory, [item]: value})
-    };
 
-    // Handle submit
-    const handleSubmit = async (e: SubmitEvent, method: "add" | "update" | "delete", data: InventoryObj) => {
-        e.preventDefault();
-        const itemPath = `${endpoints["inventory"]}${slugify(String(data.id) ?? "")}/`;
-        switch (method) {
-            case "delete":
-                await dataAPI.delete( itemPath,
-                ).then(() => {
-                    console.log(`Successfully deleted ${data.ingredient}`);
-                    setUpdateItem(!updateItem);
-                    getInventory();
-                }).catch((error: AxiosError) => 
-                    console.log(error)
-                );
-                break;
-            case "add":
-                await dataAPI.post(
-                    `${endpoints["inventory"]}`, {
-                        ingredient: newInventory.ingredient,
-                        quantity: newInventory.quantity,
-                        unit_price: newInventory.unit_price,
-                    }).then(() => {
-                        setAddItem(!addItem);
-                        getInventory();
-                    }).catch((error: AxiosError) => {
-                        console.log(error);
-                    });
-                break;
-            case "update":
-                await dataAPI.patch(itemPath, {
-                    ingredient: updateInventory.ingredient,
-                    quantity: updateInventory.quantity,
-                    unit_price: updateInventory.unit_price,
-                }).then(() => {
-                    setUpdateItem(!updateItem);
-                    getInventory();
-                }).catch((error: AxiosError) => {
-                    console.log(error);
-                })
-                break;
-            default:
-                console.log("Unrecognised method");
-        }  
+    // Handle submit to backend
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>, method: string, data: InventoryObj, setValidated: Dispatch<SetStateAction<boolean>>) => {
 
+        await submitDataRequest({
+            event: e,
+            method: method,
+            data: data,
+            url: method === "add" ? `${endpoints["inventory"]}` : `${endpoints["inventory"]}${slugify(String(data.id) ?? "")}/`,
+            resolve: () => {
+                setOpenForm("none");
+                fetchData(setInventory);
+            },
+            reject: (error: AxiosError) => console.log(error),
+            setValidated: setValidated
+        })
     };
 
     return (
@@ -119,28 +92,24 @@ function Inventory () {
             </Row>
 
             <Row className='actions'>
-                <Button onClick={() => {
-                    setNewInventory({...INVENTORY_OBJ});
-                    setAddItem(!addItem);
-            }}>Add Item +</Button>
+                <Button onClick={() => 
+                    setOpenForm("add")
+            }>Add Item +</Button>
             </Row>
 
             <InventoryCreateForm
-                handleSubmit={ handleSubmit }
-                handleData={ handleData }
-                newInventory={ newInventory }
-                addItem={ addItem }
-                onHide={() => setAddItem(false)}
                 theme={ theme }
+                openForm={ openForm }
+                onHide={() => setOpenForm("none")}
+                handleSubmit={ handleSubmit }
             />
 
             <InventoryUpdateForm
-                handleSubmit={ handleSubmit }
-                updateItem={ updateItem }
-                onHide={ () => setUpdateItem(false) }
-                handleData={ handleData }
-                updateInventory={ updateInventory }
                 theme={ theme }
+                openForm={ openForm }
+                onHide={ () => setOpenForm("none") }
+                handleSubmit={ handleSubmit }
+                updateInventory={ updateInventory }
             />
 
             <Row xs={1} md={2} lg={3}>
@@ -148,8 +117,8 @@ function Inventory () {
                     return (
                         <Col key={`inventory-item-${i}`}>
                             <Card.Body onClick={() => {
-                                    setUpdateInventory({...INVENTORY_OBJ, ...item});
-                                    setUpdateItem(!updateItem);
+                                    updateInventory.current = ({...INVENTORY_OBJ, ...item});
+                                    setOpenForm("update");
                                 }}>
                                 <Card.Title>{ item.ingredient }</Card.Title>
                                 <CoffeeBeans className="icon"/>

@@ -5,6 +5,7 @@ import { PUBLIC } from "../components/pages/Base/App";
 import { Location, NavigateFunction } from "react-router-dom";
 import { dataAPI } from "../components/pages/Base/App";
 import { Dispatch, SetStateAction } from "react";
+import { FormEvent } from "react";
 
 export const checkTokens = async (
     navigationRef: React.MutableRefObject<NavigateFunction>,
@@ -51,36 +52,47 @@ const SUBMIT_ACTIONS = {
 };
 
 interface SubmitObj {
-    event: Event,
+    event: FormEvent<HTMLFormElement>,
     method: string,
     data?: any,
     url: string,
     resolve: (...args: any) => void,
-    reject:  (error: AxiosError, ...args: any) => void
+    reject:  (error: AxiosError, ...args: any) => void,
+    setValidated?: Dispatch<SetStateAction<boolean>>
 };
 
-export function submitDataRequest ({event, method, data, url, resolve, reject}: SubmitObj) {
+export function submitDataRequest ({event, method, data, url, resolve, reject, setValidated=(bool) => {console.log(bool)}}: SubmitObj) {
     /*
         Function that handles delete, post, and patch requests for the dataAPI.
     */
+   
+   event.preventDefault();
 
-    event.preventDefault();
-    switch  (method) {
-        case SUBMIT_ACTIONS.DELETE:
-            return dataAPI.delete( url,
-                ).then(() => resolve()
-                ).catch((error: AxiosError) => reject(error));
-        case SUBMIT_ACTIONS.ADD:
-            return dataAPI.post( url, data
-            ).then(() => resolve())
-            .catch((error: AxiosError) => reject(error));
-        case SUBMIT_ACTIONS.UPDATE:
-            return dataAPI.patch( url, data
-            ).then((response: AxiosResponse) => resolve(response))
-            .catch((error: AxiosError) => reject(error));
-        default:
-            return "Unknown action"
+   const form = event.currentTarget!;
+   if (form.checkValidity() === false) {
+        event.stopPropagation();
+        return "Not valid"
+    } else {
+        switch (method) {
+            case SUBMIT_ACTIONS.DELETE:
+                return dataAPI.delete( url,
+                    ).then(() => resolve()
+                    ).catch((error: AxiosError) => reject(error));
+            case SUBMIT_ACTIONS.ADD:
+                return dataAPI.post( url, data
+                ).then(() => resolve())
+                .catch((error: AxiosError) => reject(error));
+            case SUBMIT_ACTIONS.UPDATE:
+                return dataAPI.patch( url, data
+                ).then((response: AxiosResponse) => resolve(response))
+                .catch((error: AxiosError) => reject(error));
+            default:
+                return "Unknown action"
+        }
     }
+    
+
+    setValidated(true);
 
 };
 

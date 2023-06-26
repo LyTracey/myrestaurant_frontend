@@ -1,27 +1,29 @@
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import { EditFieldGroup, Submit} from '../../modules/formComponents';
-import { useState, FormEvent } from 'react';
+import { 
+    EditFieldGroup2, 
+    Submit} from '../../modules/formComponents';
+import { useState, FormEvent, useRef } from 'react';
 import "../../../styles/form.scss";
 
 function InventoryCreateForm (props: any) {
 
     // Set states
     const [validated, setValidated] = useState(false);
-    
+    const ingredient = useRef<HTMLInputElement>(null);
+    const quantity = useRef<HTMLInputElement>(null);
+    const unit_price = useRef<HTMLInputElement>(null);
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        const form = e.currentTarget;
-        if (form.checkValidity() === false) {
-            e.preventDefault();
-            e.stopPropagation();
-        } else {
-            props.handleSubmit(e, "add", props.newInventory);
-        }
-        setValidated(true);
-      };
+        props.handleSubmit(e, "add", {
+            ingredient: ingredient.current!.value,
+            quantity: quantity.current!.value,
+            unit_price: Number(unit_price.current!.value),
+        }, setValidated);
+    };
 
     return (
-        <Modal className={`inventory-form page-form ${ props.theme }`} show={ props.addItem } onHide={() => {
+        <Modal className={`inventory-form page-form ${ props.theme }`} show={ props.openForm === "add" } onHide={() => {
             props.onHide();
             setValidated(false); 
         }}>
@@ -33,13 +35,12 @@ function InventoryCreateForm (props: any) {
             <Modal.Body>
                 <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)} >
                     { 
-                        EditFieldGroup({
-                            value: props.newInventory.ingredient, 
+                        EditFieldGroup2({
                             name: "ingredient", 
                             label: "Ingredient*", 
                             type: "text", 
-                            dataHandler: props.handleData,
-                            method: "add",
+                            ref: ingredient,
+                            defaultValue: "",
                             feedback: "Required. Max character length is 100."
                         }, {
                             maxLength: 100,
@@ -48,13 +49,12 @@ function InventoryCreateForm (props: any) {
                     }
 
                     { 
-                        EditFieldGroup({
-                            value: props.newInventory.quantity, 
+                        EditFieldGroup2({
                             name: "quantity", 
                             label: "Quantity Available*", 
-                            type: "number", 
-                            dataHandler: props.handleData,
-                            method: "add",
+                            type: "number",
+                            ref: quantity,
+                            defaultValue: String(0),
                             feedback: "Required. Minimum is 0."
                         }, {
                             min: 0,
@@ -63,13 +63,12 @@ function InventoryCreateForm (props: any) {
                     }
 
                     { 
-                        EditFieldGroup({
-                            value: props.newInventory.unit_price, 
+                        EditFieldGroup2({
                             name: "unit_price", 
                             label: "Unit Price*", 
                             type: "number", 
-                            dataHandler: props.handleData,
-                            method: "add",
+                            defaultValue: String(0),
+                            ref: unit_price,
                             feedback: "Required. Minimum is £0.00."
                         }, {
                             min: 0,
