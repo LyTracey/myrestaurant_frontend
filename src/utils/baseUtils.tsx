@@ -1,50 +1,14 @@
-import { userAPI } from "../components/pages/Base/App";
-import endpoints from "../data/endpoints";
+// import { userAPI } from "../components/pages/Base/App";
+// import endpoints from "../data/endpoints";
 import { AxiosResponse, AxiosError } from "axios";
-import { PUBLIC } from "../components/pages/Base/App";
-import { Location, NavigateFunction } from "react-router-dom";
-import { dataAPI } from "../components/pages/Base/App";
-import { Dispatch, SetStateAction } from "react";
+// import { PUBLIC } from "../components/pages/Base/App";
+// import { Location, NavigateFunction } from "react-router-dom";
+import { dataAPI, userAPI } from "../components/pages/Base/App";
+import { Dispatch, SetStateAction, MouseEvent } from "react";
 import { FormEvent } from "react";
-
-export const checkTokens = async (
-    navigationRef: React.MutableRefObject<NavigateFunction>,
-    setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>,
-    location: React.MutableRefObject<Location>
-    ) => {
-        if (sessionStorage.getItem("access")) {
-            // Check if access token exsits
-            await userAPI.post(
-                `${endpoints["verify"]}`,
-                {token: sessionStorage.getItem("access")}
-            ).catch(async () => {
-                // If access token is invalid, try refreshing token
-                await userAPI.post(
-                    `${endpoints["refresh"]}`,
-                ).then((response: AxiosResponse) => {
-                    // If refresh token valid, set new access token
-                    sessionStorage.setItem("access", response.data.access);
-                    sessionStorage.setItem("loggedIn", "true");
-                    setLoggedIn(true);
-                })
-                .catch(() => {
-                    // If refresh token invalid, remove access token and make loggedIn false
-                    navigationRef.current("/logout");
-                });
-            }
-            );
-        } else {
-            sessionStorage.setItem("loggedIn", "false");
-            setLoggedIn(false);
-            if (!PUBLIC.includes(location.current.pathname)) {
-                navigationRef.current("/login");
-            }
-        }
-    };
 
 
 // Submit Request abstraction
-
 const SUBMIT_ACTIONS = {
     ADD: "add",
     DELETE: "delete",
@@ -52,35 +16,34 @@ const SUBMIT_ACTIONS = {
 };
 
 interface SubmitObj {
-    event: FormEvent<HTMLFormElement>,
+    event: FormEvent<HTMLFormElement> | MouseEvent<HTMLElement>,
     method: string,
     data?: any,
     url: string,
     resolve: (...args: any) => void,
     reject:  (error: AxiosError, ...args: any) => void,
-    setValidated?: Dispatch<SetStateAction<boolean>>
+    setValidated?: Dispatch<SetStateAction<boolean>> | null
 };
 
-export function submitDataRequest ({event, method, data, url, resolve, reject, setValidated=(bool) => {console.log(bool)}}: SubmitObj) {
+export function submitDataRequest ({event, method, data, url, resolve, reject, setValidated=null}: SubmitObj) {
     /*
         Function that handles delete, post, and patch requests for the dataAPI.
     */
    
    event.preventDefault();
 
-   const form = event.currentTarget!;
-   if (form.checkValidity() === false) {
+   if (event.currentTarget instanceof HTMLFormElement && event.currentTarget.checkValidity!() === false) {
         event.stopPropagation();
         return "Not valid"
-    } else {
+   } else {
         switch (method) {
             case SUBMIT_ACTIONS.DELETE:
                 return dataAPI.delete( url,
-                    ).then(() => resolve()
+                    ).then((response: AxiosResponse) => resolve(response)
                     ).catch((error: AxiosError) => reject(error));
             case SUBMIT_ACTIONS.ADD:
                 return dataAPI.post( url, data
-                ).then(() => resolve())
+                ).then((response: AxiosResponse) => resolve(response))
                 .catch((error: AxiosError) => reject(error));
             case SUBMIT_ACTIONS.UPDATE:
                 return dataAPI.patch( url, data
@@ -90,13 +53,45 @@ export function submitDataRequest ({event, method, data, url, resolve, reject, s
                 return "Unknown action"
         }
     }
-    
 
-    setValidated(true);
+    if (setValidated !== null ) {
+        setValidated!(true);
+    }
 
 };
 
 
-export function handleData (key: string, value: string | number, setMethod: Dispatch<SetStateAction<any>>, previousData: any) {
-    setMethod({...previousData, [key]: value})
+export function submitUserRequest ({event, method, data, url, resolve, reject, setValidated=null}: SubmitObj) {
+    /*
+        Function that handles delete, post, and patch requests for the dataAPI.
+    */
+   
+   event.preventDefault();
+
+   if (event.currentTarget instanceof HTMLFormElement && event.currentTarget.checkValidity!() === false) {
+        event.stopPropagation();
+        return "Not valid"
+   } else {
+        switch (method) {
+            case SUBMIT_ACTIONS.DELETE:
+                return userAPI.delete( url,
+                    ).then((response: AxiosResponse) => resolve(response)
+                    ).catch((error: AxiosError) => reject(error));
+            case SUBMIT_ACTIONS.ADD:
+                return userAPI.post( url, data
+                ).then((response: AxiosResponse) => resolve(response))
+                .catch((error: AxiosError) => reject(error));
+            case SUBMIT_ACTIONS.UPDATE:
+                return userAPI.patch( url, data
+                ).then((response: AxiosResponse) => resolve(response))
+                .catch((error: AxiosError) => reject(error));
+            default:
+                return "Unknown action"
+        }
+    }
+
+    if (setValidated !== null ) {
+        setValidated!(true);
+    }
+
 };

@@ -14,7 +14,7 @@ function Home () {
     const theme = useContext(ThemeContext);
 
     return (
-        <Container className={`home ${theme}`} fluid>
+        <Container className={`page home ${theme}`} fluid>
             <Row className="home-screen">
                 <div className="gradient"></div>
                 <img className="home-image" src={ theme === "light-mode" ? HomeImageLight : HomeImageDark } alt="Bunny and moon" ></img>

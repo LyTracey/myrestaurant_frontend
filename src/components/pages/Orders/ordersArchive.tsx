@@ -1,5 +1,11 @@
-import { useState, useEffect } from 'react';
-import { AxiosResponse, AxiosError } from 'axios';
+import { 
+    useState, 
+    useEffect,  
+    SetStateAction, 
+    useMemo,
+    Dispatch,
+    MouseEvent } from 'react';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
@@ -9,62 +15,59 @@ import Table from 'react-bootstrap/Table';
 import slugify from 'slugify';
 import { useContext } from 'react';
 import { ThemeContext } from '../Base/App';
-import { OrdersObj, MenuItemsObj} from "./orderTypes";
 import { dataAPI } from '../Base/App';
+import { MenuObj } from '../Menu/menu';
+import { OrdersObj } from './orders';
+import { submitDataRequest } from '../../../utils/baseUtils';
+
+
+// Fetch orders data from backend
+export function fetchData (setOrders: Dispatch<SetStateAction<Array<OrdersObj>>>, setMenu: Dispatch<SetStateAction<Array<MenuObj>>>) {
+    axios.all([
+        dataAPI.get(`${endpoints["archivedOrders"]}`),
+        dataAPI.get( `${endpoints["menu"]}`)
+    ])
+    .then(axios.spread((orderResponse: AxiosResponse, menuResponse: AxiosResponse) => {
+        setOrders(orderResponse.data);
+        setMenu(menuResponse.data);
+    })).catch(axios.spread((ordersError: AxiosError, menuError: AxiosError) => {
+        console.log(ordersError);
+        console.log(menuError);
+    }));
+};
 
 
 function ArchivedOrders () {
     
     // Set states
     const [orders, setOrders] = useState<Array<OrdersObj>>([]);
-    const [menu, setMenu] = useState<MenuItemsObj>({});
-        
-    // Fetch menu data from backend
-    const getOrders = () => {
-        dataAPI.get(
-            `${endpoints["archivedOrders"]}`
-        ).then((response: AxiosResponse) => {
-            setOrders(response.data);
-        }).catch((error: AxiosError) => {
-            console.log(error);
-        })
-    };
+    const [menu, setMenu] = useState<Array<MenuObj>>([]);
+      
     
-    // Fetch ingredients from backend
-    const getMenu = () => {
-        dataAPI.get(
-            `${endpoints["menu"]}`
-        ).then((response: AxiosResponse) => {
-            const filteredMenu: MenuItemsObj = {};
-            // Return object of id as key and ingredient as value fields for each inventory item 
-            response.data.forEach((item: any) => {
-                if (item.available_quantity > 0) {
-                    filteredMenu[item.id] = {title: item.title, available_quantity: item.available_quantity}
-                }
-            });
-            setMenu(filteredMenu);
-        }).catch((error: AxiosError) => {
-            console.log(error);
-        })
-    };
+    // Set variables
+    const filteredMenu = useMemo<{[key: number]: string}>(() => {
+        return Object.fromEntries(menu
+            .filter((item: MenuObj) => item.available_quantity! > 0 )
+            .map((item: MenuObj) => [item.id!, item.title!]
+            ))
+    }, [menu]);
+
 
     // Fetch menu data and ingredients data on first load
-    useEffect(() => {
-        getOrders();
-        getMenu();
-    }, []);
+    useEffect(() => fetchData(setOrders, setMenu), []);
 
-    // Handle submit multipart form to backend
-    const handleSubmit = async (e: any, id: number) => {
-        e.preventDefault();
-        const itemPath = `${endpoints["orders"]}${slugify(String(id))}/`;
-            dataAPI.patch(itemPath, {
-                complete: false
-            }).then(() => {
-                getOrders();
-            }).catch((error: AxiosError) => {
-                console.log(error);
-            })
+
+    // Handle requests to the backend
+    const handleSubmit = async (e: MouseEvent<HTMLElement>, id: number) => {
+
+        await submitDataRequest({
+            event: e,
+            method: "update",
+            data: { complete: false },
+            url: `${endpoints["orders"]}${slugify(String(id) ?? "")}/`,
+            resolve: () => fetchData(setOrders, setMenu),
+            reject: (error: AxiosError) => console.log(error),
+        })
     };
 
     return (
@@ -96,9 +99,9 @@ function ArchivedOrders () {
                             return (
                                 <tr className='rows' key={i}>
                                     <td className='id'>{ item.id }</td>
-                                    <td className='menu-items'>{item.menu_items.map((item, i) => {
+                                    <td className='menu-items'>{item.menu_items.map((menuItem, i) => {
                                         return (
-                                            <p key={i}>{menu[item]?.["title"]}</p>
+                                            <p key={i}>{filteredMenu[menuItem]}</p>
                                         )
                                     }
                                     )}</td>
@@ -106,7 +109,7 @@ function ArchivedOrders () {
                                     <td className='ordered-at'>{ String(item.ordered_at) }</td>
                                     <td className='prepared-at'>{ String(item.prepared_at) }</td>
                                     <td className='delivered-at'>{ String(item.delivered_at) }</td>
-                                    <td className='edit-order'><Button className="edit" onClick={(e) => handleSubmit(e, item.id! )}>Edit</Button></td>
+                                    <td className='edit-order'><Button className="edit" onClick={(e) => handleSubmit(e, item.id!)}>Edit</Button></td>
                                 </tr>
                                 )
 

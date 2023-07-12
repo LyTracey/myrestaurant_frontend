@@ -41,7 +41,7 @@ function MenuCreateForm (props: any) {
         }, setValidated);
     };
       
-      const Ingredients = SelectMultiFieldGroup2({
+    const Ingredients = SelectMultiFieldGroup2({
         name: "ingredients",
         reference: props.ingredients, 
         state: ingredients,

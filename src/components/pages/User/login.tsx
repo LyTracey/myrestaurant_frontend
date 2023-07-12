@@ -77,7 +77,7 @@ function Login (props: any) {
     };
 
     return (
-        <Container className={`login-form page-form ${useContext(ThemeContext)}`}>
+        <Container className={`page login-form page-form ${useContext(ThemeContext)}`}>
             <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)}>
                 
                 <h2 className="title">Login</h2>

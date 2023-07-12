@@ -25,7 +25,7 @@ import { submitDataRequest } from '../../../utils/baseUtils';
 import { InventoryObj } from '../Inventory/inventory';
 import "../../../styles/menu.scss";
 
-interface MenuObj {
+export interface MenuObj {
     id?: number | null,
     title: string | null,
     ingredients: Array<number>,
@@ -38,7 +38,7 @@ interface MenuObj {
 
 
 // Default menu object
-const MENU_OBJ = {
+export const MENU_OBJ = {
     id: null,
     title: "",
     description: "",
@@ -50,7 +50,7 @@ const MENU_OBJ = {
 
 
 // Fetch menu data and ingredients data
-export function fetchData (setMenu: Dispatch<SetStateAction<Array<MenuObj>>>, setInventory: Dispatch<SetStateAction<Array<InventoryObj>>>) {
+function fetchData (setMenu: Dispatch<SetStateAction<Array<MenuObj>>>, setInventory: Dispatch<SetStateAction<Array<InventoryObj>>>) {
     axios.all([
         dataAPI.get(`${endpoints["menu"]}`),
         dataAPI.get(`${endpoints["inventory"]}`)
@@ -62,7 +62,7 @@ export function fetchData (setMenu: Dispatch<SetStateAction<Array<MenuObj>>>, se
     .catch(axios.spread((menuError, inventoryError) => {
         console.log(menuError);
         console.log(inventoryError);
-    }))    
+    }))  
 };
 
 
@@ -109,7 +109,7 @@ function Menu ( props: any ) {
     };
 
     return (
-        <Container className={`menu ${ useContext(ThemeContext) }`}>
+        <Container className={`page menu ${ useContext(ThemeContext) }`}>
             <Row className='title'>
                 <h2>Menu</h2>
             </Row>

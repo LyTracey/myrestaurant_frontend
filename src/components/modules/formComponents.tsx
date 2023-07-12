@@ -3,7 +3,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-import { MutableRefObject, SetStateAction, MouseEvent} from "react";
+import { MutableRefObject, RefObject, SetStateAction, MouseEvent} from "react";
 
 interface ReadFieldGroupInput {
     value: number | string,       // value of field
@@ -82,13 +82,13 @@ export function EditFieldGroup ({value, name, label, type, dataHandler, method, 
 interface EditFieldGroup2Input {
     name: string,               // name of field 
     label: string,              // display label of field group
-    type: string,               // type of input
-    ref: MutableRefObject<any>,
-    defaultValue: string,
+    ref: RefObject<HTMLInputElement>,
+    type?: string,               // type of input
+    defaultValue?: string,
     feedback?: string           // feedback provided when invalid data is submitted
 };
 
-export function EditFieldGroup2 ({name, label, type, ref, defaultValue, feedback}: EditFieldGroup2Input, options: object = {}) {
+export function EditFieldGroup2 ({name, label, ref, type="text", defaultValue="", feedback=""}: EditFieldGroup2Input, options: object = {}) {
     /* 
         Returns a simple editable form field with a label.
 
@@ -340,6 +340,9 @@ export function InputMultiFieldGroup2 ({type, reference, items_list, name, ref, 
         <>
             { 
                 Object.entries(reference).map((item: Array<any>, i) => {
+                    /*
+                        E.g. If an object of max values are provided, get the corresponding max value for each item.
+                    */
                     
                     const newOptions = Object.fromEntries(Object.entries(options).map((entry) => {
                         if (typeof(entry[1]) === "object") {
@@ -347,6 +350,7 @@ export function InputMultiFieldGroup2 ({type, reference, items_list, name, ref, 
                         }
                         return entry
                     }));
+
 
                     return items_list.includes(Number(item[0])) ? 
                     (
@@ -356,7 +360,7 @@ export function InputMultiFieldGroup2 ({type, reference, items_list, name, ref, 
                                 name={ name }
                                 defaultValue={ ref.current.hasOwnProperty(String(item[0])) ? ref.current[String(item[0])] : 0 }
                                 onChange={e => 
-                                    ref.current = {...structuredClone(ref.current), [String(item[0])]: e.target.value}
+                                    ref.current = {...structuredClone(ref.current), [String(item[0])]: (type === "number" ? Number(e.target.value) : e.target.value)}
                                 }
                                 {...newOptions}    
                             ></Form.Control>

@@ -147,7 +147,7 @@ function Dashboard () {
     };
 
     return (
-        <Container className={ `dashboard ${ useContext(ThemeContext) }` }>
+        <Container className={ `page dashboard ${ useContext(ThemeContext) }` }>
 
             <Row className='title'>
                 <h2>Dashboard</h2>

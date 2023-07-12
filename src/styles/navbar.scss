@@ -26,11 +26,6 @@
         fill: map-get(base.$themes, "beige");
     }
 
-    // .active {
-    //     border-bottom: 2px solid map-get(base.$themes, "beige");
-    //     color: map-get(base.$themes, "beige");
-    // }
-
 }
 
 .navbar {
@@ -44,8 +39,20 @@
         width: 100%;
     }
 
-    // Brand
-    .navbar-brand:hover, .nav-link:hover {
+    // Links
+    .link{
+        padding: 4px;
+        width: fit-content;
+        margin: auto;
+        color: inherit;
+        text-decoration: none;
+
+        &.active {
+            text-decoration: underline 1px;
+        }
+    }
+
+    .link:hover {
         color: map-get(base.$themes, "blue");
         transition: color 0.5s;
 
@@ -56,12 +63,7 @@
 
     }
 
-    .icon:hover {
-        fill: map-get(base.$themes, "blue");
-        transition: fill 0.5s;
-    }
-
-    .navbar-brand {
+    .brand {
         border: none;
         cursor: pointer;
         font-family: 'Dosis', sans-serif;
@@ -73,13 +75,6 @@
             width: 44px;
             margin-left: 10px;
         }
-    }
-    
-    // Links
-    .nav-link{
-        padding: 4px;
-        width: fit-content;
-        margin: auto;
     }
 
     // Collapsed menu

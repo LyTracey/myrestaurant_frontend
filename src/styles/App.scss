@@ -50,6 +50,10 @@ body {
   position: relative;
 }
 
+.page {
+  min-height: calc(100vh - 194.5px);
+}
+
 
 .App.light-mode {
   @include base.theme(base.$light-mode...);

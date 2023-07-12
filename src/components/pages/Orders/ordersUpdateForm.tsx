@@ -1,11 +1,12 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect, useRef, MouseEvent } from "react";
 import '../../../styles/form.scss';
 import Modal from "react-bootstrap/Modal";
-import { ReadFieldGroup, 
-    EditFieldGroup, 
-    SelectMultiFieldGroup, 
-    InputMultiFieldGroup, 
-    DeleteAlert, 
+import { 
+    ReadFieldGroup, 
+    EditFieldGroup2, 
+    SelectMultiFieldGroup2, 
+    InputMultiFieldGroup2, 
+    DeleteAlert2, 
     SubmitDelete, 
     ColumnsToRows } from "../../modules/formComponents";
 import Form from "react-bootstrap/Form";
@@ -18,25 +19,38 @@ function OrderUpdateForm (props: any) {
     // Set states
     const [deleteAlert, setDeleteAlert] = useState(false);
     const [validated, setValidated] = useState(false);
-    
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        const form = e.currentTarget;
-        if (form.checkValidity() === false) {
-            e.preventDefault();
-            e.stopPropagation();
-        } else {
-            props.handleSubmit(e, "update", props.updateOrder);
+
+    // Field states
+    const [menuItems, setMenuItems] = useState<Array<number>>([]);
+    const quantity = useRef<{[key: string]: number | ""}>({});
+    const notes = useRef<HTMLInputElement>(null);
+
+
+    // Reset ingredients and units states when add dialogue is opened
+    useEffect(() => {
+        if (props.openForm === "update") {
+            setMenuItems([...props.updateOrder.current.menu_items]);
+            quantity.current = structuredClone(props.updateOrder.current.quantity);
         }
-        setValidated(true);
-      };
-    
+    }, [props.openForm]);
+
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement> | MouseEvent<HTMLElement>, method: "update" | "delete") => {
+        console.log(props.updateOrder.current.id);
+        props.handleSubmit(e, method, {
+            id: props.updateOrder.current.id,
+            notes: notes.current!.value,
+            "menu_items[]": menuItems,
+            "quantity{}": Number(quantity.current),
+        }, setValidated);
+    };
 
     const Availability = (
         <>
-            { Object.entries(props.menu).map((item: Array<any>, i) => {
+            { Object.entries(props.availabilities).map((item: any, i: number) => {
                 return (
                     <Form.Text as="div" className="multi-read-field availability" key={`availability_${i}`}>
-                        { item[1].available_quantity }
+                        { item[1] }
                     </Form.Text>
                 )
             })}
@@ -44,35 +58,29 @@ function OrderUpdateForm (props: any) {
     );
 
 
-    const MenuItems = SelectMultiFieldGroup({
+    const MenuItems = SelectMultiFieldGroup2({
         name: "menu-items",
-        label: "Menu Items", 
-        data: props.updateOrder, 
         reference: props.menu, 
-        values_obj: "quantity", 
-        items_list: "menu_items",
-        setObj: props.setUpdateOrder
+        state: menuItems,
+        stateSetter: setMenuItems
     });
 
 
-    const Quantity = InputMultiFieldGroup({
-            name: "quantity",
-            label: "Quantity", 
-            type: "number",
-            data: props.updateOrder, 
-            reference: props.menu, 
-            values_obj: "quantity", 
-            items_list: "menu_items",
-            setObj: props.setUpdateOrder,
-            feedback: "Quantity must be no more than the availability."
-        }, {
-            min: 1,
-            max: props.availabilities
+    const Quantity = InputMultiFieldGroup2({
+        name: "quantity",
+        reference: props.menu,  
+        items_list: menuItems,
+        ref: quantity,
+        type: "number",
+        feedback: "Quantity must be no more than the availability."
+    }, {
+        min: 1,
+        max: props.availabilities
     });
     
 
     return (
-        <Modal className={`orders-form page-form ${ props.theme }`} show={ props.updateItem } onHide={() => {
+        <Modal className={`orders-form page-form ${ props.theme }`} show={ props.openForm === "update" } onHide={() => {
                 setDeleteAlert(false);
                 props.onHide();
                 setValidated(false); 
@@ -81,10 +89,10 @@ function OrderUpdateForm (props: any) {
                 <Modal.Title>Update Order</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)}>
+                <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e, "update")}>
                     { 
                         ReadFieldGroup({
-                            value: props.updateOrder.id, 
+                            value: props.updateOrder.current.id, 
                             name: "id", 
                             label: "ID", 
                             type: "text"
@@ -92,13 +100,12 @@ function OrderUpdateForm (props: any) {
                     }
 
                     { 
-                        EditFieldGroup({
-                            value: props.updateOrder.notes, 
+                        EditFieldGroup2({
                             name: "notes", 
                             label: "Notes", 
                             type: "text", 
-                            dataHandler: props.handleData,
-                            method: "update",
+                            ref: notes,
+                            defaultValue: props.updateOrder.current.notes,
                             feedback: "Max character length is 200."
                         }, {
                             maxLength: 200
@@ -112,16 +119,17 @@ function OrderUpdateForm (props: any) {
                             <Col xs={3}>Availability</Col>
                         </Row>
                         
-                        {
-                            ColumnsToRows([MenuItems, Quantity, Availability], {xs: [6, 3, 3]})   
-                        }
+                        { ColumnsToRows([MenuItems, Quantity, Availability], {xs: [6, 3, 3]}) }
                     </Container>
                         
                     { SubmitDelete(setDeleteAlert) }
 
                 </Form>
 
-                { deleteAlert && DeleteAlert(props.updateOrder, setDeleteAlert, props.handleSubmit) }
+                { deleteAlert && DeleteAlert2(
+                    (e: MouseEvent<HTMLElement>) => handleSubmit(e, "delete"),
+                    () => setDeleteAlert(false)
+                ) }
             </Modal.Body>
         </ Modal>
     )

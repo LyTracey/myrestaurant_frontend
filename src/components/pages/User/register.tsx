@@ -70,7 +70,7 @@ function Register () {
     };
 
     return (
-        <Container className={`register-form page-form ${ useContext(ThemeContext)}`}>
+        <Container className={`page register-form page-form ${ useContext(ThemeContext)}`}>
             <h2 className="title">Register</h2>
 
             <ul className="error">

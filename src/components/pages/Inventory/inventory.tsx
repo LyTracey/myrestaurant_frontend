@@ -86,7 +86,7 @@ function Inventory () {
     };
 
     return (
-        <Container className={`inventory ${ theme }`}>
+        <Container className={`page inventory ${ theme }`}>
             <Row className='title'>
                 <h2>Inventory</h2>
             </Row>

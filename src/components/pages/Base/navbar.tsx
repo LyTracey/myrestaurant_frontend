@@ -1,6 +1,7 @@
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
+import { NavLink } from 'react-router-dom';
 import "../../../styles/navbar.scss";
 import { ReactComponent as SunIcon } from "../../../images/icons/sun.svg";
 import { ReactComponent as MoonIcon } from "../../../images/icons/moon.svg";
@@ -9,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import { ReactComponent as Logo } from "../../../images/icons/moonlight-cafe-logo.svg";
 import { ThemeContext } from './App';
 import { useContext } from 'react';
+
 
 function Navigate(props: any) {
 
@@ -25,25 +27,25 @@ function Navigate(props: any) {
     return (
         <Navbar className={ useContext(ThemeContext) } collapseOnSelect sticky="top" expand="md">
             <Container fluid>
-                <Navbar.Brand href="/">
+                <NavLink to="/" className="link brand">
                     MOONLIGHT CAFE
                     <Logo className="icon logo"/>
-                </Navbar.Brand>
+                </NavLink>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav"><Menu className="icon" /></Navbar.Toggle>
                 <Navbar.Collapse role="navigation">
                     <Nav activeKey={ props.location.pathname }>
-                        { !props.isStaff && <Nav.Link href="/">Home</Nav.Link> }
+                        { !props.isStaff && <NavLink to="/" className="link">Home</NavLink> }
                         
-                        <Nav.Link href="/menu">Menu</Nav.Link>
+                        <NavLink to="/menu" className="link">Menu</NavLink>
 
-                        { (props.isStaff && ["MANAGER", "SALES"].includes(props.role)) && <Nav.Link href="/dashboard">Dashboard</Nav.Link> }
-                        { (props.isStaff && ["MANAGER", "SALES"].includes(props.role)) && <Nav.Link href="/orders">Orders</Nav.Link> }
-                        { (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) && <Nav.Link href="/inventory">Inventory</Nav.Link> }
-                        { props.loggedIn && <Nav.Link href="/profile">Profile</Nav.Link>}
+                        { (props.isStaff && ["MANAGER", "SALES"].includes(props.role)) && <NavLink to="/dashboard" className="link">Dashboard</NavLink> }
+                        { (props.isStaff && ["MANAGER", "SALES"].includes(props.role)) && <NavLink to="/orders" className="link">Orders</NavLink> }
+                        { (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) && <NavLink to="/inventory" className="link">Inventory</NavLink> }
+                        { props.loggedIn && <NavLink to="/profile" className="link">Profile</NavLink>}
                         {
                             props.loggedIn ? 
-                            <Nav.Link href="/logout">Logout</Nav.Link>
-                            : <Nav.Link href="/login">Login</Nav.Link>
+                            <NavLink to="/logout" className="link">Logout</NavLink>
+                            : <NavLink to="/login" className="link">Login</NavLink>
                         }
 
                     </Nav>

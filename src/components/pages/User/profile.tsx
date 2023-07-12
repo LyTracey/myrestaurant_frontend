@@ -2,7 +2,7 @@ import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import { useContext, ChangeEvent, useRef } from "react";
+import { useContext, ChangeEvent, SetStateAction, Dispatch } from "react";
 import { ThemeContext } from "../Base/App";
 import {ReactComponent as Person} from "../../../images/icons/person.svg";
 import { useEffect, useState } from "react";
@@ -11,9 +11,7 @@ import { AxiosResponse } from "axios";
 import "../../../styles/profile.scss";
 import Form from "react-bootstrap/Form";
 import { errorFormatter } from "../../../utils/formatter";
-import { userAPI, HEADERS } from "../Base/App";
-import { checkTokens } from "../../../utils/baseUtils";
-import { useNavigate, useLocation } from "react-router-dom";
+import { userAPI } from "../Base/App";
 
 interface User {
     [key: string]: any,
@@ -22,6 +20,19 @@ interface User {
     join_date?: string,
     role?: string
 }
+
+export function fetchData (props: any, setUser: Dispatch<SetStateAction<User>>, setFeedback: Dispatch<SetStateAction<Array<string>>>) {
+    userAPI.get(
+        `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`,
+    ).then((response: AxiosResponse) => {
+        const data = response.data;
+        setUser(data);
+        sessionStorage.setItem("isStaff", data.is_staff.toString());
+        props.setIsStaff(data.is_staff);
+        props.setRole(data.role);
+        sessionStorage.setItem("role", data.role!);
+    }).catch((error: any) => setFeedback(errorFormatter(error)));
+};
 
 function Profile (props: any) {
 
@@ -32,45 +43,26 @@ function Profile (props: any) {
         role: ""
     });
     const [feedback, setFeedback] = useState<Array<string>>([]);
-    const location = useRef(useLocation());
-    const navigationRef = useRef(useNavigate());
-    
-    const getUser = async () => {
-        await userAPI.get(
-            `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`,
-            {headers: HEADERS}
-            ).then((response: AxiosResponse) => {
-                const data = response.data;
-                setUser(data);
-                sessionStorage.setItem("isStaff", data.is_staff.toString());
-                props.setIsStaff(data.is_staff);
-                props.setRole(data.role);
-                sessionStorage.setItem("role", data.role!);
-            }).catch((error: any) => {
-                setFeedback(errorFormatter(error));            
-            });
-        };
+
+    // Fetch data on first load
+    useEffect(() => fetchData(props, setUser, setFeedback), [])
         
-    useEffect(() => {
-        getUser();
-    }, []);
-    
+    // Handle PATCH request
     const patchUser = (data: object) => {
-        checkTokens(navigationRef, props.setLoggedIn, location);
+        console.log("in profile");
         userAPI.patch(
-            `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`,
-            data,
-            {headers: HEADERS}
-        ).then(() => {
-            getUser();    
-        }).catch((error: any) => setFeedback(errorFormatter(error)));
+            `${ endpoints["profile"] }${ user.username }/`,
+            data
+        )
+        .then(() => fetchData(props, setUser, setFeedback) )
+        .catch((error: any) => {
+            console.log(error);
+            setFeedback(errorFormatter(error));
+        });
     };
 
-
-    
-    
     return (
-        <Container className={ `profile ${ theme }` }>
+        <Container className={ `page profile ${ theme }` }>
             <Row className="title">
                 <h2>My Profile</h2>
             </Row>
