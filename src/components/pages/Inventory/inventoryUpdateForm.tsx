@@ -1,4 +1,4 @@
-import { FormEvent, useState, useRef, MouseEvent } from "react";
+import { FormEvent, useState, useRef, MouseEvent, useContext } from "react";
 import '../../../styles/form.scss';
 import Modal from "react-bootstrap/Modal";
 import { 
@@ -6,12 +6,14 @@ import {
     DeleteAlert2, 
     SubmitDelete } from "../../modules/formComponents";
 import Form from "react-bootstrap/Form";
+import { GlobalContext } from "../../App";
 
 function InventoryUpdateForm (props: any) {
 
     // Set states
     const [deleteAlert, setDeleteAlert] = useState(false);
     const [validated, setValidated] = useState(false);
+    const { theme: [theme] } = useContext(GlobalContext);
 
     // Input field states
     const ingredient = useRef<HTMLInputElement>(null);
@@ -29,7 +31,7 @@ function InventoryUpdateForm (props: any) {
     
 
     return (
-        <Modal className={`inventory-form page-form ${ props.theme }`} show={ props.openForm === "update" } onHide={() => {
+        <Modal className={`inventory-form page-form ${ theme }`} show={ props.openForm === "update" } onHide={() => {
                 setDeleteAlert(false);
                 props.onHide();
                 setValidated(false); 

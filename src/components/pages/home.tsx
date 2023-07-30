@@ -1,20 +1,20 @@
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import HomeImageLight from "../../../images/home-image-light.png";
-import HomeImageDark from "../../../images/home-image-dark.png";
-import HomeBackgroundLight from "../../../images/home-background-light.png";
-import HomeBackgroundDark from "../../../images/home-background-dark.png";
-import "../../../styles/home.scss";
+import HomeImageLight from "../../images/home-image-light.png";
+import HomeImageDark from "../../images/home-image-dark.png";
+import HomeBackgroundLight from "../../images/home-background-light.png";
+import HomeBackgroundDark from "../../images/home-background-dark.png";
+import "../../styles/home.scss";
 import { useContext } from 'react';
-import { ThemeContext } from '../Base/App';
+import { GlobalContext } from '../App';
 
 function Home () {
 
-    const theme = useContext(ThemeContext);
+    const { theme: [theme] } = useContext(GlobalContext);
 
     return (
-        <Container className={`page home ${theme}`} fluid>
+        <Container className={`page home ${ theme }`} fluid>
             <Row className="home-screen">
                 <div className="gradient"></div>
                 <img className="home-image" src={ theme === "light-mode" ? HomeImageLight : HomeImageDark } alt="Bunny and moon" ></img>

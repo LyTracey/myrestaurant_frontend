@@ -9,23 +9,23 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import endpoints from '../../../data/endpoints';
+import { externalEndpoints } from '../../../data/endpoints';
 import "../../../styles/orders.scss";
 import Table from 'react-bootstrap/Table';
 import slugify from 'slugify';
 import { useContext } from 'react';
-import { ThemeContext } from '../Base/App';
-import { dataAPI } from '../Base/App';
+import { GlobalContext } from '../../App';
+import { dataAPI } from '../../App';
 import { MenuObj } from '../Menu/menu';
 import { OrdersObj } from './orders';
-import { submitDataRequest } from '../../../utils/baseUtils';
+import { submitDataRequest } from '../../../utils/apiUtils';
 
 
 // Fetch orders data from backend
 export function fetchData (setOrders: Dispatch<SetStateAction<Array<OrdersObj>>>, setMenu: Dispatch<SetStateAction<Array<MenuObj>>>) {
     axios.all([
-        dataAPI.get(`${endpoints["archivedOrders"]}`),
-        dataAPI.get( `${endpoints["menu"]}`)
+        dataAPI.get(`${externalEndpoints["archivedOrders"]}`),
+        dataAPI.get( `${externalEndpoints["menu"]}`)
     ])
     .then(axios.spread((orderResponse: AxiosResponse, menuResponse: AxiosResponse) => {
         setOrders(orderResponse.data);
@@ -42,6 +42,7 @@ function ArchivedOrders () {
     // Set states
     const [orders, setOrders] = useState<Array<OrdersObj>>([]);
     const [menu, setMenu] = useState<Array<MenuObj>>([]);
+    const { theme } = useContext(GlobalContext);
       
     
     // Set variables
@@ -64,14 +65,14 @@ function ArchivedOrders () {
             event: e,
             method: "update",
             data: { complete: false },
-            url: `${endpoints["orders"]}${slugify(String(id) ?? "")}/`,
+            url: `${externalEndpoints["orders"]}${slugify(String(id) ?? "")}/`,
             resolve: () => fetchData(setOrders, setMenu),
             reject: (error: AxiosError) => console.log(error),
         })
     };
 
     return (
-        <Container className={`orders ${ useContext(ThemeContext) }`}>
+        <Container className={`orders ${ theme }`}>
             <Row className='title'>
                 <h2>Archived Orders</h2>
             </Row>

@@ -2,7 +2,9 @@ interface Endpoint {
     [key: string]: string
 };
 
-const endpoints: Endpoint = {
+
+// External endpoints
+export const externalEndpoints: Endpoint = {
     prefix: "https://tly.pythonanywhere.com/myrestaurant/",
     prefix_user: "https://tly.pythonanywhere.com/user/",
     dashboard: "dashboard/",
@@ -17,4 +19,17 @@ const endpoints: Endpoint = {
     verify: "token/verify/"
 };
 
-export default endpoints;
+
+export const internalEndpoints: Endpoint = {
+    dashboard: "dashboard",
+    menu: "menu/",
+    inventory: "inventory/",
+    inventoryCreate: "inventory/create",
+    orders: "orders/",
+    archivedOrders: "archive/orders/",
+    register: "register/",
+    profile: "profile/",
+    login: "login/",
+    refresh: "token/refresh/",
+    verify: "token/verify/"
+};

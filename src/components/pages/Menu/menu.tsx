@@ -15,15 +15,15 @@ import Card from 'react-bootstrap/Card';
 import MenuCreateForm from './menuCreateForm';
 import MenuUpdateForm from './menuUpdateForm';
 import Button from 'react-bootstrap/Button';
-import endpoints from '../../../data/endpoints';
-import axios, { AxiosError } from 'axios';
+import { externalEndpoints } from '../../../data/endpoints';
+import { AxiosError } from 'axios';
 import slugify from 'slugify';
 import { ReactComponent as CoffeeCup } from "../../../images/icons/coffee-cup.svg";
-import { ThemeContext } from '../Base/App';
-import { dataAPI } from '../Base/App';
-import { submitDataRequest } from '../../../utils/baseUtils';
+import { GlobalContext } from '../../App';
+import { submitDataRequest } from '../../../utils/apiUtils';
 import { InventoryObj } from '../Inventory/inventory';
 import "../../../styles/menu.scss";
+import { fetchData } from '../../../utils/apiUtils';
 
 export interface MenuObj {
     id?: number | null,
@@ -50,23 +50,23 @@ export const MENU_OBJ = {
 
 
 // Fetch menu data and ingredients data
-function fetchData (setMenu: Dispatch<SetStateAction<Array<MenuObj>>>, setInventory: Dispatch<SetStateAction<Array<InventoryObj>>>) {
-    axios.all([
-        dataAPI.get(`${endpoints["menu"]}`),
-        dataAPI.get(`${endpoints["inventory"]}`)
-    ])
-    .then(axios.spread((menuResponse, inventoryResponse) => {
-        setMenu(menuResponse.data);
-        setInventory(inventoryResponse.data);
-    }))
-    .catch(axios.spread((menuError, inventoryError) => {
-        console.log(menuError);
-        console.log(inventoryError);
-    }))  
-};
+// function fetchData (setMenu: Dispatch<SetStateAction<Array<MenuObj>>>, setInventory: Dispatch<SetStateAction<Array<InventoryObj>>>) {
+//     axios.all([
+//         dataAPI.get(`${externalEndpoints["menu"]}`),
+//         dataAPI.get(`${externalEndpoints["inventory"]}`)
+//     ])
+//     .then(axios.spread((menuResponse, inventoryResponse) => {
+//         setMenu(menuResponse.data);
+//         setInventory(inventoryResponse.data);
+//     }))
+//     .catch(axios.spread((menuError, inventoryError) => {
+//         console.log(menuError);
+//         console.log(inventoryError);
+//     }))  
+// };
 
 
-function Menu ( props: any ) {
+function Menu ( ) {
     
     // External data states
     const [menu, setMenu] = useState<Array<MenuObj>>([]);
@@ -75,12 +75,15 @@ function Menu ( props: any ) {
 
     // Form states
     const [openForm, setOpenForm] = useState<"add" | "update" | "none">("none")
-    const theme = useContext(ThemeContext);
+    const { theme: [theme], isStaff: [isStaff], role: [role] } = useContext(GlobalContext);
     const updateMenu = useRef<MenuObj>(structuredClone(MENU_OBJ));
 
 
     // Fetch menu and invenotry data on load
-    useEffect(() => fetchData(setMenu, setInventory), []);
+    useEffect(() => {
+        fetchData(externalEndpoints["menu"]!, (response) => setMenu(response.data));
+        fetchData(externalEndpoints["inventory"]!, (response => setInventory(response.data)));
+    }, []);
     
 
     // Filter map invenotry items to an object as id: title key-values when inventory state changes
@@ -98,10 +101,11 @@ function Menu ( props: any ) {
             event: e,
             method: method,
             data: data,
-            url: method === "add" ? `${endpoints["menu"]}` : `${endpoints["menu"]}${slugify(data.title ?? "")}/`,
+            url: method === "add" ? `${externalEndpoints["menu"]}` : `${externalEndpoints["menu"]}${slugify(data.title ?? "")}/`,
             resolve: () => {
                 setOpenForm("none");
-                fetchData(setMenu, setInventory);
+                fetchData(externalEndpoints["menu"]!, (response) => setMenu(response.data));
+                fetchData(externalEndpoints["inventory"]!, (response => setInventory(response.data)));
             },
             reject: (error: AxiosError) => console.log(error),
             setValidated: setValidated
@@ -109,13 +113,13 @@ function Menu ( props: any ) {
     };
 
     return (
-        <Container className={`page menu ${ useContext(ThemeContext) }`}>
+        <Container className={`page menu ${ theme }`}>
             <Row className='title'>
                 <h2>Menu</h2>
             </Row>
 
             {
-                (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) &&
+                (isStaff && ["MANAGER", "CHEF"].includes(role)) &&
                 <Row xs={2} className='actions'>
                     <Button className="add" onClick={() =>
                         setOpenForm("add")
@@ -146,11 +150,11 @@ function Menu ( props: any ) {
                         <Col key={`menu-item-${i}`}>
                             <Card.Body onClick={() => {
                                     // Only render update form if user isStaff and has a role of MANAGER | CHEF
-                                    if (props.isStaff && ["MANAGER", "CHEF"].includes(props.role)) {       
+                                    if (isStaff && ["MANAGER", "CHEF"].includes(role)) {       
                                         updateMenu.current = {...MENU_OBJ, ...item};
                                         setOpenForm("update");
                                     }
-                                }} className={!props.isStaff ? "default-cursor" : ""}>
+                                }} className={!isStaff ? "default-cursor" : ""}>
                                 <Card.Title>{ item.title }</Card.Title>
                                 <CoffeeCup className="icon" />
                                 <div className='card-details'>

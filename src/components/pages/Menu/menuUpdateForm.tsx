@@ -12,13 +12,15 @@ import {
     ColumnsToRows } from '../../modules/formComponents';
 import Container from "react-bootstrap/Container";
 import "../../../styles/form.scss";
-import { useState, useRef, useEffect, FormEvent, MouseEvent } from 'react';
+import { useState, useRef, useEffect, FormEvent, MouseEvent, useContext } from 'react';
+import { GlobalContext } from '../../App';
 
 function MenuUpdateForm (props: any) {
 
     // Form states
     const [deleteAlert, setDeleteAlert] = useState(false);
     const [validated, setValidated] = useState<boolean>(false);
+    const { theme } = useContext(GlobalContext);
 
     // Input field states
     const description = useRef<HTMLInputElement>(null);
@@ -68,7 +70,7 @@ function MenuUpdateForm (props: any) {
 });
 
     return (
-        <Modal className={`menu-form page-form ${ props.theme }`} show={ props.openForm === "update" } onHide={() => {
+        <Modal className={`menu-form page-form ${ theme }`} show={ props.openForm === "update" } onHide={() => {
             setDeleteAlert(false);
             props.onHide();
             setValidated(false); 

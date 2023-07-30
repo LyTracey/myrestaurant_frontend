@@ -8,21 +8,20 @@ import {
     useRef,
     useMemo
 } from 'react';
-import axios, { AxiosResponse, AxiosError } from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import endpoints from '../../../data/endpoints';
+import { externalEndpoints } from '../../../data/endpoints';
 import "../../../styles/orders.scss";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import OrdersCreateForm from './ordersCreateForm';
 import OrderUpdateForm from "./ordersUpdateForm";
 import slugify from 'slugify';
-import { ThemeContext, dataAPI } from '../Base/App';
-import { errorFormatter } from '../../../utils/formatter';
+import { GlobalContext } from '../../App';
 import { MenuObj } from '../Menu/menu';
-import { submitDataRequest } from '../../../utils/baseUtils';
+import { submitDataRequest } from '../../../utils/apiUtils';
+import { fetchData } from '../../../utils/apiUtils';
 
 export interface OrdersObj {
     id?: number | null,
@@ -52,19 +51,19 @@ export const ORDERS_OBJ = {
 
 
 // Fetch orders data from backend
-export function fetchData (setOrders: Dispatch<SetStateAction<Array<OrdersObj>>>, setMenu: Dispatch<SetStateAction<Array<MenuObj>>>) {
-        axios.all([
-            dataAPI.get(`${endpoints["orders"]}`),
-            dataAPI.get( `${endpoints["menu"]}`)
-        ])
-        .then(axios.spread((orderResponse: AxiosResponse, menuResponse: AxiosResponse) => {
-            setOrders(orderResponse.data);
-            setMenu(menuResponse.data);
-        })).catch(axios.spread((ordersError: AxiosError, menuError: AxiosError) => {
-            console.log(ordersError);
-            console.log(menuError);
-        }));
-    };
+// export function fetchData (setOrders: Dispatch<SetStateAction<Array<OrdersObj>>>, setMenu: Dispatch<SetStateAction<Array<MenuObj>>>) {
+//         axios.all([
+//             dataAPI.get(`${externalEndpoints["orders"]}`),
+//             dataAPI.get( `${externalEndpoints["menu"]}`)
+//         ])
+//         .then(axios.spread((orderResponse: AxiosResponse, menuResponse: AxiosResponse) => {
+//             setOrders(orderResponse.data);
+//             setMenu(menuResponse.data);
+//         })).catch(axios.spread((ordersError: AxiosError, menuError: AxiosError) => {
+//             console.log(ordersError);
+//             console.log(menuError);
+//         }));
+//     };
 
 
 
@@ -79,8 +78,7 @@ function Orders () {
     // Form states
     const [openForm, setOpenForm] = useState<"add" | "update" | "none">("none");
     const updateOrder = useRef<OrdersObj>(structuredClone(ORDERS_OBJ));
-    const theme = useContext(ThemeContext);
-    const [feedback, setFeedback] = useState<Array<string>>([]);
+    const { theme: [theme], feedback: [setFeedback]}  = useContext(GlobalContext);
 
 
     // Set variables
@@ -97,7 +95,10 @@ function Orders () {
 
 
     // Fetch menu data and ingredients data on first load
-    useEffect(() => fetchData(setOrders, setMenu), []);
+    useEffect(() => {
+        fetchData(externalEndpoints["orders"]!, (response) => setOrders(response.data));
+        fetchData(externalEndpoints["menu"]!, (response) => setMenu(response.data));
+    }, []);
 
 
     // Handle requests to the backend
@@ -107,12 +108,12 @@ function Orders () {
             event: e,
             method: method,
             data: data,
-            url: method === "add" ? `${endpoints["orders"]}` : `${endpoints["orders"]}${slugify(String(data.id) ?? "")}/`,
+            url: method === "add" ? `${externalEndpoints["orders"]}` : `${externalEndpoints["orders"]}${slugify(String(data.id) ?? "")}/`,
             resolve: () => {
                 setOpenForm("none");
-                fetchData(setOrders, setMenu);
+                fetchData(externalEndpoints["orders"]!, (response) => setOrders(response.data));
+                fetchData(externalEndpoints["menu"]!, (response) => setMenu(response.data));
             },
-            reject: (error: AxiosError) => setFeedback(errorFormatter(error)),
             setValidated: setValidated
         })
     };
@@ -121,9 +122,6 @@ function Orders () {
     // Send PATCH request every time an order is prepared, delivered, or completed
     const handleCheck = (e: any, id: number, field: string, index: number) => {
         e.preventDefault();
-        
-        // Reset feedback
-        setFeedback([]);
 
         // Check if checkboxes are ticked in the order prepared > delivered > complete
         if (field === "delivered" && !orders[index]?.prepared) {
@@ -174,10 +172,6 @@ function Orders () {
                 menu={ filteredMenu }
                 availabilities={ availabilities }
             />
-
-            <Row as="ul" className="feedback">
-                {feedback.map((message, i) => <li key={i}>{message}</li>)}
-            </Row>
 
             <Table responsive>
                 <thead>

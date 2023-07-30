@@ -1,6 +1,6 @@
-import '../../../styles/dashboard.scss';
-import endpoints from "../../../data/endpoints";
-import { ThemeContext } from '../Base/App';
+import '../../styles/dashboard.scss';
+import { externalEndpoints } from "../../data/endpoints";
+import { GlobalContext } from '../App';
 import { BarChart, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer} from 'recharts';
 import { useState, useEffect, useContext, ChangeEvent } from 'react';
 import Container from 'react-bootstrap/Container';
@@ -9,9 +9,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
-import { dataAPI } from '../Base/App';
-import { AxiosError, AxiosResponse } from 'axios';
-import { errorFormatter } from '../../../utils/formatter';
+import { dataAPI } from '../App';
+import { AxiosResponse } from 'axios';
 
 interface StatisticsObj {
     [key: string]: number
@@ -42,7 +41,7 @@ function Dashboard () {
         revenue: [],
         profit: []
     });
-    const [feedback, setFeedback] = useState<Array<string>>([]);
+    const { theme: [theme] } = useContext(GlobalContext);
 
     // Set default date range
     const today = new Date();
@@ -59,14 +58,9 @@ function Dashboard () {
     // Get statistics from API
     useEffect(() => {
         dataAPI.patch(
-            `${endpoints["dashboard"]}`,
+            `${externalEndpoints["dashboard"]}`,
             dateRange
-        ).then((response: AxiosResponse) => {
-            setStatistics({...response.data});
-        }).catch((error: AxiosError) => {
-            console.log(error);
-            setFeedback(errorFormatter(error));
-        });
+        ).then((response: AxiosResponse) => setStatistics({...response.data}));
     }, [dateRange]);
 
     
@@ -109,7 +103,6 @@ function Dashboard () {
         )
     };
 
-
     const createGraph = (title: string, data: Array<StatisticsObj>, dataKey: string) => {
         
         const total = data.map(item => Number(item[dataKey]) ).reduce((a: number, x: number) => a + x, 0);
@@ -147,16 +140,10 @@ function Dashboard () {
     };
 
     return (
-        <Container className={ `page dashboard ${ useContext(ThemeContext) }` }>
+        <Container className={ `page dashboard ${ theme }` }>
 
             <Row className='title'>
                 <h2>Dashboard</h2>
-            </Row>
-            
-            <Row>
-                <ul className="error">
-                    { feedback.map((item: any, i: any) => <li key={i}>{ item }</li>) }
-                </ul>
             </Row>
 
             <Row>

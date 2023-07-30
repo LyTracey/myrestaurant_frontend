@@ -1,16 +1,14 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import endpoints from "../../../data/endpoints";
-import { FormEvent, useState } from "react";
+import { externalEndpoints } from "../../../data/endpoints";
+import { FormEvent, useState, useContext } from "react";
 import "../../../styles/form.scss";
 import { Container } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { ThemeContext } from '../Base/App';
-import { errorFormatter } from "../../../utils/formatter";
-import { userAPI } from "../Base/App";
+import { GlobalContext, userAPI } from '../../App';
+import { errorFormatter } from "../../../utils/formatUtils"
 
 interface User {
     username: string,
@@ -30,8 +28,7 @@ function Register () {
         is_staff: false
     });
     const [validated, setValidated] = useState(false);
-    const [feedback, setFeedback] = useState<Array<string>>([]);
-
+    const { theme: [theme], feedback: [feedback, setFeedback] } = useContext(GlobalContext);
     const navigate = useNavigate();
 
     // Handle state
@@ -42,8 +39,10 @@ function Register () {
     // Handle form submit
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        
         const passwordsMatch = (newUser.password1 === newUser.password2);
+
+
         const form = e.currentTarget;
         if (form.checkValidity() === false || !passwordsMatch) {
             e.stopPropagation();
@@ -52,7 +51,7 @@ function Register () {
             }
         } else {
             userAPI.post(
-                `${endpoints["register"]}`,
+                `${externalEndpoints["register"]}`,
                 {
                     username: newUser.username,
                     password: newUser.password1,
@@ -70,11 +69,11 @@ function Register () {
     };
 
     return (
-        <Container className={`page register-form page-form ${ useContext(ThemeContext)}`}>
+        <Container className={`page register-form page-form ${ theme }`}>
             <h2 className="title">Register</h2>
 
             <ul className="error">
-                { feedback.map((item, i) => <li key={i}>{ item }</li>) }
+                { feedback.map((item: string, i: number) => <li key={i}>{ item }</li>) }
             </ul>
 
 

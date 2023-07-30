@@ -1,123 +1,99 @@
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { useState, useRef } from "react";
-import endpoints from "../../../data/endpoints";
+import { useState, useRef, Dispatch, FormEvent, SetStateAction } from "react";
+import { externalEndpoints } from "../../../data/endpoints";
 import { useContext } from 'react';
-import { ThemeContext } from '../Base/App';
-import { useNavigate } from 'react-router-dom';
+import { GlobalContext } from '../../App';
 import "../../../styles/form.scss";
-import { FormEvent } from "react";
-import { errorFormatter } from "../../../utils/formatter";
-import { userAPI } from "../Base/App";
+import { EditFieldGroup2 } from "../../modules/formComponents";
 import { AxiosResponse } from "axios";
+import { submitUserRequest } from "../../../utils/apiUtils";
 
-export interface LoginUser {
-    username: string,
-    password: string
-};
 
-function Login (props: any) {
+function Login () {
 
-    // Set states
-    const [login, setLogin] = useState<LoginUser>({
-        username: "",
-        password: ""
-    });
+    const username = useRef<HTMLInputElement>(null);
+    const password = useRef<HTMLInputElement>(null);
     const [validated, setValidated] = useState(false);
-    const [feedback, setFeedback] = useState<Array<string>>([]);
 
     // Set variables
-    const navigationRef = useRef(useNavigate());
+    const { theme: [theme], 
+            loggedIn: [setLoggedIn], 
+            user: [user, setUser],
+            feedback: [feedback],
+            navigate
+        } = useContext(GlobalContext);
 
-    // Handle state
-    const handleData = (property: string, value: string | boolean) => {
-        setLogin({...login, [property]: value});
-    };
+    // Handle submit to backend
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>, setValidated: Dispatch<SetStateAction<boolean>>) => {
 
-    // Handle form submit
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+        await submitUserRequest({
+            event: e,
+            method: "add",
+            data: {
+                username: username.current!.value,
+                password: password.current!.value
+            },
+            url: `${externalEndpoints["login"]}`,
+            resolve: (response: AxiosResponse) => {
 
-        const form = e.currentTarget;
-        if (form.checkValidity() === false) {
-            e.stopPropagation();
-        } else {
-            // Post request to get jwt token
-            userAPI.post(
-                `${endpoints["login"]}`,
-                {
-                    username: login.username,
-                    password: login.password,
-                }
-            ).then((response: AxiosResponse) => {
-                sessionStorage.setItem("access", response.data.access);
-                sessionStorage.setItem("isStaff", response.data.isStaff);
-                props.setIsStaff(response.data.isStaff);
-                sessionStorage.setItem("username", login.username);
-                props.setRole(response.data.role);
-                sessionStorage.setItem("role", response.data.role);
+                // Set access token
+                sessionStorage.setItem("access", `Bearer ${response.data.access}`);
+                
+                // Set expiry of access token
+                let expiry: Date = new Date();
+                expiry.setMinutes(expiry.getMinutes() + 15);
+                sessionStorage.setItem("expiry", String(expiry));
+
+                // Set user details in session storage
                 sessionStorage.setItem("loggedIn", "true");
-                props.setLoggedIn(true);
-            }).catch((error: any) => {
-                console.log(login);
-                console.log(error);
-                setFeedback(errorFormatter(error));
-            }).finally(() => {
-                if (sessionStorage.getItem("loggedIn") === "true" ? true : false) {
-                    navigationRef.current("/profile");
-                    window.location.reload();
-                }
-            });
-        }
-        setValidated(true);
-
+                sessionStorage.setItem("isStaff", response.data.isStaff);
+                sessionStorage.setItem("role", response.data.role);
+                
+                // Set user states
+                setLoggedIn(true);
+                setUser({...user, role: response.data.role, isStaff: response.data.isStaff});
+               
+                // Redirect to profile on successful login
+                navigate.current("/profile");
+            },
+            setValidated: setValidated
+        });
     };
+
 
     return (
-        <Container className={`page login-form page-form ${useContext(ThemeContext)}`}>
-            <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)}>
+        <Container className={`page login-form page-form ${ theme }`}>
+            <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e, setValidated)}>
                 
                 <h2 className="title">Login</h2>
                 
                 <ul className="error">
-                    { feedback.map((item, i) => <li key={i}>{ item }</li>) }
+                    { feedback.map((item: string, i: number) => <li key={i}>{ item }</li>) }
                 </ul>
 
-                <Form.Group as={Row} xs={1} className="group username">
-                    <Form.Label className="left-label">Username</Form.Label>
-                    <Col className="field">
-                        <Form.Control 
-                            type="text" 
-                            placeholder="Enter username"
-                            name="username"
-                            onChange={e => handleData(e.target.name, e.target.value)}
-                            required
-                        />
-                        <Form.Control.Feedback type='invalid'>
-                            Please enter a username.
-                        </Form.Control.Feedback>
-                    </Col>
-                </Form.Group>
 
-                <Form.Group as={Row} xs={1} className="group password">
-                    
-                    <Form.Label className="left-label">Password</Form.Label>
-                    <Col className="field">
-                        <Form.Control 
-                            type="password"
-                            name="password"
-                            placeholder="Enter password"
-                            onChange={e => handleData(e.target.name, e.target.value)}
-                            required
-                        />
-                        <Form.Control.Feedback type='invalid'>
-                            Please enter a password.
-                        </Form.Control.Feedback>
-                    </Col>
-                </Form.Group>
+                { EditFieldGroup2({
+                    name: "username",
+                    label: "Username",
+                    ref: username,
+                    feedback: "Please enter a username."
+                }, {
+                    required: true
+                }) }
+
+                
+                { EditFieldGroup2({
+                    name: "password",
+                    label: "Password",
+                    type: "password",
+                    ref: password,
+                    feedback: "Please enter a password."
+                }, {
+                    required: true
+                }) } 
 
                 <Row className="form-actions">
                     <Button className="submit" type="submit">Submit</Button>

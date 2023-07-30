@@ -5,6 +5,8 @@ import {
     Submit} from '../../modules/formComponents';
 import { useState, FormEvent, useRef } from 'react';
 import "../../../styles/form.scss";
+import { GlobalContext } from '../../App';
+import { useContext } from 'react';
 
 function InventoryCreateForm (props: any) {
 
@@ -13,6 +15,7 @@ function InventoryCreateForm (props: any) {
     const ingredient = useRef<HTMLInputElement>(null);
     const quantity = useRef<HTMLInputElement>(null);
     const unit_price = useRef<HTMLInputElement>(null);
+    const { theme: [theme] } = useContext(GlobalContext);
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         props.handleSubmit(e, "add", {
@@ -23,7 +26,7 @@ function InventoryCreateForm (props: any) {
     };
 
     return (
-        <Modal className={`inventory-form page-form ${ props.theme }`} show={ props.openForm === "add" } onHide={() => {
+        <Modal className={`inventory-form page-form ${ theme }`} show={ props.openForm === "add" } onHide={() => {
             props.onHide();
             setValidated(false); 
         }}>

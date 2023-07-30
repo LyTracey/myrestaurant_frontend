@@ -1,9 +1,14 @@
 import { Outlet, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { GlobalContext } from '../App';
 
-function PrivateRoute (props: any) {
+function PrivateRoute () {
+
+
+    const {loggedIn: [loggedIn, ]} = useContext(GlobalContext);
 
     return (
-        props.loggedIn
+        loggedIn
         ? <Outlet />
         : <Navigate to="/login" />
     )

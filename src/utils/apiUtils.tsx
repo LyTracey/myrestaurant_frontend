@@ -1,14 +1,28 @@
 // import { userAPI } from "../components/pages/Base/App";
-// import endpoints from "../data/endpoints";
+// import { externalEndpoints } from "../data/endpoints";
 import { AxiosResponse, AxiosError } from "axios";
 // import { PUBLIC } from "../components/pages/Base/App";
 // import { Location, NavigateFunction } from "react-router-dom";
-import { dataAPI, userAPI } from "../components/pages/Base/App";
-import { Dispatch, SetStateAction, MouseEvent } from "react";
-import { FormEvent } from "react";
+import { dataAPI, userAPI } from "../components/App";
+import { Dispatch, SetStateAction, MouseEvent, FormEvent } from "react";
 
 
-// Submit Request abstraction
+// Fetch data request
+export const fetchData = (
+        url: string, 
+        resolve: (response: AxiosResponse) => void = (response) => console.log(response), 
+        reject: (error: AxiosError) => void = (error) => console.log(error)
+    ) => {
+        dataAPI.get(url)
+        .then((response) => {
+            resolve(response);
+        }).catch((error: AxiosError) => {
+            reject(error);
+        });
+};
+
+
+// Submit Form Request Abstraction
 const SUBMIT_ACTIONS = {
     ADD: "add",
     DELETE: "delete",
@@ -21,13 +35,16 @@ interface SubmitObj {
     data?: any,
     url: string,
     resolve: (...args: any) => void,
-    reject:  (error: AxiosError, ...args: any) => void,
+    reject?:  (error: AxiosError, ...args: any) => void,
     setValidated?: Dispatch<SetStateAction<boolean>> | null
 };
 
-export function submitDataRequest ({event, method, data, url, resolve, reject, setValidated=null}: SubmitObj) {
+export function submitDataRequest ({event, method, data, url, 
+    resolve = (response) => console.log(response), 
+    reject = (error) => console.log(error), 
+    setValidated=null}: SubmitObj) {
     /*
-        Function that handles delete, post, and patch requests for the dataAPI.
+        Function that handles delete, post, and patch form requests for the dataAPI.
     */
    
    event.preventDefault();
@@ -61,7 +78,10 @@ export function submitDataRequest ({event, method, data, url, resolve, reject, s
 };
 
 
-export function submitUserRequest ({event, method, data, url, resolve, reject, setValidated=null}: SubmitObj) {
+export function submitUserRequest ({event, method, data, url, 
+    resolve = (response) => console.log(response), 
+    reject = (error) => console.log(error), 
+    setValidated=null}: SubmitObj) {
     /*
         Function that handles delete, post, and patch requests for the dataAPI.
     */

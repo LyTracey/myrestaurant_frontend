@@ -1,4 +1,4 @@
-import "../../../styles/error.scss";
+import "../../styles/error.scss";
 
 export function Unauthorised () {
 

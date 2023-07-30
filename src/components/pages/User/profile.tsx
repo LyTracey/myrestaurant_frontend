@@ -3,74 +3,49 @@ import Table from "react-bootstrap/Table";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { useContext, ChangeEvent, SetStateAction, Dispatch } from "react";
-import { ThemeContext } from "../Base/App";
 import {ReactComponent as Person} from "../../../images/icons/person.svg";
-import { useEffect, useState } from "react";
-import endpoints from "../../../data/endpoints";
+import { externalEndpoints } from "../../../data/endpoints";
 import { AxiosResponse } from "axios";
 import "../../../styles/profile.scss";
 import Form from "react-bootstrap/Form";
-import { errorFormatter } from "../../../utils/formatter";
-import { userAPI } from "../Base/App";
+import { errorFormatter } from "../../../utils/formatUtils";
+import { userAPI, GlobalContext } from "../../App";
+import { User } from "../../App";
 
-interface User {
-    [key: string]: any,
-    username: string,
-    is_staff: boolean,
-    join_date?: string,
-    role?: string
-}
-
-export function fetchData (props: any, setUser: Dispatch<SetStateAction<User>>, setFeedback: Dispatch<SetStateAction<Array<string>>>) {
+export function fetchData (setUser: Dispatch<SetStateAction<User>>, setFeedback: Dispatch<SetStateAction<Array<string>>>) {
     userAPI.get(
-        `${ endpoints["profile"] }${ sessionStorage.getItem("username") }/`,
+        `${ externalEndpoints["profile"] }${ sessionStorage.getItem("username") }/`,
     ).then((response: AxiosResponse) => {
-        const data = response.data;
-        setUser(data);
-        sessionStorage.setItem("isStaff", data.is_staff.toString());
-        props.setIsStaff(data.is_staff);
-        props.setRole(data.role);
-        sessionStorage.setItem("role", data.role!);
-    }).catch((error: any) => setFeedback(errorFormatter(error)));
+        // Update user state
+        setUser(response.data);
+        
+        // Update user details in session stroage
+        sessionStorage.setItem("isStaff", response.data.is_staff.toString());
+        sessionStorage.setItem("role", response.data.role!);
+        
+    }).catch((error: any) => {
+        setFeedback(errorFormatter(error));
+        console.log(error);
+    })
 };
 
-function Profile (props: any) {
+function Profile () {
 
-    const theme = useContext(ThemeContext);
-    const [user, setUser] = useState<User>({
-        username: "",
-        is_staff: false,
-        role: ""
-    });
-    const [feedback, setFeedback] = useState<Array<string>>([]);
+    const { theme: [theme], user: [user, setUser], feedback: [setFeedback]  } = useContext(GlobalContext);
 
-    // Fetch data on first load
-    useEffect(() => fetchData(props, setUser, setFeedback), [])
-        
     // Handle PATCH request
     const patchUser = (data: object) => {
-        console.log("in profile");
         userAPI.patch(
-            `${ endpoints["profile"] }${ user.username }/`,
+            `${ externalEndpoints["profile"] }${ user.username }/`,
             data
-        )
-        .then(() => fetchData(props, setUser, setFeedback) )
-        .catch((error: any) => {
-            console.log(error);
-            setFeedback(errorFormatter(error));
-        });
+        ).then(() => fetchData(setUser, setFeedback) )
+        .catch((error: any) => setFeedback(errorFormatter(error)));
     };
 
     return (
         <Container className={ `page profile ${ theme }` }>
             <Row className="title">
                 <h2>My Profile</h2>
-            </Row>
-
-            <Row className="error">
-                <ul>
-                    { feedback.map((item, i) => <li key={i}>{ item }</li>) }
-                </ul>
             </Row>
 
             <Row xs={1} sm={2}>
@@ -93,7 +68,7 @@ function Profile (props: any) {
                                         type="checkbox"
                                         label="Staff View"
                                         name="is_staff"
-                                        checked={ user.is_staff }
+                                        checked={ user.isStaff }
                                         onChange={(e: ChangeEvent<HTMLInputElement>) => patchUser({is_staff: e.target.checked})}
                                     />
                                 </td>

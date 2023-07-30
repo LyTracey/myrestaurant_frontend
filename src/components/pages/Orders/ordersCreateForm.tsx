@@ -10,7 +10,8 @@ import {
     ColumnsToRows } from '../../modules/formComponents';
 import Container from "react-bootstrap/Container";
 import "../../../styles/form.scss";
-import { useState, FormEvent, useRef, useEffect } from 'react';
+import { useState, FormEvent, useRef, useEffect, useContext } from 'react';
+import { GlobalContext } from '../../App';
 
 function OrdersCreateForm (props: any) {
 
@@ -21,6 +22,7 @@ function OrdersCreateForm (props: any) {
     const [menuItems, setMenuItems] = useState<Array<number>>([]);
     const quantity = useRef<{[key: string]: number | ""}>({});
     const notes = useRef<HTMLInputElement>(null);
+    const { theme } = useContext(GlobalContext);
 
 
      // Reset ingredients and units states when add dialogue is opened
@@ -74,7 +76,7 @@ function OrdersCreateForm (props: any) {
     });
     
     return (
-        <Modal className={`orders-form page-form ${ props.theme }`} show={ props.openForm === "add" } onHide={() => {
+        <Modal className={`orders-form page-form ${ theme }`} show={ props.openForm === "add" } onHide={() => {
             props.onHide();
             setValidated(false);  
         }}>

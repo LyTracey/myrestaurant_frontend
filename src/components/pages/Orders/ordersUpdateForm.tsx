@@ -1,4 +1,4 @@
-import { FormEvent, useState, useEffect, useRef, MouseEvent } from "react";
+import { FormEvent, useState, useEffect, useRef, MouseEvent, useContext } from "react";
 import '../../../styles/form.scss';
 import Modal from "react-bootstrap/Modal";
 import { 
@@ -13,12 +13,14 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Container } from "react-bootstrap";
+import { GlobalContext } from "../../App";
 
 function OrderUpdateForm (props: any) {
 
     // Set states
     const [deleteAlert, setDeleteAlert] = useState(false);
     const [validated, setValidated] = useState(false);
+    const { theme } = useContext(GlobalContext);
 
     // Field states
     const [menuItems, setMenuItems] = useState<Array<number>>([]);
@@ -80,7 +82,7 @@ function OrderUpdateForm (props: any) {
     
 
     return (
-        <Modal className={`orders-form page-form ${ props.theme }`} show={ props.openForm === "update" } onHide={() => {
+        <Modal className={`orders-form page-form ${ theme }`} show={ props.openForm === "update" } onHide={() => {
                 setDeleteAlert(false);
                 props.onHide();
                 setValidated(false); 

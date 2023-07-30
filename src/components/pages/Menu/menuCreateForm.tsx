@@ -10,7 +10,8 @@ import {
     ColumnsToRows } from '../../modules/formComponents';
 import Container from "react-bootstrap/Container";
 import "../../../styles/form.scss";
-import { useState, FormEvent, useRef, useEffect } from 'react';
+import { useState, FormEvent, useRef, useEffect, useContext } from 'react';
+import { GlobalContext } from '../../App';
 
 function MenuCreateForm (props: any) {
 
@@ -21,6 +22,7 @@ function MenuCreateForm (props: any) {
     const price = useRef<HTMLInputElement>(null);
     const [ingredients, setIngredients] = useState<Array<number>>([]);
     const units = useRef<{[key: string]: number}>({});
+    const { theme } = useContext(GlobalContext);
 
     // Reset ingredients and units states when add dialogue is opened
     useEffect(() => {
@@ -62,7 +64,7 @@ function MenuCreateForm (props: any) {
 });
 
     return (
-        <Modal className={`menu-form page-form ${ props.theme }`} show={ props.openForm === "add" } onHide={() => {
+        <Modal className={`menu-form page-form ${ theme }`} show={ props.openForm === "add" } onHide={() => {
             props.onHide();
             setValidated(false); 
         }}>
