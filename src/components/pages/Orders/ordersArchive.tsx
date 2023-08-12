@@ -1,11 +1,6 @@
 import { 
-    useState, 
-    useEffect,  
-    SetStateAction, 
     useMemo,
-    Dispatch,
     MouseEvent } from 'react';
-import axios, { AxiosResponse, AxiosError } from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
@@ -18,31 +13,15 @@ import { GlobalContext } from '../../App';
 import { dataAPI } from '../../App';
 import { MenuObj } from '../Menu/menu';
 import { OrdersObj } from './orders';
-import { submitDataRequest } from '../../../utils/apiUtils';
-
-
-// Fetch orders data from backend
-export function fetchData (setOrders: Dispatch<SetStateAction<Array<OrdersObj>>>, setMenu: Dispatch<SetStateAction<Array<MenuObj>>>) {
-    axios.all([
-        dataAPI.get(`${externalEndpoints["archivedOrders"]}`),
-        dataAPI.get( `${externalEndpoints["menu"]}`)
-    ])
-    .then(axios.spread((orderResponse: AxiosResponse, menuResponse: AxiosResponse) => {
-        setOrders(orderResponse.data);
-        setMenu(menuResponse.data);
-    })).catch(axios.spread((ordersError: AxiosError, menuError: AxiosError) => {
-        console.log(ordersError);
-        console.log(menuError);
-    }));
-};
-
+import { useLoaderData } from 'react-router-dom';
 
 function ArchivedOrders () {
-    
-    // Set states
-    const [orders, setOrders] = useState<Array<OrdersObj>>([]);
-    const [menu, setMenu] = useState<Array<MenuObj>>([]);
-    const { theme } = useContext(GlobalContext);
+
+    // Unpack data from loader
+    const [archivedOrders, menu]: any = useLoaderData();
+
+    // Get context data
+    const { theme: [theme] } = useContext(GlobalContext);
       
     
     // Set variables
@@ -54,21 +33,11 @@ function ArchivedOrders () {
     }, [menu]);
 
 
-    // Fetch menu data and ingredients data on first load
-    useEffect(() => fetchData(setOrders, setMenu), []);
-
-
     // Handle requests to the backend
     const handleSubmit = async (e: MouseEvent<HTMLElement>, id: number) => {
+        e.preventDefault();
 
-        await submitDataRequest({
-            event: e,
-            method: "update",
-            data: { complete: false },
-            url: `${externalEndpoints["orders"]}${slugify(String(id) ?? "")}/`,
-            resolve: () => fetchData(setOrders, setMenu),
-            reject: (error: AxiosError) => console.log(error),
-        })
+        await dataAPI.patch(`${ externalEndpoints.orders }/${slugify(String(id))}`, { complete: false });
     };
 
     return (
@@ -96,9 +65,9 @@ function ArchivedOrders () {
                 <tbody>
 
                     { 
-                        orders.map((item, i) => {
+                        archivedOrders.map((item: OrdersObj, i: number) => {
                             return (
-                                <tr className='rows' key={i}>
+                                <tr className='rows' key={`order_${i}`}>
                                     <td className='id'>{ item.id }</td>
                                     <td className='menu-items'>{item.menu_items.map((menuItem, i) => {
                                         return (

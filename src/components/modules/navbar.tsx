@@ -14,7 +14,7 @@ import { useContext } from 'react';
 
 function Navigation() {
 
-    const { theme: [theme, setTheme], user: [user, ], loggedIn: [loggedIn, ] } = useContext(GlobalContext);
+    const { theme: [theme, setTheme], user: [user] } = useContext(GlobalContext);
 
     const handleTheme = () => {
         if (localStorage.getItem("theme") === "light-mode"){
@@ -43,9 +43,9 @@ function Navigation() {
                         { (user.isStaff && ["MANAGER", "SALES"].includes(user.role)) && <NavLink to="/dashboard" className="link">Dashboard</NavLink> }
                         { (user.isStaff && ["MANAGER", "SALES"].includes(user.role)) && <NavLink to="/orders" className="link">Orders</NavLink> }
                         { (user.isStaff && ["MANAGER", "CHEF"].includes(user.role)) && <NavLink to="/inventory" className="link">Inventory</NavLink> }
-                        { loggedIn && <NavLink to="/profile" className="link">Profile</NavLink>}
+                        { sessionStorage.getItem("access") && <NavLink to="/profile" className="link">Profile</NavLink>}
                         {
-                            loggedIn ? 
+                            sessionStorage.getItem("access") ? 
                             <NavLink to="/logout" className="link">Logout</NavLink>
                             : <NavLink to="/login" className="link">Login</NavLink>
                         }

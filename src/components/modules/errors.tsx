@@ -28,3 +28,10 @@ export function InternalError () {
         <h2 className="error-message">Internal Error 500</h2>
     )
 }
+
+export function SomethingWentWring () {
+
+    return (
+        <h2 className="error-message">Oops something went wrong. Please try again later.</h2>
+    )
+}

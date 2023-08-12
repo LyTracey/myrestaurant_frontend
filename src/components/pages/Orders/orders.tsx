@@ -1,27 +1,23 @@
 import { 
-    useState, 
-    useEffect, 
-    SetStateAction, 
-    Dispatch, 
     useContext, 
-    FormEvent,
     useRef,
-    useMemo
+    useMemo,
+    createContext
 } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import { externalEndpoints } from '../../../data/endpoints';
+import { externalEndpoints, internalEndpoints } from '../../../data/endpoints';
 import "../../../styles/orders.scss";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
-import OrdersCreateForm from './ordersCreateForm';
-import OrderUpdateForm from "./ordersUpdateForm";
-import slugify from 'slugify';
 import { GlobalContext } from '../../App';
+import { dataAPI } from '../../App';
 import { MenuObj } from '../Menu/menu';
-import { submitDataRequest } from '../../../utils/apiUtils';
-import { fetchData } from '../../../utils/apiUtils';
+import { useLoaderData, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+
+export const OrdersContext = createContext<any>(null);
 
 export interface OrdersObj {
     id?: number | null,
@@ -50,36 +46,14 @@ export const ORDERS_OBJ = {
 };
 
 
-// Fetch orders data from backend
-// export function fetchData (setOrders: Dispatch<SetStateAction<Array<OrdersObj>>>, setMenu: Dispatch<SetStateAction<Array<MenuObj>>>) {
-//         axios.all([
-//             dataAPI.get(`${externalEndpoints["orders"]}`),
-//             dataAPI.get( `${externalEndpoints["menu"]}`)
-//         ])
-//         .then(axios.spread((orderResponse: AxiosResponse, menuResponse: AxiosResponse) => {
-//             setOrders(orderResponse.data);
-//             setMenu(menuResponse.data);
-//         })).catch(axios.spread((ordersError: AxiosError, menuError: AxiosError) => {
-//             console.log(ordersError);
-//             console.log(menuError);
-//         }));
-//     };
-
-
-
 function Orders () {
-    
-    
-    // Fetched data states
-    const [orders, setOrders] = useState<Array<OrdersObj>>([]);
-    const [menu, setMenu] = useState<Array<MenuObj>>([]);
-
+    // Unpack loader data
+    const [orders, menu]: any = useLoaderData();
 
     // Form states
-    const [openForm, setOpenForm] = useState<"add" | "update" | "none">("none");
-    const updateOrder = useRef<OrdersObj>(structuredClone(ORDERS_OBJ));
-    const { theme: [theme], feedback: [setFeedback]}  = useContext(GlobalContext);
-
+    const updateObj = useRef<OrdersObj>(structuredClone(ORDERS_OBJ));
+    const { theme: [theme], feedback: [setFeedback] }  = useContext(GlobalContext);
+    const navigate = useNavigate();
 
     // Set variables
     const filteredMenu = useMemo<{[key: number]: string}>(() => {
@@ -93,31 +67,11 @@ function Orders () {
         Object.fromEntries(menu.map((item: any) => [item.id, item.available_quantity]))
     , [filteredMenu]);
 
-
-    // Fetch menu data and ingredients data on first load
-    useEffect(() => {
-        fetchData(externalEndpoints["orders"]!, (response) => setOrders(response.data));
-        fetchData(externalEndpoints["menu"]!, (response) => setMenu(response.data));
-    }, []);
-
-
-    // Handle requests to the backend
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>, method: string, data: OrdersObj | {[key:string]: boolean | number}, setValidated: Dispatch<SetStateAction<boolean>> | null=null) => {
-
-        await submitDataRequest({
-            event: e,
-            method: method,
-            data: data,
-            url: method === "add" ? `${externalEndpoints["orders"]}` : `${externalEndpoints["orders"]}${slugify(String(data.id) ?? "")}/`,
-            resolve: () => {
-                setOpenForm("none");
-                fetchData(externalEndpoints["orders"]!, (response) => setOrders(response.data));
-                fetchData(externalEndpoints["menu"]!, (response) => setMenu(response.data));
-            },
-            setValidated: setValidated
-        })
+    const ordersContextValue = {
+        menu: menu,
+        updateObj: updateObj,
+        availabilities: availabilities
     };
-
 
     // Send PATCH request every time an order is prepared, delivered, or completed
     const handleCheck = (e: any, id: number, field: string, index: number) => {
@@ -134,7 +88,7 @@ function Orders () {
 
 
         // Send patch request if the correct checkboxes are checked
-        handleSubmit(e, "update", {
+        dataAPI.patch(`${ externalEndpoints.orders! }/${ id }`, {
             id: id,
             [field]: e.target.checked
         });
@@ -148,30 +102,9 @@ function Orders () {
             </Row>
             
             <Row xs={2} className='actions'>
-                <Button className="add" onClick={() =>
-                    setOpenForm("add")
-                }>Add Item +</Button>
+                <Button className="add" onClick={() => navigate(internalEndpoints.ordersCreate!)}>Add Item +</Button>
                 <Button className="archive" as="a" href="/orders/archive">Archive</Button>
             </Row>
-
-            <OrdersCreateForm 
-                theme={ theme }
-                openForm={ openForm }
-                onHide={ () => setOpenForm("none") } 
-                handleSubmit={ handleSubmit }
-                menu={ filteredMenu }
-                availabilities={ availabilities }
-            />
-
-            <OrderUpdateForm
-                theme={ theme }
-                openForm={ openForm }
-                onHide={() => setOpenForm("none") }
-                handleSubmit={ handleSubmit }
-                updateOrder={ updateOrder }
-                menu={ filteredMenu }
-                availabilities={ availabilities }
-            />
 
             <Table responsive>
                 <thead>
@@ -190,11 +123,11 @@ function Orders () {
                 <tbody>
 
                     { 
-                        orders.map((item, i) => {
+                        orders.map((item: OrdersObj, i: number) => {
                             return (
                                 <tr className="rows" onClick={() => {
-                                        updateOrder.current = {...ORDERS_OBJ, ...item};
-                                        setOpenForm("update");
+                                        updateObj.current = {...ORDERS_OBJ, ...item};
+                                        navigate(internalEndpoints.ordersUpdate!);
                                     }} key={i}>
                                     <td className='id' >{item.id}</td>
                                     <td className='menu-items' >{item.menu_items.map((item2, i) => {
@@ -217,7 +150,11 @@ function Orders () {
                     }
                 </tbody>
             </Table>
+            
 
+            <OrdersContext.Provider value={ ordersContextValue }>
+                <Outlet />
+            </OrdersContext.Provider>
 
 
 

@@ -2,50 +2,48 @@ import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import { useContext, ChangeEvent, SetStateAction, Dispatch } from "react";
+import { useContext, useEffect } from "react";
 import {ReactComponent as Person} from "../../../images/icons/person.svg";
 import { externalEndpoints } from "../../../data/endpoints";
-import { AxiosResponse } from "axios";
 import "../../../styles/profile.scss";
 import Form from "react-bootstrap/Form";
-import { errorFormatter } from "../../../utils/formatUtils";
-import { userAPI, GlobalContext } from "../../App";
-import { User } from "../../App";
+import { GlobalContext } from "../../App";
+import { userAPI } from "../../App";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 
-export function fetchData (setUser: Dispatch<SetStateAction<User>>, setFeedback: Dispatch<SetStateAction<Array<string>>>) {
-    userAPI.get(
-        `${ externalEndpoints["profile"] }${ sessionStorage.getItem("username") }/`,
-    ).then((response: AxiosResponse) => {
-        // Update user state
-        setUser(response.data);
-        
-        // Update user details in session stroage
-        sessionStorage.setItem("isStaff", response.data.is_staff.toString());
-        sessionStorage.setItem("role", response.data.role!);
-        
-    }).catch((error: any) => {
-        setFeedback(errorFormatter(error));
-        console.log(error);
-    })
-};
 
 function Profile () {
 
-    const { theme: [theme], user: [user, setUser], feedback: [setFeedback]  } = useContext(GlobalContext);
+    const userData: any = useLoaderData();
+
+    // Utils
+    const { theme: [theme], feedback: [feedback], user: [user, setUser] } = useContext(GlobalContext);
+    const { pathname } = useLocation();
+    const navigate = useNavigate();
+
+    //  Set user data on first load
+    useEffect(() => {
+        setUser(userData);
+        sessionStorage.setItem("role", user.role);
+        sessionStorage.setItem("isStaff", user.isStaff);
+    }, []);
 
     // Handle PATCH request
-    const patchUser = (data: object) => {
-        userAPI.patch(
-            `${ externalEndpoints["profile"] }${ user.username }/`,
-            data
-        ).then(() => fetchData(setUser, setFeedback) )
-        .catch((error: any) => setFeedback(errorFormatter(error)));
+    const patchUser = async (data: object) => {
+        await userAPI.patch(`${ externalEndpoints.profile! }${ user.username }/`, data);
+        navigate(pathname);
     };
 
     return (
         <Container className={ `page profile ${ theme }` }>
             <Row className="title">
                 <h2>My Profile</h2>
+            </Row>
+
+            <Row>
+                <ul className="error">
+                    { feedback.map((item: any, i: any) => <li key={i}>{ item }</li>) }
+                </ul>
             </Row>
 
             <Row xs={1} sm={2}>
@@ -69,16 +67,22 @@ function Profile () {
                                         label="Staff View"
                                         name="is_staff"
                                         checked={ user.isStaff }
-                                        onChange={(e: ChangeEvent<HTMLInputElement>) => patchUser({is_staff: e.target.checked})}
+                                        onChange={({ target }) => {
+                                            setUser({...user, isStaff: target.checked});
+                                            patchUser({is_staff: target.checked});
+                                        }}
                                     />
                                 </td>
                             </tr>
                             
-                            {   user.is_staff &&
+                            {   user.isStaff &&
                                 <tr>
                                     <td className="key">Role</td>
                                     <td>
-                                        <Form.Select name="role" value={ user.role } onChange={({target}) => patchUser({role: target.value.toUpperCase()})}>
+                                        <Form.Select name="role" value={ user.role } onChange={({target}) => {
+                                            setUser({...user, role: target.value});
+                                            patchUser({role: target.value});
+                                        }}>
                                             <option></option>
                                             <option>SALES</option>
                                             <option>MANAGER</option>
@@ -89,10 +93,10 @@ function Profile () {
                             }
 
                             {
-                                user.is_staff &&
+                                user.isStaff &&
                                 <tr>
                                     <td className="key">Date joined</td>
-                                    <td>{user.join_date ?? ""}</td>
+                                    <td>{user.joinDate ?? ""}</td>
                                 </tr>
                             }
 

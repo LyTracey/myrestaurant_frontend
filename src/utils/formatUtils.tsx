@@ -4,7 +4,13 @@ export function errorFormatter (error: AxiosError) {
     /*
         Returns error.response.data as an array of its values.
     */
-    const errorObj = JSON.parse(JSON.stringify(error?.response?.data));
-    const formattedError = Object.entries(errorObj ?? {}).map((item) => String(item[1]));
-    return formattedError
+    const data = error.response?.data ?? error.message;
+
+    if (typeof(data) === "string") {
+        return [data]
+    } else if (Array.isArray(data)) {
+        return data
+    } else {
+        return Object.values(data)
+    }
 };

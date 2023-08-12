@@ -1,38 +1,29 @@
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import "../../../styles/logout.scss";
-import { GlobalContext } from '../../App';
-
+import { internalEndpoints } from '../../../data/endpoints';
+import { Container } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 function Logout () {
 
-    const { loggedIn: [ , setLoggedIn], user: [ , setUser], navigate } = useContext(GlobalContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
-        // Update session storage
-        sessionStorage.removeItem("access");
-        sessionStorage.removeItem("loggedIn");
-        sessionStorage.removeItem("isStaff");
-        sessionStorage.removeItem("role");
-
-        // Set state changes
-        setUser({
-            username: null,
-            isStaff: null,
-            joinDate: null,
-            role: null
-        });
-        setLoggedIn(false);
+        // Clear all session storage
+        sessionStorage.clear();
 
         // Redirect to login page
-        navigate.current("/login");
+        navigate(internalEndpoints.login!);
     }, []);
 
     return (
-        <Spinner animation="border">
-            <span className="visually-hidden">Logging out...</span>
-        </Spinner>
+        <Container className='page logout'>
+            <Spinner animation="border">
+                <span className="visually-hidden">Logging out...</span>
+            </Spinner>
+        </Container>
     )
 
 };

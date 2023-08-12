@@ -232,7 +232,7 @@ export function SelectMultiFieldGroup2 ({name, reference, state, stateSetter}: S
                         className={ `multi-select-field ${ name }` }
                         key={`${name}_${i}`}
                         type="checkbox"
-                        label={ item[1] }
+                        label={ Number(item[1]) }
                         name={ name }
                         // value={ Number(item[0]) }
                         onChange={(e) => {
@@ -380,10 +380,12 @@ export function InputMultiFieldGroup2 ({type, reference, items_list, name, ref, 
 
 type SetDeleteAlert = (confirm: boolean) => void;
 
-type OnClickYes = (e: MouseEvent<HTMLElement>) => void;
-type OnClickCancel = () => void;
+interface DeleteAlert2Type {
+    onClickYes: () => void,
+    onClickCancel: () => void
+}
 
-export function DeleteAlert2 (onClickYes: OnClickYes, onClickCancel: OnClickCancel) {
+export function DeleteAlert2 ({onClickYes, onClickCancel}: DeleteAlert2Type) {
     /*
     Returns an alert that confirms the user wants to delete the item.
     1. If cancel, dismiss alert and return to modal.
@@ -397,10 +399,7 @@ export function DeleteAlert2 (onClickYes: OnClickYes, onClickCancel: OnClickCanc
             </Alert.Heading>
             <div className='alert-actions'>
                 <Button type="button" className="cancel" onClick={() => onClickCancel() }>Cancel</Button>
-                <Button type="button" className="yes" onClick={(e) => {
-                    onClickYes(e);
-                    onClickCancel();
-                }}>Yes</Button>
+                <Button type="button" className="yes" onClick={() => onClickYes()}>Yes</Button>
             </div>
         </Alert>
     )
@@ -477,12 +476,15 @@ export function ColumnsToRows (columns: Columns, widths: Widths) {
     )
 };
 
+interface SubmitType {
+    buttonText?: string | undefined
+};
 
-export function Submit () {
+export function Submit ({buttonText}: SubmitType) {
     return (
-        <Row className="form-actions">
-            <Button type="submit" className="submit">SUBMIT</Button>
-        </Row>
+        <>
+            <Button type="submit" className="submit">{ buttonText ?? "Submit" }</Button>
+        </>
     )
 
 };

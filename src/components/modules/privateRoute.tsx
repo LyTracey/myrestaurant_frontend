@@ -1,16 +1,15 @@
 import { Outlet, Navigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { GlobalContext } from '../App';
+import { internalEndpoints } from '../../data/endpoints';
+
 
 function PrivateRoute () {
-
-
-    const {loggedIn: [loggedIn, ]} = useContext(GlobalContext);
+    const expiry = new Date(sessionStorage.getItem("expiry") ?? "");
 
     return (
-        loggedIn
+
+        (new Date() < expiry)
         ? <Outlet />
-        : <Navigate to="/login" />
+        : <Navigate to={ internalEndpoints.login! } />
     )
 }
 
