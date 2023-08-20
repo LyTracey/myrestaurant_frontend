@@ -12,7 +12,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { ReactComponent as CoffeeCup } from "../../../images/icons/coffee-cup.svg";
-import { GlobalContext } from '../../App';
+import { GlobalContext } from '../App';
 import { InventoryObj } from '../Inventory/inventory';
 import "../../../styles/menu.scss";
 import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';

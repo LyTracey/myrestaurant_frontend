@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import "../../styles/footer.scss";
 import { ReactComponent as Logo } from "../../images/icons/moonlight-cafe-logo.svg";
 import { useContext } from 'react';
-import { GlobalContext } from '../App';
+import { GlobalContext } from '../pages/App';
 
 
 function Footer() {

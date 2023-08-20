@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import { NavLink } from "react-router-dom";
 import {ReactComponent as CoffeeBeans} from "../../../images/icons/coffee-beans.svg";
 import "../../../styles/inventory.scss";
-import { GlobalContext } from '../../App';
+import { GlobalContext } from '../App';
 import { Outlet } from "react-router-dom";
 import { useLoaderData } from "react-router-dom";
 

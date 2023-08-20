@@ -1,6 +1,7 @@
-import { dataAPI, userAPI } from "../App";
+import { dataAPI, userAPI } from "../pages/App";
 import axios from "axios";
 import { externalEndpoints } from "../../data/endpoints";
+import jwtDecode from "jwt-decode";
 
 export const MenuLoader = async () => {
     const [menuResponse, inventoryResponse] = await axios.all([
@@ -37,7 +38,11 @@ export const InventoryLoader = async () => {
 export const UserLoader = async () => {
     console.log("in profile loader");
 
-    const response = await userAPI.get(`${ externalEndpoints["profile"] }${ sessionStorage.getItem("username") }/`)
+    const { username }: any = jwtDecode(localStorage.getItem("access")!);
+    const response = await userAPI.get(`${ externalEndpoints["profile"] }${ username }/`);
+
+    console.log(response.data);
+
     return {
         username: response.data?.username,
         isStaff: response?.data.is_staff,

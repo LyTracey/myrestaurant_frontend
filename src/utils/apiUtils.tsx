@@ -1,15 +1,29 @@
-import { userAPI, dataAPI } from "../components/App";
+import { userAPI, dataAPI } from "../components/pages/App";
+import { Dispatch, SetStateAction } from "react";
+import jwtDecode from "jwt-decode";
 
-// Set access token and expiry date
-export function changeAccessToken (accessToken: string) {
+interface TokenData {
+    access: string,
+    refresh: string
+}
 
-    // Set access token
-    sessionStorage.setItem("access", `Bearer ${ accessToken }`);
-    userAPI.defaults.headers["Authorization"] = `Bearer ${ accessToken }`;
-    dataAPI.defaults.headers["Authorization"] = `Bearer ${ accessToken }`;
+// Set access and refresh token
+export function changeTokens (data: TokenData, userSetter: Dispatch<SetStateAction<any>> ) {
     
-    // Set expiry of access token
-    let expiry: Date = new Date();
-    expiry.setMinutes(expiry.getMinutes() + 15);
-    sessionStorage.setItem("expiry", String(expiry));
+    // Set access token
+    localStorage.setItem("access", data.access);
+    userAPI.defaults.headers["Authorization"] = `Bearer ${ data.access }`;
+    dataAPI.defaults.headers["Authorization"] = `Bearer ${ data.access }`;
+
+    // Set user info
+    const { isStaff, role }: any = jwtDecode(data.access);
+    userSetter({
+        isStaff: isStaff,
+        role: role
+    });
+
+
+    // Set refresh token
+    localStorage.setItem("refresh", data.refresh);
+
 };

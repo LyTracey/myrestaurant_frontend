@@ -5,16 +5,17 @@ import { NavLink } from 'react-router-dom';
 import "../../styles/navbar.scss";
 import { ReactComponent as SunIcon } from "../../images/icons/sun.svg";
 import { ReactComponent as MoonIcon } from "../../images/icons/moon.svg";
-import { Menu } from 'react-feather';
+import { CiMenuBurger as Menu } from "react-icons/ci";
 import Button from 'react-bootstrap/Button';
 import { ReactComponent as Logo } from "../../images/icons/moonlight-cafe-logo.svg";
-import { GlobalContext } from '../App';
+import { GlobalContext } from '../pages/App';
 import { useContext } from 'react';
 
 
 function Navigation() {
 
     const { theme: [theme, setTheme], user: [user] } = useContext(GlobalContext);
+
 
     const handleTheme = () => {
         if (localStorage.getItem("theme") === "light-mode"){
@@ -43,9 +44,9 @@ function Navigation() {
                         { (user.isStaff && ["MANAGER", "SALES"].includes(user.role)) && <NavLink to="/dashboard" className="link">Dashboard</NavLink> }
                         { (user.isStaff && ["MANAGER", "SALES"].includes(user.role)) && <NavLink to="/orders" className="link">Orders</NavLink> }
                         { (user.isStaff && ["MANAGER", "CHEF"].includes(user.role)) && <NavLink to="/inventory" className="link">Inventory</NavLink> }
-                        { sessionStorage.getItem("access") && <NavLink to="/profile" className="link">Profile</NavLink>}
+                        { localStorage.getItem("access") && <NavLink to="/profile" className="link">Profile</NavLink>}
                         {
-                            sessionStorage.getItem("access") ? 
+                            localStorage.getItem("access") ? 
                             <NavLink to="/logout" className="link">Logout</NavLink>
                             : <NavLink to="/login" className="link">Login</NavLink>
                         }

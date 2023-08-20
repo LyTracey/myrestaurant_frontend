@@ -5,10 +5,10 @@ interface Endpoint {
 
 // External endpoints
 export const externalEndpoints: Endpoint = {
-    prefix: "https://tly.pythonanywhere.com/myrestaurant/",
-    prefix_user: "https://tly.pythonanywhere.com/user/",
-    // prefix: "http://127.0.0.1:8000/myrestaurant/",
-    // prefix_user: "http://127.0.0.1:8000/user/",
+    // prefix: "https://tly.pythonanywhere.com/myrestaurant/",
+    // prefix_user: "https://tly.pythonanywhere.com/user/",
+    prefix_data: "http://127.0.0.1:8000/myrestaurant/",
+    prefix_user: "http://127.0.0.1:8000/user/",
     dashboard: "dashboard/",
     menu: "menu/",
     inventory: "inventory/",
@@ -17,8 +17,7 @@ export const externalEndpoints: Endpoint = {
     register: "register/",
     profile: "profile/",
     login: "login/",
-    refresh: "token/refresh/",
-    verify: "token/verify/"
+    refresh: "token/refresh",
 };
 
 

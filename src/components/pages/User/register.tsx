@@ -7,8 +7,8 @@ import { Container } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useNavigate } from 'react-router-dom';
-import { GlobalContext } from '../../App';
-import { userAPI } from "../../App";
+import { GlobalContext } from '../App';
+import { userAPI } from "../App";
 import { errorFormatter } from "../../../utils/formatUtils"
 
 interface User {

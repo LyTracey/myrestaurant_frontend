@@ -2,7 +2,7 @@ import { FormModal } from "../../modules/forms";
 import { EditFieldGroup2 } from "../../modules/formComponents";
 import { useContext, useRef } from "react";
 import { internalEndpoints, externalEndpoints } from "../../../data/endpoints";
-import { dataAPI } from "../../App";
+import { dataAPI } from "../App";
 import { InventoryObj } from "./inventory";
 import { InventoryContext } from "./inventory";
 import slugify from "slugify";

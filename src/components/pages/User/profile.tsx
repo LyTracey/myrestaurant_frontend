@@ -7,26 +7,28 @@ import {ReactComponent as Person} from "../../../images/icons/person.svg";
 import { externalEndpoints } from "../../../data/endpoints";
 import "../../../styles/profile.scss";
 import Form from "react-bootstrap/Form";
-import { GlobalContext } from "../../App";
-import { userAPI } from "../../App";
+import { GlobalContext } from "../App";
+import { userAPI } from "../App";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 
+interface UserType {
+    username: string,
+    isStaff: boolean,
+    joinDate: string,
+    role: string
+};
 
 function Profile () {
 
-    const userData: any = useLoaderData();
+    const user = useLoaderData() as UserType;
 
     // Utils
-    const { theme: [theme], feedback: [feedback], user: [user, setUser] } = useContext(GlobalContext);
+    const { theme: [theme], feedback: [feedback], user: [, setUser] } = useContext(GlobalContext);
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
-    //  Set user data on first load
-    useEffect(() => {
-        setUser(userData);
-        sessionStorage.setItem("role", user.role);
-        sessionStorage.setItem("isStaff", user.isStaff);
-    }, []);
+    useEffect(() => setUser(user), [user]);
+
 
     // Handle PATCH request
     const patchUser = async (data: object) => {
@@ -68,7 +70,6 @@ function Profile () {
                                         name="is_staff"
                                         checked={ user.isStaff }
                                         onChange={({ target }) => {
-                                            setUser({...user, isStaff: target.checked});
                                             patchUser({is_staff: target.checked});
                                         }}
                                     />
@@ -80,7 +81,6 @@ function Profile () {
                                     <td className="key">Role</td>
                                     <td>
                                         <Form.Select name="role" value={ user.role } onChange={({target}) => {
-                                            setUser({...user, role: target.value});
                                             patchUser({role: target.value});
                                         }}>
                                             <option></option>

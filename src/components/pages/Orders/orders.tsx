@@ -11,8 +11,8 @@ import { externalEndpoints, internalEndpoints } from '../../../data/endpoints';
 import "../../../styles/orders.scss";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
-import { GlobalContext } from '../../App';
-import { dataAPI } from '../../App';
+import { GlobalContext } from '../App';
+import { dataAPI } from '../App';
 import { MenuObj } from '../Menu/menu';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
@@ -65,10 +65,10 @@ function Orders () {
 
     const availabilities = useMemo<{[key: number]: number}>(() => 
         Object.fromEntries(menu.map((item: any) => [item.id, item.available_quantity]))
-    , [filteredMenu]);
+    , [menu]);
 
     const ordersContextValue = {
-        menu: menu,
+        menu: filteredMenu,
         updateObj: updateObj,
         availabilities: availabilities
     };

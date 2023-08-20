@@ -1,15 +1,24 @@
 import { Outlet, Navigate } from 'react-router-dom';
 import { internalEndpoints } from '../../data/endpoints';
+import jwtDecode from 'jwt-decode';
 
 
 function PrivateRoute () {
-    const expiry = new Date(sessionStorage.getItem("expiry") ?? "");
+    
+    const { exp }: any = jwtDecode(localStorage.getItem("access") ?? "");
 
     return (
 
-        (new Date() < expiry)
-        ? <Outlet />
-        : <Navigate to={ internalEndpoints.login! } />
+        <>
+            {
+                (Date.now() < (exp * 1000))
+                ? <Outlet />
+                : <Navigate to={ internalEndpoints.login! } />
+            }
+
+            <Outlet/>
+        </>
+
     )
 }
 

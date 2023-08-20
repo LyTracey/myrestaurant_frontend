@@ -12,7 +12,7 @@ function Logout () {
     useEffect(() => {
 
         // Clear all session storage
-        sessionStorage.clear();
+        localStorage.clear();
 
         // Redirect to login page
         navigate(internalEndpoints.login!);

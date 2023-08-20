@@ -1,53 +1,49 @@
-import "../styles/App.scss";
-import { Route, createBrowserRouter, createRoutesFromElements, Outlet, RouterProvider, useLocation, useRouteError } from 'react-router-dom';
+import "../../styles/App.scss";
+import { Route, createBrowserRouter, createRoutesFromElements, Outlet, RouterProvider, useLocation } from 'react-router-dom';
 import { useState, createContext, useEffect, useContext } from 'react';
-import Dashboard from './pages/dashboard';
-import Navigation from './modules/navbar';
-import Menu from "./pages/Menu/menu";
-import Inventory from './pages/Inventory/inventory';
-import Orders from './pages/Orders/orders';
-import Footer from './modules/footer';
-import ArchivedOrders from './pages/Orders/ordersArchive';
-import Home from './pages/home';
-import Register from './pages/User/register';
-import Login from './pages/User/login';
-import Logout from './pages/User/logout';
-import PrivateRoute from './modules/privateRoute';
-import { internalEndpoints, externalEndpoints } from '../data/endpoints';
-import Profile from './pages/User/profile';
-import { InventoryCreateForm, InventoryUpdateForm } from './pages/Inventory/inventoryForms';
-import { InventoryLoader, MenuLoader, OrdersLoader, OrdersArchiveLoader, UserLoader } from "./modules/loaders";
-import { MenuCreateForm, MenuUpdateForm } from "./pages/Menu/menuForms";
-import { OrderCreateForm, OrderUpdateForm } from "./pages/Orders/ordersForm";
-import { InternalError, NotFound, SomethingWentWring, Forbidden } from "./modules/errors";
+import Dashboard from './dashboard';
+import Navigation from '../modules/navbar';
+import Menu from "./Menu/menu";
+import Inventory from './Inventory/inventory';
+import Orders from './Orders/orders';
+import Footer from '../modules/footer';
+import ArchivedOrders from './Orders/ordersArchive';
+import Home from './home';
+import Register from './User/register';
+import Login from './User/login';
+import Logout from './User/logout';
+import PrivateRoute from '../modules/privateRoute';
+import { internalEndpoints, externalEndpoints } from '../../data/endpoints';
+import Profile from './User/profile';
+import { InventoryCreateForm, InventoryUpdateForm } from './Inventory/inventoryForms';
+import { InventoryLoader, MenuLoader, OrdersLoader, OrdersArchiveLoader, UserLoader } from "../modules/loaders";
+import { MenuCreateForm, MenuUpdateForm } from "./Menu/menuForms";
+import { OrderCreateForm, OrderUpdateForm } from "./Orders/ordersForm";
+import RootErrorBoundary from "../modules/errors";
 import axios, {AxiosResponse, InternalAxiosRequestConfig, AxiosError} from "axios";
-import { changeAccessToken } from "../utils/apiUtils";
+import { changeTokens } from "../../utils/apiUtils";
+import jwt_decode from "jwt-decode";
 
 const CONTROLLER = new AbortController();
 
-const HEADERS = {    
-    "Content-Type": 'multipart/form-data',
-    "Authorization": `${sessionStorage.getItem("access") ?? ""}`
+const AXIOS_BASE_CONFIG  = {
+    timeout: 20000,
+    formSerializer: { metaTokens: false, indexes: null },
+    signal: CONTROLLER.signal,
+    headers: {    
+        "Content-Type": 'multipart/form-data',
+        "Authorization": `Bearer ${localStorage.getItem("access") ?? ""}`
+    }
 };
 
-const FORMSERIALIZER = { metaTokens: false, indexes: null };
-
 export const userAPI = axios.create({
-    baseURL: `${ externalEndpoints["prefix_user"]}`,
-    timeout: 20000,
-    formSerializer: FORMSERIALIZER,
-    signal: CONTROLLER.signal,
-    headers: HEADERS,
-    withCredentials: true
+    ...AXIOS_BASE_CONFIG,
+    baseURL: `${ externalEndpoints.prefix_user}`,
 });
 
 export const dataAPI = axios.create({
-    headers: HEADERS,
-    baseURL: `${externalEndpoints["prefix"]}`,
-    timeout: 20000,
-    formSerializer: FORMSERIALIZER,
-    signal: CONTROLLER.signal,
-    withCredentials: true
+    ...AXIOS_BASE_CONFIG,
+    baseURL: `${externalEndpoints.prefix_data}`,
 });
 
 // Constants
@@ -63,7 +59,7 @@ function AppLayout () {
     const { pathname } = useLocation();
 
     // Reset feedback and value when page changes
-    useEffect(() => setFeedback([]), [pathname]);
+    useEffect(() => setFeedback([]), [pathname, setFeedback]);
 
     return (
         <>
@@ -72,28 +68,6 @@ function AppLayout () {
             <Footer />
         </>
     )
-};
-
-// Create root error boundary
-function RootErrorBoundary () {
-    const error: any = useRouteError();
-
-    console.log(error);
-
-    switch (error.response?.status) {
-        case 401:
-            return <Logout />
-        case 403:
-            return <Forbidden />
-        case 404: 
-            return <NotFound />
-        case 500:
-            return <InternalError />
-        default:
-            return <SomethingWentWring />
-
-    }
-
 };
 
 
@@ -144,8 +118,8 @@ const router = createBrowserRouter(
 
 export interface User {
     username: string,
-    isStaff: boolean,
     joinDate: string,
+    isStaff: boolean,
     role: string
 }
 
@@ -156,29 +130,32 @@ function App() {
     const [feedback, setFeedback] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [user, setUser] = useState<User>({
-        username: sessionStorage.getItem("username") ?? "",
-        isStaff: sessionStorage.getItem("isStaff") === "true",
-        joinDate: sessionStorage.getItem("joinDate") ?? "",
-        role: sessionStorage.getItem("role") ?? ""
+        username: "",
+        joinDate: "",
+        isStaff: false,
+        role: ""
     });
 
     // Create request interceptor to check if tokens are valid
     useEffect(() => {
-        dataAPI.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+        axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
             if (config.url !== externalEndpoints.refresh ) {
 
-                const expiry = new Date(sessionStorage.getItem("expiry") ?? "");
+                const { exp }: any = jwt_decode(localStorage.getItem("access") ?? "");
 
-                if (new Date() > expiry) {
+                if (Date.now() > (exp * 1000)) {
                     // Try refreshing token if access token expired
-                    userAPI.post(`${ externalEndpoints.refresh }`, {}).then((response: AxiosResponse) => {
+                    userAPI.post(externalEndpoints.refresh!, {
+                        refresh: localStorage.getItem("refresh")
+                    }).then((response: AxiosResponse) => {
                         console.log("setting new access token");
-                        changeAccessToken(response.data.access)
-                    }).catch((error: AxiosError) => console.log(error));
+                        changeTokens(response.data.access, setUser);
+                    });
                 }
         }
             return config
         }, (error: AxiosError) => {
+            console.log(error);
             Promise.reject(error)
         });
     }, []);
@@ -192,8 +169,9 @@ function App() {
         loading: [loading, setLoading],
         feedback: [feedback, setFeedback],
 
-        // User state
+        // User states
         user: [user, setUser]
+
     };
 
     return (

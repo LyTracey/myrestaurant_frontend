@@ -2,8 +2,8 @@ import { useState, useContext, FormEvent } from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { Submit, DeleteAlert2 } from "./formComponents";
-import { GlobalContext } from "../App";
-import { dataAPI } from "../App";
+import { GlobalContext } from "../pages/App";
+import { dataAPI } from "../pages/App";
 import Row from "react-bootstrap/Row";
 import { useNavigate } from "react-router-dom";
 import { errorFormatter } from "../../utils/formatUtils";
@@ -96,7 +96,7 @@ export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, sub
 interface FormTemplateType {
     title: string,
     Fields: React.FunctionComponent,
-    redirectURL: string,
+    redirectURL?: string,
     submitRequest: () => Promise<any>
     buttonText?: string
 };
@@ -121,9 +121,11 @@ export function FormTemplate ({title, Fields, redirectURL, buttonText, submitReq
             // If valid, send request
             setLoading(true);
             try {
-                await submitRequest().then(() => navigate(redirectURL));
+                await submitRequest();
+                if (redirectURL) {
+                    navigate(redirectURL);
+                }
             } catch (error: any) {
-                console.log(error);
                 setFeedback(errorFormatter(error));
             } finally {
                 setLoading(false);

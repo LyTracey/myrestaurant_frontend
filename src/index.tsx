@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import App from './components/App';
+import App from './components/pages/App';
 // import reportWebVitals from './reportWebVitals';
 
 

@@ -7,7 +7,7 @@ import HomeBackgroundLight from "../../images/home-background-light.png";
 import HomeBackgroundDark from "../../images/home-background-dark.png";
 import "../../styles/home.scss";
 import { useContext } from 'react';
-import { GlobalContext } from '../App';
+import { GlobalContext } from './App';
 
 function Home () {
 

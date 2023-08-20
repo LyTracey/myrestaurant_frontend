@@ -1,6 +1,6 @@
 import '../../styles/dashboard.scss';
 import { externalEndpoints } from "../../data/endpoints";
-import { GlobalContext } from '../App';
+import { GlobalContext } from './App';
 import { BarChart, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer} from 'recharts';
 import { useState, useEffect, useContext, ChangeEvent } from 'react';
 import Container from 'react-bootstrap/Container';
@@ -9,7 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
-import { dataAPI } from '../App';
+import { dataAPI } from './App';
 import { AxiosResponse } from 'axios';
 
 interface StatisticsObj {
