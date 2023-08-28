@@ -9,7 +9,6 @@ import Col from "react-bootstrap/Col";
 import { useNavigate } from 'react-router-dom';
 import { GlobalContext } from '../App';
 import { userAPI } from "../App";
-import { errorFormatter } from "../../../utils/formatUtils"
 
 interface User {
     username: string,
@@ -60,10 +59,7 @@ function Register () {
                 }
             ).then(() => {
                 navigate("/");
-            }).catch((error: any) => {
-                console.log(error);
-                setFeedback(errorFormatter(error));
-            });
+            })
         }
         setValidated(true);
 

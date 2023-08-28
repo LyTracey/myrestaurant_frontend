@@ -79,6 +79,25 @@
     // Accordion
     .accordion {
 
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            font-weight: 800;
+            letter-spacing: 1px;
+
+            .badge {
+                background-color: map-get(base.$themes, "light-green") !important;
+                color: map-get(base.$themes, "off-white");
+                border-radius: 30px;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
         .accordion-button {
             color: map-get(base.$themes, "white");
             font-weight: 400;

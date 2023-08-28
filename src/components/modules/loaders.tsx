@@ -5,10 +5,15 @@ import jwtDecode from "jwt-decode";
 
 export const MenuLoader = async () => {
     const [menuResponse, inventoryResponse] = await axios.all([
-        dataAPI.get(`${externalEndpoints["menu"]}`),
-        dataAPI.get(`${externalEndpoints["inventory"]}`)
+        dataAPI.get(`${ externalEndpoints.menu! }`),
+        dataAPI.get(`${ externalEndpoints.inventoryReference! }`)
     ]);
-    return [menuResponse?.data, inventoryResponse?.data]
+
+    const inventoryReference = Object.fromEntries(inventoryResponse?.data.map((item: {[key: string]: any}) => 
+        [item.id, item.ingredient]
+    ));
+
+    return [menuResponse?.data, inventoryReference]
 };
 
 export const OrdersLoader = async () => {
@@ -36,12 +41,12 @@ export const InventoryLoader = async () => {
 
 
 export const UserLoader = async () => {
-    console.log("in profile loader");
-
     const { username }: any = jwtDecode(localStorage.getItem("access")!);
     const response = await userAPI.get(`${ externalEndpoints["profile"] }${ username }/`);
 
-    console.log(response.data);
+    // Set role and isStaff in local storage
+    localStorage.setItem("role", response?.data.role);
+    localStorage.setItem("isStaff", response?.data.is_staff);
 
     return {
         username: response.data?.username,

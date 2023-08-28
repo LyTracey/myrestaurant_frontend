@@ -38,9 +38,8 @@ function Profile () {
 
     return (
         <Container className={ `page profile ${ theme }` }>
-            <Row className="title">
-                <h2>My Profile</h2>
-            </Row>
+            
+            <h2 className="title">My Profile</h2>
 
             <Row>
                 <ul className="error">

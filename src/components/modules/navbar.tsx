@@ -1,15 +1,13 @@
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
 import { NavLink } from 'react-router-dom';
 import "../../styles/navbar.scss";
-import { ReactComponent as SunIcon } from "../../images/icons/sun.svg";
-import { ReactComponent as MoonIcon } from "../../images/icons/moon.svg";
-import { CiMenuBurger as Menu } from "react-icons/ci";
 import Button from 'react-bootstrap/Button';
 import { ReactComponent as Logo } from "../../images/icons/moonlight-cafe-logo.svg";
 import { GlobalContext } from '../pages/App';
 import { useContext } from 'react';
+import { internalEndpoints } from '../../data/endpoints';
+import ICONS from '../../data/icons';
 
 
 function Navigation() {
@@ -29,26 +27,24 @@ function Navigation() {
 
     return (
         <Navbar className={ theme } collapseOnSelect sticky="top" expand="md">
-            <Container fluid>
-                <NavLink to="/" className="link brand">
+                <NavLink to={ internalEndpoints.home! } className="link brand">
                     MOONLIGHT CAFE
                     <Logo className="icon logo"/>
                 </NavLink>
-                <Navbar.Toggle aria-controls="responsive-navbar-nav"><Menu className="icon" /></Navbar.Toggle>
-                <Navbar.Collapse role="navigation">
-                    <Nav>
-                        { user.isStaff && <NavLink to="/" className="link">Home</NavLink> }
-                        
-                        <NavLink to="/menu" className="link">Menu</NavLink>
 
-                        { (user.isStaff && ["MANAGER", "SALES"].includes(user.role)) && <NavLink to="/dashboard" className="link">Dashboard</NavLink> }
-                        { (user.isStaff && ["MANAGER", "SALES"].includes(user.role)) && <NavLink to="/orders" className="link">Orders</NavLink> }
-                        { (user.isStaff && ["MANAGER", "CHEF"].includes(user.role)) && <NavLink to="/inventory" className="link">Inventory</NavLink> }
-                        { localStorage.getItem("access") && <NavLink to="/profile" className="link">Profile</NavLink>}
+                <Navbar.Toggle aria-controls="responsive-navbar-nav"><ICONS.menu className="icon" /></Navbar.Toggle>
+                <Navbar.Collapse className="nav-links" role="navigation" >
+                    <Nav>        
+                        <Nav.Link eventKey="1" as={ NavLink } to={ internalEndpoints.menu! } className="link">Menu</Nav.Link>
+
+                        { (user.isStaff && ["MANAGER", "SALES"].includes(user.role)) && <Nav.Link eventKey="2" as={ NavLink } to={ internalEndpoints.dashboard! } className="link">Dashboard</Nav.Link> }
+                        { (user.isStaff && ["MANAGER", "SALES"].includes(user.role)) && <Nav.Link eventKey="3" as={ NavLink } to={ internalEndpoints.orders! } className="link">Orders</Nav.Link> }
+                        { (user.isStaff && ["MANAGER", "CHEF"].includes(user.role)) && <Nav.Link eventKey="4" as={ NavLink } to={ internalEndpoints.inventory! } className="link">Inventory</Nav.Link> }
+                        { localStorage.getItem("access") && <Nav.Link eventKey="5" as={ NavLink } to={ internalEndpoints.profile! } className="link">Profile</Nav.Link>}
                         {
                             localStorage.getItem("access") ? 
-                            <NavLink to="/logout" className="link">Logout</NavLink>
-                            : <NavLink to="/login" className="link">Login</NavLink>
+                            <Nav.Link eventKey="6" as={ NavLink } to={ internalEndpoints.logout! } className="link">Logout</Nav.Link>
+                            : <Nav.Link eventKey="7" as={ NavLink } to={ internalEndpoints.login! } className="link">Login</Nav.Link>
                         }
 
                     </Nav>
@@ -57,21 +53,20 @@ function Navigation() {
                             theme === "light-mode" ?
                                 (
                                     <div>
-                                        <SunIcon className="theme-icon light fade-in" /> 
-                                        <MoonIcon className="theme-icon dark fade-out" />
+                                        <ICONS.sun className="theme-icon light fade-in" /> 
+                                        <ICONS.moon className="theme-icon dark fade-out" />
                                     </div>
                                 ) : 
                                 (
                                     <div>
-                                        <SunIcon className="theme-icon light fade-out" /> 
-                                        <MoonIcon className="theme-icon dark fade-in" />
+                                        <ICONS.sun className="theme-icon light fade-out" /> 
+                                        <ICONS.moon className="theme-icon dark fade-in" />
                                     </div>
                                 )
                         }
                     </Button>
 
                 </Navbar.Collapse>
-            </Container>
         </Navbar>
     )
 }

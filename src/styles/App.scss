@@ -1,39 +1,11 @@
 @use "base.scss";
-@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200&family=Montserrat:wght@300&family=Roboto:wght@300&display=swap');
 
 
 
 html, body {
   height: fit-content;
   transition: 0.5s;
-
-  .btn-close:focus {
-    box-shadow: none !important;
-  }
-
-  .form-check-input {
-    cursor: pointer;
-  }
-
-  .form-check-input:checked {
-    background-color: map-get(base.$themes, "green") !important;
-    border: none;
-  }
-
-  .title {
-    text-align: center;
-    margin: 20px 0;
-  }
-
-  .button {
-    width: fit-content;
-
-    &:focus {
-      box-shadow: none;
-    }
-  }
-
-
 }
 
 body {
@@ -46,60 +18,106 @@ body {
 }
 
 .App {
-  min-height: 100vh;
-  position: relative;
-}
+    min-height: 100vh;
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 1px;
+    color: map-get(base.$themes, "soft-black");
 
-.page {
-  min-height: calc(100vh - 194.5px);
+    // Containers
+    .page {
+        min-height: calc(100vh - 194.5px);
+    }
+
+    // Headers
+    h2.title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        margin-top: 24px;
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+
+    h3.title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        margin-top: 24px;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    // Buttons
+    .button {
+        width: fit-content;
+        border-radius: 18px;
+        border: none;
+        margin-bottom: 12px;
+
+        &:focus {
+        box-shadow: none;
+        }
+    }
+
+    .btn-close:focus {
+        box-shadow: none !important;
+    }
+
+    // Links
+    .link-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .link {
+        background-color: transparent;
+        border: none;
+        text-decoration: underline;
+        color: inherit;
+        text-align: center;
+    }
+
+    
+    // Inputs
+    .form-control {
+        border: none;
+    }
+    
+    .form-check-input {
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: map-get(base.$themes, "green") !important;
+        border: none;
+    }
 }
 
 
 .App.light-mode {
-  @include base.theme(base.$light-mode...);
+    @include base.theme(base.$light-mode...);
+
+    .button {
+        background-color: map-get(base.$themes, "blue");
+
+        &:hover {
+            background-color: map-get(base.$themes, "mid-blue");
+        }
+    }
 }
 
 .App.dark-mode {
-  @include base.theme(base.$dark-mode...);
+    @include base.theme(base.$dark-mode...);
+
+    .button {
+        background-color: map-get(base.$themes, "light-yellow");
+        color: map-get(base.$themes, "soft-black");
+
+        &:hover {
+            background-color: map-get(base.$themes, "beige");
+        }
+    }
+
 
 }
-
-// .App {
-  // position: relative;
-  // min-height: 100vh;
-  // padding-bottom: 150px;
-  // transition: 0.5s;
-
-
-  // .btn-close {
-  //   --bs-btn-close-bg: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27%23E07A5F%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e") !important;
-  // }
-
-  // .btn-close:focus {
-  //   box-shadow: none !important;
-  // }
-
-  // .form-check-input {
-  //   cursor: pointer;
-  // }
-
-  // .form-check-input:checked {
-  //   background-color: map-get(base.$themes, "green") !important;
-  //   border: none;
-  // }
-
-  // .title {
-  //   text-align: center;
-  //   margin: 20px 0;
-  // }
-
-  // .button, .btn-close {
-  //   width: fit-content;
-
-  //   &:focus {
-  //     box-shadow: none;
-  //   }
-  // }
-// }
 
 @import "~bootstrap/scss/bootstrap";

@@ -3,12 +3,14 @@
 .menu.light-mode {
     @include base.theme(base.$light-mode...);
     
-    .card-body {
+    .card-body, .modal-content {
         @include base.card(base.$light-mode-card...);
+        background-image: linear-gradient(map-get(base.$themes, "off-white") 60%, map-get(base.$themes, "light-yellow") 50%);
     }
 
     .icon {
-        stroke: map-get(base.$themes, "blue");
+        // stroke: map-get(base.$themes, "blue");
+        fill: map-get(base.$themes, "beige");
     }
 
 }
@@ -18,37 +20,61 @@
     
     .card-body, .modal-content {
         @include base.card(base.$dark-mode-card...);
+        background-image: linear-gradient(map-get(base.$themes, "blue") 60%, map-get(base.$themes, "mid-blue") 50%);;
     }
 
     .icon {
-        stroke: map-get(base.$themes, "beige");
+        // stroke: map-get(base.$themes, "beige");
+        fill: map-get(base.$themes, "navy");
     }
 
 }
 
 .menu {
-    padding-top: 20px;
-    
+    .card-col {
+        height: 50vh;
+    }
+
+    // card
     .card-body {
         margin-top: 10px;
         margin-bottom: 10px;
-        padding: 10px;
-        border-radius: 5px;
-        height: 400px;
+        border-radius: 12px;
         text-align: center;
+        height: 95%;
 
-        .card-title, .card-details, .card-img  {
+        .card-title  {
             text-align: center;
             margin-bottom: 10px;
-        }
-        
-        .card-text {
-            margin-bottom: 0;
+            display: flex;
+            padding: 0 10%;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-top: 16px;
         }
 
-        .icon {
+        .card-details {
+            text-align: left;
+            padding: 16px 10%;
+            line-height: 80%;
+
+
+            .ingredients {
+                font-style: italic;
+                line-height: 150%;
+            }
+        }
+        
+        .card-image {
             height: 60%;
-            width: 90%;
+            width: 100%;
+            border-radius: 12px 12px 0 0;
+
+            .icon {
+                height: 95%;
+                width: 95%;
+            }
+
         }
 
     }
@@ -59,9 +85,5 @@
     
     .actions {
         justify-content: center;
-        .btn {
-            @include base.button(map-get(base.$themes, "green"))
-        }
-
     }
 }

@@ -16,11 +16,21 @@ export function MenuCreateForm () {
     const { inventory } = useContext(MenuContext);
 
     // Field states
-    const title = useRef<HTMLInputElement>(null);
     const description = useRef<HTMLInputElement>(null);
+    const title = useRef<HTMLInputElement>(null);
     const price = useRef<HTMLInputElement>(null);
     const [ingredients, setIngredients] = useState<Array<number>>([]);
     const units = useRef<{[key: string]: number}>({});
+
+    const submitHandler = () => {
+        return dataAPI.post(externalEndpoints.menu!, {
+                title: title.current!.value,
+                description: description.current!.value,
+                price: Number(price.current!.value),
+                "ingredients[]": ingredients,
+                "units{}": units.current
+        })
+    };
 
     const Ingredients = SelectMultiFieldGroup2({
         name: "ingredients",
@@ -44,15 +54,17 @@ export function MenuCreateForm () {
 
 
     const Fields = () => {
+
         return (
             <>
+
                 { 
                     EditFieldGroup2({
                         name: "title", 
                         label: "Title*", 
-                        type: "text", 
                         ref: title,
-                        defaultValue: "",
+                        type: "text", 
+                        defaultValue: title.current?.value ?? "",
                         feedback: "Required. Max character length is 100."
                     }, {
                         maxLength: 100,
@@ -60,25 +72,27 @@ export function MenuCreateForm () {
                     }) 
                 }
 
+                
                 { 
                     EditFieldGroup2({
                         name: "description", 
                         label: "Description", 
                         type: "text",
-                        defaultValue: "",
+                        defaultValue: description.current?.value ?? "",
                         ref: description,
                         feedback: "Max character length is 300."
                     }, {
-                        maxLength: 300,
+                        maxLength: 300
                     }) 
                 }
+
 
                 { 
                     EditFieldGroup2({
                         name: "price", 
                         label: "Price*", 
                         type: "number", 
-                        defaultValue: String(0),
+                        defaultValue: price.current?.value ?? String(0),
                         ref: price,
                         feedback: "Required. Max character length is 100."
                     }, {
@@ -88,36 +102,30 @@ export function MenuCreateForm () {
                         step: "0.01"
                     }) 
                 }
-                <Container className="multi-input-container">
+
+                <div className="multi-input-container">
                     <Row className="headers">
                         <Col xs={6}>Ingredients</Col>
                         <Col xs={6}>Units</Col>
                     </Row>
 
                     { ColumnsToRows([Ingredients, Units], {xs: [6, 6]}) }
-                </Container>
+                </div>
             </>
         )
     };
 
-
     return (
 
-        <>
-            <FormModal 
-                title="Create Menu Item"
-                Fields={ Fields }
-                returnURL={ internalEndpoints.menu! }
-                submitRequest={() => { return dataAPI.post(externalEndpoints.menu!, {
-                    title: title.current!.value,
-                    description: description.current!.value,
-                    price: Number(price.current!.value),
-                    "ingredients[]": ingredients,
-                    "units{}": units.current})
-                }}
-                deleteURL={ externalEndpoints.menu! }
-            />
-        </>
+        
+        <FormModal 
+            title="Create Menu Item"
+            Fields={ Fields }
+            returnURL={ internalEndpoints.menu! }
+            submitRequest={ submitHandler }
+            deleteURL={ externalEndpoints.menu! }
+        />
+
 
     )
 };
@@ -133,6 +141,17 @@ export function MenuUpdateForm () {
     const price = useRef<HTMLInputElement>(null);
     const [ingredients, setIngredients] = useState<Array<number>>([]);
     const units = useRef<{[key: string]: number}>({});
+
+
+    const submitHandler = () => {
+        return dataAPI.post(externalEndpoints.menu!, {
+                title: title.current!.value,
+                description: description.current!.value,
+                price: Number(price.current!.value),
+                "ingredients[]": ingredients,
+                "units{}": units.current
+        })
+    };
 
     const Ingredients = SelectMultiFieldGroup2({
         name: "ingredients",
@@ -203,7 +222,7 @@ export function MenuUpdateForm () {
 
         <>
             <FormModal 
-                title="Create Menu Item"
+                title="Update Menu Item"
                 Fields={ Fields }
                 returnURL={ internalEndpoints.menu! }
                 submitRequest={() => { return dataAPI.patch(

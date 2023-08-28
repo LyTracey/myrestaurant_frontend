@@ -12,12 +12,13 @@ export const externalEndpoints: Endpoint = {
     dashboard: "dashboard/",
     menu: "menu/",
     inventory: "inventory/",
+    inventoryReference: "inventory_reference/",
     orders: "orders/",
     archivedOrders: "archive/orders/",
     register: "register/",
     profile: "profile/",
     login: "login/",
-    refresh: "token/refresh",
+    refresh: "token/refresh/",
 };
 
 

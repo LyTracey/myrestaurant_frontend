@@ -3,7 +3,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-import { MutableRefObject, RefObject, SetStateAction, MouseEvent} from "react";
+import { MutableRefObject, RefObject, SetStateAction, MouseEvent, ChangeEvent} from "react";
 
 interface ReadFieldGroupInput {
     value: number | string,       // value of field
@@ -96,21 +96,19 @@ export function EditFieldGroup2 ({name, label, ref, type="text", defaultValue=""
     */
 
     return (    
-        <Form.Group className={ `field-group ${ name }` } as={Row} sm={2}>
-            <Form.Label column sm={3}>{ label }</Form.Label>
-            <Col className="field" sm={9}>
-                <Form.Control
-                    name={ name }
-                    defaultValue={ defaultValue }
-                    type={ type }
-                    ref={ ref }
-                    {...options}
-                >                                
-                </Form.Control>
-                <Form.Control.Feedback type="invalid">
-                    { feedback }
-                </Form.Control.Feedback>
-            </Col>
+        <Form.Group className={ `field-group ${ name }` } as="div">
+            <Form.Label column>{ label }</Form.Label>
+            <Form.Control
+                name={ name }
+                defaultValue={ defaultValue }
+                type={ type }
+                ref={ ref }
+                autoComplete="off"
+                {...options}
+            />                                
+            <Form.Control.Feedback type="invalid">
+                { feedback }
+            </Form.Control.Feedback>
         </Form.Group>
     )
 };
@@ -209,7 +207,7 @@ export function SelectMultiFieldGroup ({name, data, reference, values_obj, items
 
 interface SelectMultiFieldGroupObj2 {
     name: string,                               // name of fieldset
-    reference: object,                          // object containing the full list of items to select from
+    reference: {[key: string | number]: any},                          // object containing the full list of items to select from
     state: Array<any>                  // state being updated
     stateSetter: SetStateAction<any>
 };
@@ -223,30 +221,36 @@ export function SelectMultiFieldGroup2 ({name, reference, state, stateSetter}: S
         NOTE: data is the whole state object that is being edited/viewed.
         NOTE: reference is the full list of all instances of the related model e.g. menu_items for an orders form.
     */
+
+    const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
+        const { checked, value } = e.target;
+
+        if (checked && !state.includes(Number(value))) {
+            stateSetter([...state, Number(value)]);
+        } else {
+            stateSetter([...state].filter((id: number) => id !== Number(value)));
+        }
+    };
     
     return (
         <>  
-            { Object.entries(reference).map((item: any, i) => {
-                return (
-                    <Form.Check
-                        className={ `multi-select-field ${ name }` }
-                        key={`${name}_${i}`}
-                        type="checkbox"
-                        label={ Number(item[1]) }
-                        name={ name }
-                        // value={ Number(item[0]) }
-                        onChange={(e) => {
-                            if (e.target.checked && !state.includes(Number(item[0]))) {
-                                stateSetter([...state, Number(item[0])])
-                            } else if (!e.target.checked) {
-                                stateSetter([...state].filter((id: number) => id !== Number(item[0])));
-                            }
-                        }}
-                        checked={ state.includes(Number(item[0])) }
-                        {...options}
-                    />
-                )
-            })}                    
+            { 
+                Object.entries(reference).map((item: any, i) => {
+                    return (
+                        <Form.Check
+                            className={ `multi-select-field ${ name }` }
+                            key={`${name}_${i}`}
+                            type="checkbox"
+                            label={ item[1] }
+                            name={ name }
+                            value={ Number(item[0]) }
+                            onChange={(e) => handleCheck(e)}
+                            checked={ state.includes(Number(item[0])) }
+                            {...options}
+                        />
+                    )
+                }
+            )}                    
         </>
     )
 };
@@ -482,9 +486,9 @@ interface SubmitType {
 
 export function Submit ({buttonText}: SubmitType) {
     return (
-        <>
-            <Button type="submit" className="submit">{ buttonText ?? "Submit" }</Button>
-        </>
+        <div className="form-actions">
+            <Button type="submit" className="button">{ buttonText ?? "Submit" }</Button>
+        </div>
     )
 
 };

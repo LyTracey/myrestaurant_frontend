@@ -11,6 +11,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
 import { dataAPI } from './App';
 import { AxiosResponse } from 'axios';
+import Badge from "react-bootstrap/Badge";
 
 interface StatisticsObj {
     [key: string]: number
@@ -78,9 +79,8 @@ function Dashboard () {
             <Accordion className="stats">
                 <Accordion.Item eventKey="0">
                     <Accordion.Header className={ status }>
-                        <div>
-                            <b>{ title }</b><br/>
-                            { statistic.length }                    
+                        <div className='header'>
+                            { title } <Badge>{ statistic.length ?? Object.keys(statistic).length }</Badge>
                         </div>
                     </Accordion.Header>
                     <Accordion.Body>
@@ -143,7 +143,7 @@ function Dashboard () {
         <Container className={ `page dashboard ${ theme }` }>
 
             <Row className='title'>
-                <h2>Dashboard</h2>
+                <h2 className='title'>Dashboard</h2>
             </Row>
 
             <Row>

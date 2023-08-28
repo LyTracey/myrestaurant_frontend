@@ -1,58 +1,60 @@
 @use 'base.scss';
 
-.page-form {
+.modal-form.light-mode, .inline-form.light-mode {
 
-    // Light-mode
-    &.light-mode {
-        .modal-content {
-            background-color: map-get(base.$themes, "white");
-            color: map-get(base.$themes, "navy");
-        }
-
-        .form-text, .valid-feedback, .was-validated .form-check-input:valid ~ .form-check-label {
-            color: map-get(base.$themes, "grey");
-        }
-
+    .modal-content {
+        background-color: map-get(base.$themes, "white");
+        color: map-get(base.$themes, "navy");
     }
 
-    // Dark-mode
-    &.dark-mode {
-        .modal-content {
-            background-color: map-get(base.$themes, "navy");
-            color: map-get(base.$themes, "off-white");
-        }
+    .form-text, .valid-feedback, .form-check-label {
+        color: map-get(base.$themes, "grey") !important;
+    }
 
-        .form-text, .valid-feedback, .was-validated .form-check-input:valid ~ .form-check-label {
-            color: map-get(base.$themes, "off-white");
-        }
-        
-        .form-control[disabled] {
-            background-color: map-get(base.$themes, "beige");
-        }
+    .form-control {
+        background-color: map-get(base.$themes, "off-white") !important;
+    }
+
+}
+
+.modal-form.dark-mode, .inline-form.dark-mode {
+
+    .modal-content {
+        background-color: map-get(base.$themes, "navy");
+        color: map-get(base.$themes, "off-white");
+    }
+
+    .form-text, .valid-feedback, .form-check-label {
+        color: map-get(base.$themes, "off-white") !important;
+    }
     
+    .form-control {
+        background-color: map-get(base.$themes, "mid-blue");
+        color: map-get(base.$themes, "off-white");
     }
 
+    .form-control[disabled] {
+        background-color: map-get(base.$themes, "mid-blue");
+    }
+
+}
+
+.modal-form, .inline-form {
+
+    // Form containers
     form {
         margin: 0 auto;
-        max-width: 60%;
-    }
-
-    .modal-body {
-        form {
-            max-width: 100%;
-        }
     }
 
     // Validity
-
     .was-validated .form-control:valid {
         border: none;
         background-image: none;
     }
 
-    .was-validated .form-check-input:valid {
-        border: map-get(base.$themes, "light-grey") solid 1px;
-    }
+    // .was-validated .form-check-input:valid {
+    //     border: map-get(base.$themes, "light-grey") solid 1px;
+    // }
 
     .invalid-feedback, .error {
         color: map-get(base.$themes, "red");
@@ -66,44 +68,30 @@
 
     // Field groups
     .row {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
     }
     
     .form-control {
         width: 100%;
     }
 
-    // Modal
-    .modal-dialog {
-        width: 600px;
-        max-width: 100%;
+    
+    // Fields
+    input.form-control {
+        border-radius: 18px;
+        border: none;
     }
 
+    .form-check-input {
+        border-radius: 50%;
+        height: 18px;
+        width: 18px;
+        border: 1px solid map-get(base.$themes, "grey");
 
-    // Labels
-    .form-label, .headers {
-        font-weight: 500;
-    }
-
-    .form-label.left-label {
-        text-align: left;
-    }
-
-    .form-label {
-        text-align: right;
-    }
-
-    .headers {
-        text-align: center;
-    }
-
-    @media(max-width: 576px) {
-        .form-label {
-            text-align: left;
+        &[checked] {
+            background-color:  map-get(base.$themes, "green");
         }
     }
-
-    // Fields
 
     .multi-input-field {
         vertical-align: center;
@@ -113,52 +101,30 @@
         height: 30px;
     }
 
+
     // Buttons
     .form-actions {
+        display: flex;
         justify-content: center;
-    }
+        margin-top: 24px;
 
-    .form-actions > button {
-        width: 100px;
-        height: 40px;
-        margin: 10px;
-        border: none;
-
-        &.submit {
+        .submit {
             background-color: map-get(base.$themes, "green");            
         }
 
-        &.delete {
+        .delete {
             background-color: map-get(base.$themes, "red");            
         }
 
     }
 
-    .extra-link > .btn {
-        background-color: transparent;
-        border: none;
-        text-decoration: underline;
-        color: inherit;
-    }
-
-    // Multi-input
-    .multi-input-container {
-        width: 80%;
-    }
-
-    .availability {
-        text-align: right;
-
-    }
-
-    @media(max-width: 576px) {
-        .multi-input-container {
-            width: 100%;
-        }
+    // Spinners
+    .spinner {
+        display: flex;
+        justify-content: center;
     }
 
     // Alert
-
     .alert {
         border: map-get(base.$themes, "navy") solid 1px;
         background-color: map-get(base.$themes, "white");
@@ -192,5 +158,21 @@
             }
         }
     }
-        
+
+}
+
+
+.modal-form {
+
+    // Modal
+    .modal-dialog {
+        width: 80%;
+        max-width: 100%;
+    }
+
+    form {
+        max-width: 80%;
+    }
+
+
 }

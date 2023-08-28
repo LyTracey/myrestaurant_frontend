@@ -15,8 +15,6 @@ function PrivateRoute () {
                 ? <Outlet />
                 : <Navigate to={ internalEndpoints.login! } />
             }
-
-            <Outlet/>
         </>
 
     )

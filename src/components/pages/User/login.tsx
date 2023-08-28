@@ -1,6 +1,4 @@
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Button from "react-bootstrap/Button";
 import { useRef } from "react";
 import { internalEndpoints, externalEndpoints } from "../../../data/endpoints";
 import { useContext } from 'react';
@@ -10,7 +8,8 @@ import { AxiosResponse } from "axios";
 import { userAPI } from "../App";
 import { FormTemplate } from "../../modules/forms";
 import { changeTokens } from "../../../utils/apiUtils";
-
+import { NavLink } from "react-router-dom";
+import "../../../styles/login.scss";
 
 function Login () {
 
@@ -46,22 +45,24 @@ function Login () {
                 }
 
                 
-                { EditFieldGroup2({
-                    name: "password",
-                    label: "Password",
-                    type: "password",
-                    ref: password,
-                    feedback: "Please enter a password."
-                }, {
-                    required: true
-                }) } 
+                { 
+                    EditFieldGroup2({
+                        name: "password",
+                        label: "Password",
+                        type: "password",
+                        ref: password,
+                        feedback: "Please enter a password."
+                    }, {
+                        required: true
+                    }) 
+                } 
             </>
         )
     };
 
 
     return (
-        <Container className={`page page-form login ${ theme }`}>
+        <Container className={`page login ${ theme }`}>
 
             <FormTemplate
                 title="Login"
@@ -70,10 +71,10 @@ function Login () {
                 redirectURL={ internalEndpoints.profile! }
                 buttonText="Login"             
             />
-
-            <Row className="extra-link">
-                <Button as="a" href="/register">Register</Button>
-            </Row>
+            
+            <div className="link-container">
+                No account?&nbsp; <NavLink className="link" to={ internalEndpoints.register! }>Register</ NavLink>
+            </div>
         </Container>
     )
 }

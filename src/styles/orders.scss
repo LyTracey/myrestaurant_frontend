@@ -5,9 +5,14 @@
 
     .table {
         @include base.theme(base.$light-mode...);
+        color:  map-get(base.$themes, "soft-black");
+
+        .toolbar-button {
+            color: map-get(base.$themes, "grey");
+        }
     }
 
-    tr.rows:hover {
+    .MuiDataGrid-row:hover {
         background-color: map-get(base.$themes, "beige");
         transition: background-color 0.5s;
     }
@@ -22,9 +27,13 @@
 
     .table {
         @include base.theme(base.$dark-mode...);
+
+        .toolbar-button {
+            color: map-get(base.$themes, "beige");
+        }
     }
 
-    tr.rows:hover  {
+    .MuiDataGrid-row:hover  {
         background-color: map-get(base.$themes, "blue");
         transition: background-color 0.5s;
     }
@@ -35,17 +44,29 @@
     padding-top: 20px;
     
     .actions {
-        justify-content: center;
-
-        .btn {
-            @include base.button(map-get(base.$themes, "green"));
-            margin-left: 15px;
-        }
+        justify-content: right;
+        width: 100%;
 
         .archive {
             background-color: map-get(base.$themes, "blue");
         }
     }
+
+    // Table
+
+    .table-toolbar {
+        justify-content: space-between;
+    }
+    
+    .menu-items {
+        width: 100%;
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
 
     th, td {
         text-align: center;

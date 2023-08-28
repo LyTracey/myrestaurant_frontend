@@ -7,7 +7,8 @@ import { dataAPI } from "../pages/App";
 import Row from "react-bootstrap/Row";
 import { useNavigate } from "react-router-dom";
 import { errorFormatter } from "../../utils/formatUtils";
-import { HashLoader } from "react-spinners";
+import Spinner from "react-bootstrap/Spinner";
+import "../../styles/form.scss";
 
 
 interface FormModalComponentObj {
@@ -16,21 +17,20 @@ interface FormModalComponentObj {
     returnURL: string,
     submitRequest: () => Promise<any>
     deleteURL: string,
-    buttonText?: string
+    buttonText?: string,
+    className?: string
 };
 
 
-export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, submitRequest}: FormModalComponentObj) {
+export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, submitRequest, className}: FormModalComponentObj) {
     
-    const { theme: [theme],  feedback: [feedback, setFeedback], loading: [loading, setLoading]} = useContext(GlobalContext);
+    const { theme: [theme],  feedback: [feedback], loading: [loading, setLoading]} = useContext(GlobalContext);
     const [validated, setValidated] = useState<boolean>(false);
+    const [showDelete, setShowDelete] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        // Reset feedback
-        setFeedback([]);
 
         const form = e.currentTarget;
 
@@ -45,7 +45,6 @@ export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, sub
                 await submitRequest().then(() => navigate(returnURL));
             } catch (error: any) {
                 console.log(error);
-                setFeedback(errorFormatter(error));
             } finally {
                 setLoading(false);
             }
@@ -57,24 +56,24 @@ export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, sub
     
 
     return (
-        <Modal className={`inventory-form page-form ${ theme }`} 
+        <Modal className={`modal-form ${ theme } ${ className ?? ""}`} 
             show={ true }
             onHide={() => navigate(returnURL)}
         >
             
             <Modal.Header closeButton>
-                <Modal.Title>{ title }</Modal.Title>
+                <h4 className="title">{ title }</h4>
             </Modal.Header>
 
             <Modal.Body>
 
-                <HashLoader color="#F3ECD2" loading={ loading }/>
+                <div className="spinner">
+                    { loading && <Spinner animation="grow"/> } 
+                </div>
 
-                <Row>
-                    <ul className="error">
-                        { feedback.map((item: any, i: any) => <li key={i}>{ item }</li>) }
-                    </ul>
-                </Row>
+                <ul className="error">
+                    { feedback.map((item: any, i: any) => <li key={i}>{ item }</li>) }
+                </ul>
 
                 <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)} >
                     <Fields />
@@ -82,11 +81,17 @@ export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, sub
                     <Submit buttonText={ buttonText } />
                 </Form>
 
-                <DeleteAlert2 
-                    onClickYes={() => dataAPI.delete(deleteURL)}
-                    onClickCancel={() => navigate(returnURL)}
-                    
-                />
+                {
+                    showDelete &&
+                    <DeleteAlert2 
+                        onClickYes={() => dataAPI.delete(deleteURL)}
+                        onClickCancel={() => {
+                            setShowDelete(false);
+                            navigate(returnURL);
+                        }}
+                    />
+
+                }
             </Modal.Body>
         </Modal>
 
@@ -98,13 +103,14 @@ interface FormTemplateType {
     Fields: React.FunctionComponent,
     redirectURL?: string,
     submitRequest: () => Promise<any>
-    buttonText?: string
+    buttonText?: string,
+    className?: string
 };
 
 
-export function FormTemplate ({title, Fields, redirectURL, buttonText, submitRequest}: FormTemplateType ) {
+export function FormTemplate ({title, Fields, redirectURL, buttonText, submitRequest, className}: FormTemplateType ) {
     
-    const { feedback: [feedback, setFeedback], loading: [loading, setLoading]} = useContext(GlobalContext);
+    const { theme: [theme], feedback: [feedback, setFeedback], loading: [loading, setLoading]} = useContext(GlobalContext);
     const [validated, setValidated] = useState<boolean>(false);
     const navigate = useNavigate();
 
@@ -138,10 +144,12 @@ export function FormTemplate ({title, Fields, redirectURL, buttonText, submitReq
     
 
     return (
-        <>
+        <div className={`inline-form ${ theme } ${ className }`}>
             <h2 className="title">{ title }</h2>
 
-            <HashLoader color="#F3ECD2" loading={ loading }/>
+            <div className="spinner">
+                { loading && <Spinner animation="grow"/> } 
+            </div>
 
             <Row>
                 <ul className="error">
@@ -154,7 +162,7 @@ export function FormTemplate ({title, Fields, redirectURL, buttonText, submitReq
 
                 <Submit buttonText={ buttonText } />
             </Form>
-        </>
+        </div>
 
     )
 };
