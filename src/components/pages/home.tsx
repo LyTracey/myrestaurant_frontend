@@ -1,6 +1,5 @@
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import HomeImageLight from "../../images/home-image-light.png";
 import HomeImageDark from "../../images/home-image-dark.png";
 import HomeBackgroundLight from "../../images/home-background-light.png";
@@ -8,6 +7,7 @@ import HomeBackgroundDark from "../../images/home-background-dark.png";
 import "../../styles/home.scss";
 import { useContext } from 'react';
 import { GlobalContext } from './App';
+import Col from "react-bootstrap/Col";
 
 function Home () {
 
@@ -19,61 +19,66 @@ function Home () {
                 <div className="gradient"></div>
                 <img className="home-image" src={ theme === "light-mode" ? HomeImageLight : HomeImageDark } alt="Bunny and moon" ></img>
                 <img className="home-background" src={ theme === "light-mode" ? HomeBackgroundLight : HomeBackgroundDark } alt="Speckles"></img>
+                <div className="slogan">FOOD . DRINKS . GAMES </div>
             </Row>
 
             
-            <Container className="text-block">
-                <Row>
+                <Row className="text">
+                    
                     <Col className="text greeting">
-                        <h3>Welcome!</h3>
+                        <h3 className="title">Welcome!</h3>
                         <p>
                             <br/>
-                            This is a website for a fictitious cafe built to put into practice my full-stack development skills. I chose a cafe as a real-world scenario to develop my use cases around.
+                            This website is for a fictitious cafe built to practice full-stack development. I chose a cafe as a real-world scenario to develop my use cases around.
                             Please feel free to explore the site and its functionalities.<br/>
                             <br/>
                             - Tracey
                         </p>
-
                     </Col>
-                </Row>
 
-                <Row>
-                    <Col className="text tech-stack">
-                        <h3>The Tech-Stack</h3>
 
+                <Col className="text tech-stack">
+                        <h3 className="title">The Tech-Stack</h3>
                         <p>
-                            The source code for this project can be found on my GitHub: XXX.
+                            The source code for this project can be found on my GitHub at the following links:<br/>
+                            <li>
+                                <a className="link" href="https://github.com/LyTracey/myrestaurant_backend">Django backend</a><br/>
+                            </li>
+                            <li>
+                                <a className="link" href="https://github.com/LyTracey/myrestaurant_frontend">React JS Frontend</a><br/>
+                            </li>
                         </p>
-                        
-                        <ul>
-                            <li>
-                                The backend has a REST-API architecture and is built using Django and Django Rest Framework and is connected to a MYSQL database.
-                            </li>
+                        <div>
+                            The backend is built using Django and Django Rest Framework connected to a MYSQL database. 
+                            It is hosted using <a className="link" href="https://www.pythonanywhere.com/">Python Anywhere</a>
+                        </div>
 
-                            <li>
-                                The frontend is built using TypeScript, React, React-Bootstrap and SCSS.
-                            </li>
+                        <br/>
 
-                            <li>
-                                I also created the images and icons using a combination of Procreate and Vectornator.
-                            </li>
-                        </ul>
-                    </Col >
-                </Row>
+                        <div>
+                            The frontend is built using TypeScript, React, React-Bootstrap and SCSS.
+                            It is hosted on <a className="link" href="https://vercel.com/">Vercel</a>
+                        </div>
 
-                <Row>
-                    <Col className="text considerations">
-                        <h3>
-                            Considerations
-                        </h3>
-                        
+                        <br/>
+
+                        <div>
+                            I created images and icons using a combination of Procreate and Vectornator.
+                            Other icons use the <a className="link" href="https://react-icons.github.io/react-icons/">React-Icons</a> package.
+                        </div>
+                
+                </Col>
+
+
+                <Col className="text considerations">
+                    
+                        <h3 className="title">Considerations</h3>
                         <p>
-                            As I only intended this website to be a personal project, my tech-stack is not built around scalability. I have also opted to use only open-source tools.
+                            As I only intended this website to be a personal project, I have opted to use only open-source tools.
                         </p>
-
-                    </Col>
+                </Col>
+                
                 </Row>
-            </Container>
 
 
 

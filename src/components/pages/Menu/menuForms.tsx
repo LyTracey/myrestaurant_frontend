@@ -135,22 +135,33 @@ export function MenuUpdateForm () {
     
     // Get context values
     const { inventory, updateObj } = useContext(MenuContext);
+    
 
     // Field states
     const description = useRef<HTMLInputElement>(null);
     const price = useRef<HTMLInputElement>(null);
-    const [ingredients, setIngredients] = useState<Array<number>>([]);
-    const units = useRef<{[key: string]: number}>({});
+    const [ingredients, setIngredients] = useState<Array<any>>(Object.keys(updateObj.current.ingredients) ?? []);
+    const units = useRef<{[key: string]: number}>(updateObj.current.units ?? {});
 
 
     const submitHandler = () => {
-        return dataAPI.post(externalEndpoints.menu!, {
-                title: title.current!.value,
+        console.log({
+            title: updateObj.current.title,
+            description: description.current!.value,
+            price: Number(price.current!.value),
+            "ingredients[]": ingredients,
+            "units{}": units.current
+        });
+        return dataAPI.patch(
+            `${ externalEndpoints.menu! }${ slugify(updateObj.current.title) }/`, 
+            {
+                title: updateObj.current.title,
                 description: description.current!.value,
                 price: Number(price.current!.value),
                 "ingredients[]": ingredients,
                 "units{}": units.current
-        })
+            }
+        )
     };
 
     const Ingredients = SelectMultiFieldGroup2({
@@ -182,7 +193,7 @@ export function MenuUpdateForm () {
                         name: "description", 
                         label: "Description", 
                         type: "text",
-                        defaultValue: updateObj.description,
+                        defaultValue: updateObj.current.description,
                         ref: description,
                         feedback: "Max character length is 300."
                     }, {
@@ -195,7 +206,7 @@ export function MenuUpdateForm () {
                         name: "price", 
                         label: "Price*", 
                         type: "number", 
-                        defaultValue: updateObj.price,
+                        defaultValue: updateObj.current.price,
                         ref: price,
                         feedback: "Required. Max character length is 100."
                     }, {
@@ -225,16 +236,7 @@ export function MenuUpdateForm () {
                 title="Update Menu Item"
                 Fields={ Fields }
                 returnURL={ internalEndpoints.menu! }
-                submitRequest={() => { return dataAPI.patch(
-                    `${ externalEndpoints.menu! }/${ slugify(updateObj.title) }`, 
-                    {
-                        title: updateObj.title,
-                        description: description.current!.value,
-                        price: Number(price.current!.value),
-                        "ingredients[]": ingredients,
-                        "units{}": units.current
-                    }
-                )}}
+                submitRequest={ () => submitHandler() }
                 deleteURL={ externalEndpoints.menu! }
             />
         </>

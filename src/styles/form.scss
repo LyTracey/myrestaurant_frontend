@@ -162,16 +162,42 @@
 }
 
 
+// Modal
 .modal-form {
 
-    // Modal
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 0.8px;
+
+    // Headers
+    h2.title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
     .modal-dialog {
         width: 80%;
         max-width: 100%;
+        margin: 5% auto;
+
+        .modal-content {
+            border-radius: 4px;
+        }
+
+        .modal-header {
+
+            .title {
+                margin: 0;
+            }
+        }
     }
 
     form {
         max-width: 80%;
+    }
+
+    .form-label {
+        font-weight: 600;
     }
 
 

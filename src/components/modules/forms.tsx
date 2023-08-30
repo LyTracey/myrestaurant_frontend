@@ -62,7 +62,7 @@ export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, sub
         >
             
             <Modal.Header closeButton>
-                <h4 className="title">{ title }</h4>
+                <h2 className="title">{ title }</h2>
             </Modal.Header>
 
             <Modal.Body>

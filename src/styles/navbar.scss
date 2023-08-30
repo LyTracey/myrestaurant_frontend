@@ -3,7 +3,6 @@
 
 .light-mode.navbar {
     @include base.theme(base.$light-mode...);
-    border-bottom: 0.5px solid map-get(base.$themes, "off-white");
 
     .nav-link, .navbar-toggler {
         color: map-get(base.$themes, "soft-black");
@@ -20,7 +19,7 @@
 
     @media (max-width: calc(base.$md - 1px)) {
         .navbar-collapse {
-            background-color: map-get(base.$themes, "off-white");
+            background-color: map-get(base.$themes, "beige");
         }
     }
 
@@ -59,7 +58,7 @@
 }
 
 .navbar {
-    padding: 5px 0;
+    padding: 0;
     font-size: 15px;
     background-color: map-get(base.$themes, "off-white");
 

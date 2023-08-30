@@ -64,21 +64,27 @@ export const DEFAULT_USER = {
 // Create Layout
 function AppLayout () {
 
-    const { feedback: [, setFeedback], user: [, setUser] } = useContext(GlobalContext);
+    const { feedback: [, setFeedback], user: [user, setUser] } = useContext(GlobalContext);
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
     // Reset feedback and value when page changes
-    useEffect(() => setFeedback([]), [pathname, setFeedback]);
+    useEffect(() => {
+        setFeedback([]);
+        window.scrollTo(0, 0);
+        console.log(user);
+    }, [pathname, setFeedback]);
 
     // Create interceptors to check if tokens are valid and redirect if unauthorized
     useEffect(() => {
+        console.log("in interceptor use effect");
 
         // Request interceptor
         axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
             if (config.url !== externalEndpoints.refresh ) {
 
                 const { exp }: any = jwt_decode(localStorage.getItem("access") ?? "");
+                console.log(exp);
 
                 if (Date.now() > (exp * 1000)) {
 
@@ -105,7 +111,6 @@ function AppLayout () {
             return response
         }, (error: AxiosError) => {
             // Display error
-            console.log(error);
             setFeedback(errorFormatter(error));
 
             // Redirect to login if unauthrorized
@@ -113,6 +118,8 @@ function AppLayout () {
             if (pathname !== internalEndpoints.login && error.response?.status === 401) {
                 navigate(internalEndpoints.logout!);
             }
+
+            throw error;
         });
     }, []);
 
@@ -131,7 +138,7 @@ const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path='/' element={ <AppLayout /> } errorElement={ <RootErrorBoundary /> }>
             <Route index element={ <Home /> } />
-            <Route path={ internalEndpoints.menu! } element={ <Menu /> } loader={ MenuLoader } shouldRevalidate={ () => true }>
+            <Route path={ internalEndpoints.menu! } element={ <Menu /> } loader={ MenuLoader } shouldRevalidate={ ({ nextUrl }) => nextUrl.pathname === internalEndpoints.menu! }>
                 <Route path={ internalEndpoints.menuCreate! } element={ <MenuCreateForm /> } />
                 <Route path={ internalEndpoints.menuUpdate! } element={ <MenuUpdateForm /> } />
             </Route> 

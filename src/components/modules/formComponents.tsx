@@ -36,49 +36,6 @@ export function ReadFieldGroup ({value, name, label, type}: ReadFieldGroupInput,
 };
 
 
-type DataHandler = (name: string, value: any, method: string) => void;
-
-
-interface EditFieldGroupInput {
-    value: number | string,     // value of field
-    name: string,               // name if field 
-    label: string,              // display label of field group
-    type: string,               // type of input
-    dataHandler: DataHandler,   // function to update state onChange
-    method: "add" | "update",   // method of request
-    // method: Dispatch<SetStateAction<any>>
-    feedback?: string           // feedback provided when invalid data is submitted
-};
-
-
-export function EditFieldGroup ({value, name, label, type, dataHandler, method, feedback}: EditFieldGroupInput, options: object = {}) {
-    /* 
-        Returns a simple editable form field with a label.
-
-        NOTE: if type is number, `value` is casted to number.
-    */
-
-    return (    
-        <Form.Group className={ `field-group ${ name }` } as={Row} sm={2}>
-            <Form.Label column sm={3}>{ label }</Form.Label>
-            <Col className="field" sm={9}>
-                <Form.Control
-                    name={ name }
-                    defaultValue={ value }
-                    type={ type }
-                    onChange={e => dataHandler(name, (type === "number" ? Number(e.target.value) : e.target.value), method)}
-                    {...options}
-                >                                
-                </Form.Control>
-                <Form.Control.Feedback type="invalid">
-                    { feedback }
-                </Form.Control.Feedback>
-            </Col>
-        </Form.Group>
-    )
-};
-
-
 interface EditFieldGroup2Input {
     name: string,               // name of field 
     label: string,              // display label of field group
@@ -114,97 +71,6 @@ export function EditFieldGroup2 ({name, label, ref, type="text", defaultValue=""
 };
 
 
-interface multiDataHandlerInput {
-    data: {[key: string]: any},             // object state being updated
-    values_obj: string,                     // name of object in `data` containing key-value pairs of selected items e.g. { menu_item: quantity }
-    items_list: string,                     // name of array in `data` containing ids of selected items e.g. menu_items
-    item: string,                           // item in `values_obj` and `item_list` being updated
-    value?: any                             // value to be assigned to item in `values_obj
-    checked: boolean,                       // boolean of whether item is currently selected
-    setObj: (obj: object) => void,          // method to set state of object being updated/added
-}
-
-
-export const multiDataHandler = ({data, values_obj, items_list, item, value, checked, setObj}: multiDataHandlerInput): void => {
-    /*
-        Returns the `data` object with updated values in `values_obj` and `item_list`
-            1. If `checked`, updates the `item` value in `object` with `value`.
-            2. If `checked` and the `item` isn't in `item_list`, `item` is added to the list.
-            3. If not `checked`, `item` is removed from `object` and `item_list`.
-        
-        NOTE: data is the whole state object that is being edited/viewed.
-        NOTE: values_obj is the selected list of instances of the related model e.g. menu_items for an orders form.
-    */
-   
-    // let obj = {...data};
-    // obj[values_obj] = {...obj[values_obj]};     // spread so nested object isn't passed by reference
-    // obj[items_list] = [...obj[items_list]];     // spread so nested array isn't passed by reference
-
-    let obj = structuredClone(data);
-
-    if (checked) {
-        obj[values_obj][item] = value ?? "";
-        if (!obj[items_list].includes(Number(item))) {
-            obj[items_list] = [...obj[items_list], Number(item)];
-        }
-    } else {
-        delete obj[values_obj][item];
-        obj[items_list] = obj[items_list].filter((id: number) => id !== Number(item));
-    }
-     
-    setObj(obj);
-};
-
-
-interface SelectMultiFieldGroupObj {
-    name: string,                               // name of fieldset
-    label?: string,                             // displayed label of fieldset
-    data: {[key: string]: any},                 // object state being updated
-    reference: object,                          // object containing the full list of items to select from
-    values_obj: string,                         // name of object in `data` containing key-value pairs of selected items e.g. { menu_item: quantity }
-    items_list: string,                         // name of array in `data` containing ids of selected items e.g. menu_items
-    setObj: (obj: object) => void               // method to set state of object being updated/added
-};
-
-
-export function SelectMultiFieldGroup ({name, data, reference, values_obj, items_list, setObj}: SelectMultiFieldGroupObj, options: object = {}) {
-    /*
-        Returns a multi-select checkbox list with labels for each item in `data_list`.
-            1. When an item is checked, calls `multiDataHandler` to update relevate states.
-            
-        NOTE: data is the whole state object that is being edited/viewed.
-        NOTE: reference is the full list of all instances of the related model e.g. menu_items for an orders form.
-    */
-    
-    return (
-        <>
-            { Object.entries(reference).map((item: any, i) => {
-                return (
-                    <Form.Check
-                        className={ `multi-select-field ${ name }` }
-                        key={`${name}_${i}`}
-                        type="checkbox"
-                        label={ item[1].title }
-                        name={ name }
-                        value={ item[0] }
-                        checked={ data[items_list].includes(Number(item[0])) }
-                        onChange={e => multiDataHandler({
-                            data: data,
-                            values_obj: values_obj,
-                            items_list: items_list,
-                            item: String(item[0]),
-                            checked: e.target.checked,
-                            setObj: setObj
-                        })}
-                        {...options}
-                    />
-                )
-            })}                    
-        </>
-    )
-};
-
-
 interface SelectMultiFieldGroupObj2 {
     name: string,                               // name of fieldset
     reference: {[key: string | number]: any},                          // object containing the full list of items to select from
@@ -225,10 +91,10 @@ export function SelectMultiFieldGroup2 ({name, reference, state, stateSetter}: S
     const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
         const { checked, value } = e.target;
 
-        if (checked && !state.includes(Number(value))) {
-            stateSetter([...state, Number(value)]);
+        if (checked && !state.includes(value)) {
+            stateSetter([...state, value]);
         } else {
-            stateSetter([...state].filter((id: number) => id !== Number(value)));
+            stateSetter([...state].filter((id: string) => id !== value));
         }
     };
     
@@ -245,77 +111,13 @@ export function SelectMultiFieldGroup2 ({name, reference, state, stateSetter}: S
                             name={ name }
                             value={ Number(item[0]) }
                             onChange={(e) => handleCheck(e)}
-                            checked={ state.includes(Number(item[0])) }
+                            checked={ state.includes(item[0])}
                             {...options}
                         />
                     )
                 }
             )}                    
         </>
-    )
-};
-
-
-interface InputMultiFieldGroupObj {
-    type: string,                   // method to set state of object being updated/added
-    label?: string,                  // displayed label of fieldset
-    reference: object,              // object containing the full list of items to select from
-    data: {[key: string]: any},     // object state being updated
-    values_obj: string,             // name of object in `data` containing key-value pairs of selected items e.g. { menu_item: quantity }
-    items_list: string,             // name of array in `data` containing ids of selected items e.g. menu_items
-    name: string,                   // name of fieldset
-    setObj: (obj: object) => void   // method to set state of object being updated/added
-    feedback?: string                // feedback provided when invalid data is submitted
-}
-
-
-export function InputMultiFieldGroup ({type, reference, data, values_obj, items_list, name, setObj, feedback}: InputMultiFieldGroupObj, options: object = {}) {
-    /*
-        Returns a multi-input fieldset for selected items.
-        
-        NOTE: if type is number, `value` is casted to number.
-    */
-
-    return (
-        <>
-            { 
-                Object.entries(reference).map((item: Array<any>, i) => {
-                    
-                    const new_options = Object.fromEntries(Object.entries(options).map((entry) => {
-                        if (typeof(entry[1]) === "object") {
-                            return [entry[0], entry[1][item[0]]]
-                        }
-                        return entry
-                    }));
-
-                    return (data[items_list] ?? []).includes(Number(item[0])) ? 
-                    (
-                        <Form.Group className={`multi-input-field ${ name }`} key={`${name}_${i}`}>
-                            <Form.Control
-                                type={ type }
-                                name={ name }
-                                defaultValue={ data[values_obj][String(item[0])] }
-                                onChange={e => multiDataHandler({
-                                    data: data,
-                                    values_obj: values_obj,
-                                    items_list: items_list,
-                                    item: String(item[0]),
-                                    value: (type === "number" ? Number(e.target.value) : e.target.value) ?? "",
-                                    checked: true,
-                                    setObj: setObj
-                                })}
-                                {...new_options}    
-                            ></Form.Control>
-                            <Form.Control.Feedback type="invalid">
-                                { feedback }
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    ) 
-                    : <div className="field" key={i}></div>                                             
-                })
-            }
-        </>
-
     )
 };
 
@@ -340,6 +142,10 @@ export function InputMultiFieldGroup2 ({type, reference, items_list, name, ref, 
         NOTE: if type is number, `value` is casted to number.
     */
 
+    const changeHandler = (e: ChangeEvent<any>, key: string) => {
+        ref.current = {...structuredClone(ref.current), [key]: e.target.value}
+    };
+
     return (
         <>
             { 
@@ -356,16 +162,14 @@ export function InputMultiFieldGroup2 ({type, reference, items_list, name, ref, 
                     }));
 
 
-                    return items_list.includes(Number(item[0])) ? 
+                    return items_list.includes(item[0]) ? 
                     (
                         <Form.Group className={`multi-input-field ${ name }`} key={`${ name }_${i}`}>
                             <Form.Control
                                 type={ type }
                                 name={ name }
-                                defaultValue={ ref.current.hasOwnProperty(String(item[0])) ? ref.current[String(item[0])] : 0 }
-                                onChange={e => 
-                                    ref.current = {...structuredClone(ref.current), [String(item[0])]: (type === "number" ? Number(e.target.value) : e.target.value)}
-                                }
+                                defaultValue={ ref.current[item[0]] ?? 0 }
+                                onChange={e => changeHandler(e, item[0]) }
                                 {...newOptions}    
                             ></Form.Control>
                             <Form.Control.Feedback type="invalid">

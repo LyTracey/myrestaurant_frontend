@@ -24,6 +24,14 @@ function InternalError () {
     )
 }
 
+
+function Throttled () {
+
+    return (
+        <h2 className="error-message">Oh dear, you have passed the throttling levels. Please try again later.</h2>
+    )
+}
+
 function SomethingWentWrong () {
 
     return (
@@ -45,6 +53,8 @@ function RootErrorBoundary () {
             return <Forbidden />
         case 404: 
             return <NotFound />
+        case 429: 
+            return <Throttled />
         case 500:
             return <InternalError />
         default:
