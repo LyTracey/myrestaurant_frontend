@@ -5,6 +5,7 @@
     
     .card-body {
         @include base.card(base.$light-mode-card...);
+        background-image: linear-gradient(map-get(base.$themes, "off-white") 75%, map-get(base.$themes, "light-yellow") 50%);
     }
 
     .icon {
@@ -19,6 +20,7 @@
     
     .card-body, .modal-content {
         @include base.card(base.$dark-mode-card...);
+        background-image: linear-gradient(map-get(base.$themes, "blue") 75%, map-get(base.$themes, "mid-blue") 50%);;
     }
 
     .icon {
@@ -28,6 +30,7 @@
 
 .inventory {
     padding-top: 20px;
+    font-family: "Roboto", sans-serif;
     
     .card-body {
         margin-top: 10px;
@@ -36,10 +39,50 @@
         border-radius: 10px;
         height: 300px;
         text-align: center;
+        position: relative;
 
-        .card-title, .card-details, .card-img  {
+        .card-title, .card-img  {
             text-align: center;
             margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .quantity {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: map-get(base.$themes, "off-white");
+            position: absolute;
+            right: 12px;
+
+            &.in-stock {
+                background-color: map-get(base.$themes, "green");
+            }
+            
+            &.low-stock {
+                background-color: map-get(base.$themes, "yellow");
+            }
+
+            &.out-of-stock {
+                background-color: map-get(base.$themes, "red");
+            }
+
+        }
+
+        .card-details {
+            text-align: left;
+            padding: 12px;
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+
+
+            span {
+                font-weight: 600;
+            }
         }
         
         .card-text {
@@ -57,13 +100,14 @@
     .actions {
         justify-content: center;
 
-        .btn {
-            width: 125px;
+        .create.button {
             background-color: map-get(base.$themes, "green");
-            border: none;
+            color: map-get(base.$themes, "off-white");
+            text-decoration: none;
     
             &:hover {
                 color: map-get(base.$themes, "navy");
+                transition: color 0.5s;
             }
         }
 

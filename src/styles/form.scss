@@ -12,8 +12,13 @@
     }
 
     .form-control {
-        background-color: map-get(base.$themes, "off-white") !important;
+        background-color: map-get(base.$themes, "off-white");
+
+        .disabled {
+            background-color: map-get(base.$themes, "light-grey") !important;
+        }
     }
+
 
 }
 
@@ -40,25 +45,31 @@
 }
 
 .modal-form, .inline-form {
-
+    
     // Form containers
     form {
         margin: 0 auto;
     }
-
-    // Validity
+    
+    // Validity and feedback
     .was-validated .form-control:valid {
         border: none;
         background-image: none;
     }
-
+    
     // .was-validated .form-check-input:valid {
-    //     border: map-get(base.$themes, "light-grey") solid 1px;
-    // }
+        //     border: map-get(base.$themes, "light-grey") solid 1px;
+        // }
+        
+        .invalid-feedback, .feedback {
+            color: map-get(base.$themes, "red");
+            text-align: left;
+        }
+        
 
-    .invalid-feedback, .error {
-        color: map-get(base.$themes, "red");
-        text-align: left;
+    .feedback {
+        max-width: 70%;
+        margin: 0 auto;
     }
 
     .was-validated .form-control:invalid {

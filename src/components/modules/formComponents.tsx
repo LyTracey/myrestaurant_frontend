@@ -3,7 +3,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-import { MutableRefObject, RefObject, SetStateAction, MouseEvent, ChangeEvent} from "react";
+import { MutableRefObject, RefObject, SetStateAction, MouseEvent, ChangeEvent, Dispatch} from "react";
 
 interface ReadFieldGroupInput {
     value: number | string,       // value of field
@@ -87,7 +87,7 @@ export function SelectMultiFieldGroup2 ({name, reference, state, stateSetter}: S
         NOTE: data is the whole state object that is being edited/viewed.
         NOTE: reference is the full list of all instances of the related model e.g. menu_items for an orders form.
     */
-
+    
     const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
         const { checked, value } = e.target;
 
@@ -111,7 +111,7 @@ export function SelectMultiFieldGroup2 ({name, reference, state, stateSetter}: S
                             name={ name }
                             value={ Number(item[0]) }
                             onChange={(e) => handleCheck(e)}
-                            checked={ state.includes(item[0])}
+                            defaultChecked={ state.includes(Number(item[0]))}
                             {...options}
                         />
                     )
@@ -143,7 +143,7 @@ export function InputMultiFieldGroup2 ({type, reference, items_list, name, ref, 
     */
 
     const changeHandler = (e: ChangeEvent<any>, key: string) => {
-        ref.current = {...structuredClone(ref.current), [key]: e.target.value}
+        ref.current = {...structuredClone(ref.current), [key]: Number(e.target.value) }
     };
 
     return (
@@ -162,14 +162,15 @@ export function InputMultiFieldGroup2 ({type, reference, items_list, name, ref, 
                     }));
 
 
-                    return items_list.includes(item[0]) ? 
+                    return items_list.includes(Number(item[0])) ? 
                     (
                         <Form.Group className={`multi-input-field ${ name }`} key={`${ name }_${i}`}>
+                           
                             <Form.Control
                                 type={ type }
                                 name={ name }
                                 defaultValue={ ref.current[item[0]] ?? 0 }
-                                onChange={e => changeHandler(e, item[0]) }
+                                onChange={e => changeHandler(e, item[0])}
                                 {...newOptions}    
                             ></Form.Control>
                             <Form.Control.Feedback type="invalid">
@@ -214,6 +215,7 @@ export function DeleteAlert2 ({onClickYes, onClickCancel}: DeleteAlert2Type) {
 };
 
 type HandleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, method: string, data: object) => void;
+
 export function DeleteAlert (data: object, setDeleteAlert: SetDeleteAlert, handleSubmit: HandleSubmit) {
     /*
         Returns an alert that confirms the user wants to delete the item.
@@ -297,12 +299,18 @@ export function Submit ({buttonText}: SubmitType) {
 
 };
 
+interface SubmitDeleteType {
+    setDeleteAlert: Dispatch<SetStateAction<boolean>>,
+    submitButtonText?: string | undefined,
+    deleteButtonText?: string | undefined
+};
 
-export function SubmitDelete (setDeleteAlert: SetDeleteAlert) {
+
+export function SubmitDelete ({setDeleteAlert, submitButtonText="Submit", deleteButtonText="Delete"}: SubmitDeleteType) {
     return (
         <Row className="form-actions">
-            <Button type="submit" className="submit">SUBMIT</Button>
-            <Button type="button" className="delete" onClick={() => setDeleteAlert(true)}>DELETE</Button>
+            <Button type="submit" className="submit">{ submitButtonText }</Button>
+            <Button type="button" className="delete" onClick={() => setDeleteAlert(true)}>{ deleteButtonText }</Button>
         </Row>
     )
 

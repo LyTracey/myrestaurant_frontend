@@ -1,4 +1,4 @@
-import { dataAPI, userAPI } from "../pages/App";
+import { dataAPI, userAPI } from "./axiosInstances";
 import axios from "axios";
 import { externalEndpoints } from "../../data/endpoints";
 import jwtDecode from "jwt-decode";
@@ -35,8 +35,11 @@ export const OrdersArchiveLoader = async () => {
 };
 
 export const InventoryLoader = async () => {
-    const inventoryResponse = await dataAPI.get(`${externalEndpoints["inventory"]}`);
-    return inventoryResponse.data
+    const [inventoryResponse, dashboardStockResponse] = await axios.all([
+        dataAPI.get(`${externalEndpoints.inventory!}`),
+        dataAPI.get(`${externalEndpoints.dashboardStock! }`)
+    ]);
+    return [inventoryResponse?.data, dashboardStockResponse?.data]
 };
 
 

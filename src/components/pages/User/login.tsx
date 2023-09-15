@@ -1,77 +1,65 @@
 import Container from "react-bootstrap/Container";
-import { useRef } from "react";
 import { internalEndpoints, externalEndpoints } from "../../../data/endpoints";
 import { useContext } from 'react';
 import { GlobalContext } from '../App';
-import { EditFieldGroup2 } from "../../modules/formComponents";
-import { AxiosResponse } from "axios";
-import { userAPI } from "../App";
-import { FormTemplate } from "../../modules/forms";
+import { userAPI } from "../../modules/axiosInstances";
 import { changeTokens } from "../../../utils/apiUtils";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../../../styles/login.scss";
+import { useForm } from "react-hook-form";
 
 function Login () {
 
-    // Field states
-    const username = useRef<HTMLInputElement>(null);
-    const password = useRef<HTMLInputElement>(null);
+    // Create form instance
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            username: "",
+            password: ""
+        }
+    });
+
+    const navigate = useNavigate();
 
     // Set variables
     const { theme: [theme], user: [, setUser] } = useContext(GlobalContext);
 
     // Handle submit to backend
-    const submitRequest = async () => {
-        return userAPI.post(externalEndpoints.login!, {
-            username: username.current!.value,
-            password: password.current!.value,
-        }).then((response: AxiosResponse) => {
-            changeTokens(response.data, setUser);
+    const submitRequest = handleSubmit(async (data) => {
+        const response = await userAPI.post(externalEndpoints.login!, {
+            username: data.username,
+            password: data.password
         });
-    };
 
-    const Fields = () => {
-        return (
-            <>
-                { 
-                    EditFieldGroup2({
-                        name: "username",
-                        label: "Username",
-                        ref: username,
-                        feedback: "Please enter a username."
-                    }, {
-                        required: true
-                    }) 
-                }
+        console.log(response);
 
-                
-                { 
-                    EditFieldGroup2({
-                        name: "password",
-                        label: "Password",
-                        type: "password",
-                        ref: password,
-                        feedback: "Please enter a password."
-                    }, {
-                        required: true
-                    }) 
-                } 
-            </>
-        )
-    };
+        const tokenResponse = await changeTokens(response.data, setUser);
+        console.log(tokenResponse);
+        navigate(internalEndpoints.profile!);
+    });
 
 
     return (
         <Container className={`page login ${ theme }`}>
 
-            <FormTemplate
-                title="Login"
-                Fields={ Fields }
-                submitRequest={ submitRequest }
-                redirectURL={ internalEndpoints.profile! }
-                buttonText="Login"             
-            />
-            
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                submitRequest();
+            }}>
+                <label>
+                    Username *
+                    <input type="text" {...register("username", {required: "Please enter a username."})} />
+                </label>
+
+                <label>
+                    Password *
+                    <input type="password" {...register("password", {required: "Please enter a password."})} />
+                </label>
+
+                <button type="submit">Login</button>
+            </form>
+
+
+
             <div className="link-container">
                 No account?&nbsp; <NavLink className="link" to={ internalEndpoints.register! }>Register</ NavLink>
             </div>

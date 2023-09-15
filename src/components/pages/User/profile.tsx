@@ -8,7 +8,7 @@ import { externalEndpoints } from "../../../data/endpoints";
 import "../../../styles/profile.scss";
 import Form from "react-bootstrap/Form";
 import { GlobalContext } from "../App";
-import { userAPI } from "../App";
+import { userAPI } from "../../modules/axiosInstances";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 
 interface UserType {
@@ -27,8 +27,9 @@ function Profile () {
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
-    useEffect(() => setUser(user), [user]);
-
+    useEffect(() => {
+        setUser(user);
+    }, [user]);
 
     // Handle PATCH request
     const patchUser = async (data: object) => {

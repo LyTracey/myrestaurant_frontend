@@ -13,46 +13,28 @@ import Register from './User/register';
 import Login from './User/login';
 import Logout from './User/logout';
 import PrivateRoute from '../modules/privateRoute';
-import { internalEndpoints, externalEndpoints } from '../../data/endpoints';
+import { internalEndpoints } from '../../data/endpoints';
 import Profile from './User/profile';
 import { InventoryCreateForm, InventoryUpdateForm } from './Inventory/inventoryForms';
 import { InventoryLoader, MenuLoader, OrdersLoader, OrdersArchiveLoader, UserLoader } from "../modules/loaders";
 import { MenuCreateForm, MenuUpdateForm } from "./Menu/menuForms";
-import { OrderCreateForm, OrderUpdateForm } from "./Orders/ordersForm";
 import RootErrorBoundary from "../modules/errors";
-import axios, {AxiosResponse, InternalAxiosRequestConfig, AxiosError} from "axios";
-import { changeTokens } from "../../utils/apiUtils";
-import jwt_decode from "jwt-decode";
-import { errorFormatter } from "../../utils/formatUtils";
-
-const CONTROLLER = new AbortController();
-
-const AXIOS_BASE_CONFIG  = {
-    timeout: 20000,
-    formSerializer: { metaTokens: false, indexes: null },
-    signal: CONTROLLER.signal,
-    headers: {    
-        "Content-Type": 'multipart/form-data',
-        "Authorization": localStorage.getItem("access") ? `Bearer ${localStorage.getItem("access")}` : ""
-    }
-};
-
-export const userAPI = axios.create({
-    ...AXIOS_BASE_CONFIG,
-    baseURL: `${ externalEndpoints.prefix_user}`,
-});
-
-export const dataAPI = axios.create({
-    ...AXIOS_BASE_CONFIG,
-    baseURL: `${externalEndpoints.prefix_data}`,
-});
-
-// Constants
-export const PUBLIC_PAGES = ["/menu", "/login", "/register", "/"];
+import OrderForm from "./Orders/ordersNewForm";
+import { createInterceptors, dataAPI, userAPI } from "../modules/axiosInstances";
 
 // Create global context
 export const GlobalContext = createContext<any>({});
 
+// Constants
+export const PUBLIC_PAGES = ["/menu", "/login", "/register", "/"];
+
+// Define global user
+export interface User {
+    username: string,
+    joinDate: string,
+    isStaff: boolean,
+    role: string
+}
 
 export const DEFAULT_USER = {
     username: "",
@@ -61,10 +43,11 @@ export const DEFAULT_USER = {
     role: localStorage.getItem("role") ?? ""
 };
 
+
 // Create Layout
 function AppLayout () {
 
-    const { feedback: [, setFeedback], user: [user, setUser] } = useContext(GlobalContext);
+    const { feedback: [, setFeedback], user: [, setUser], loading: [, setLoading] } = useContext(GlobalContext);
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
@@ -72,55 +55,29 @@ function AppLayout () {
     useEffect(() => {
         setFeedback([]);
         window.scrollTo(0, 0);
-        console.log(user);
     }, [pathname, setFeedback]);
 
     // Create interceptors to check if tokens are valid and redirect if unauthorized
     useEffect(() => {
-        console.log("in interceptor use effect");
-
-        // Request interceptor
-        axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-            if (config.url !== externalEndpoints.refresh ) {
-
-                const { exp }: any = jwt_decode(localStorage.getItem("access") ?? "");
-                console.log(exp);
-
-                if (Date.now() > (exp * 1000)) {
-
-                    // Try refreshing token if access token expired
-
-                    userAPI.post(externalEndpoints.refresh!, {
-                        refresh: localStorage.getItem("refresh")
-                    }).then((response: AxiosResponse) => {
-                        console.log("setting new access token");
-                        console.log("response");
-                        changeTokens(response.data.access, setUser);
-                    });
-                }
-        }
-            return config
-        }, (error: AxiosError) => {
-            console.log(error);
-            Promise.reject(error)
+        createInterceptors({
+            axiosInstance: dataAPI,
+            setLoading: setLoading,
+            setUser: setUser, 
+            setFeedback: setFeedback,
+            navigate: navigate,
+            pathname: pathname
         });
 
-        // Response interceptor
-        dataAPI.interceptors.response.use((response: AxiosResponse) => {
-            setFeedback([]);
-            return response
-        }, (error: AxiosError) => {
-            // Display error
-            setFeedback(errorFormatter(error));
-
-            // Redirect to login if unauthrorized
-            console.log("redirecting to login");
-            if (pathname !== internalEndpoints.login && error.response?.status === 401) {
-                navigate(internalEndpoints.logout!);
-            }
-
-            throw error;
+        createInterceptors({
+            axiosInstance: userAPI,
+            setLoading: setLoading,
+            setUser: setUser, 
+            setFeedback: setFeedback,
+            navigate: navigate,
+            pathname: pathname
         });
+
+        
     }, []);
 
     return (
@@ -167,26 +124,17 @@ const router = createBrowserRouter(
                     <Route path={ internalEndpoints.inventoryUpdate! } element={ <InventoryUpdateForm /> } />
                 </Route>
                 <Route path={ internalEndpoints.orders! } 
-                    element={ <Orders />} 
-                    loader={ OrdersLoader }
-                    shouldRevalidate={({ nextUrl }) => nextUrl.pathname === internalEndpoints.orders }
+                    element={ <Orders /> } loader={ OrdersLoader } shouldRevalidate={({ nextUrl }) => nextUrl.pathname === internalEndpoints.orders }
                 >
-                    <Route path={ internalEndpoints.ordersCreate! } element={ <OrderCreateForm /> } />
-                    <Route path={ internalEndpoints.ordersUpdate! } element={ <OrderUpdateForm /> } />
-                    <Route path={ internalEndpoints.ordersArchive! } element={ <ArchivedOrders /> } loader={ OrdersArchiveLoader }/>
+                    <Route path="/orders/create" element={ <OrderForm /> } />
+                    <Route path="/orders/update/:id" element={ <OrderForm /> } />
                 </Route>
+                <Route path={ internalEndpoints.ordersArchive! } element={ <ArchivedOrders /> } loader={ OrdersArchiveLoader }/>
             </Route>
         </Route>
     )
 );
 
-
-export interface User {
-    username: string,
-    joinDate: string,
-    isStaff: boolean,
-    role: string
-}
 
 // Create App
 function App() {

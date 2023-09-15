@@ -1,9 +1,9 @@
 import { useState, useContext, FormEvent } from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import { Submit, DeleteAlert2 } from "./formComponents";
+import { SubmitDelete, Submit, DeleteAlert2 } from "./formComponents";
 import { GlobalContext } from "../pages/App";
-import { dataAPI } from "../pages/App";
+import { dataAPI } from "../modules/axiosInstances";
 import Row from "react-bootstrap/Row";
 import { useNavigate } from "react-router-dom";
 import { errorFormatter } from "../../utils/formatUtils";
@@ -17,12 +17,52 @@ interface FormModalComponentObj {
     returnURL: string,
     submitRequest: () => Promise<any>
     deleteURL: string,
-    buttonText?: string,
+    submitButtonText?: string,
+    deleteButtonText?: string,
     className?: string
 };
 
+interface ModalComponentType {
+    title: string,
+    Form: React.FunctionComponent,
+    className?: string
+};
 
-export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, submitRequest, className}: FormModalComponentObj) {
+export function ModalTemplate ({className, title }: ModalComponentType) {
+
+    const { theme: [theme], feedback: [feedback], loading: [loading] } = useContext(GlobalContext);
+
+    return (
+        <Modal className={`modal-form ${ theme } ${ className ?? ""}`} 
+            show={ true }
+        >
+            
+            <Modal.Header closeButton>
+                <h2 className="title">{ title }</h2>
+            </Modal.Header>
+
+            <Modal.Body>
+
+                <div className="spinner">
+                    { loading && <Spinner animation="grow"/> } 
+                </div>
+
+                <Row className="feedback">
+                    <ul>
+                        { feedback.map((item: any, i: any) => <li key={i}>{ item }</li>) }
+                    </ul>
+                </Row>
+
+                <Form />
+
+                
+            </Modal.Body>
+        </Modal>
+
+    )
+};
+
+export function FormModal ({title, Fields, returnURL, deleteURL, submitButtonText, deleteButtonText, submitRequest, className}: FormModalComponentObj) {
     
     const { theme: [theme],  feedback: [feedback], loading: [loading, setLoading]} = useContext(GlobalContext);
     const [validated, setValidated] = useState<boolean>(false);
@@ -38,6 +78,8 @@ export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, sub
         if (!form.checkValidity()) {
             // Check validity
             e.stopPropagation();
+            // Set validated true after first submit and not valid
+            setValidated(true);
         } else {
             // If valid, send request
             setLoading(true);
@@ -50,8 +92,6 @@ export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, sub
             }
         } 
 
-        // Set validated true after first submit
-        setValidated(true);
     };    
     
 
@@ -71,20 +111,25 @@ export function FormModal ({title, Fields, returnURL, deleteURL, buttonText, sub
                     { loading && <Spinner animation="grow"/> } 
                 </div>
 
-                <ul className="error">
-                    { feedback.map((item: any, i: any) => <li key={i}>{ item }</li>) }
-                </ul>
+                <Row className="feedback">
+                    <ul>
+                        { feedback.map((item: any, i: any) => <li key={i}>{ item }</li>) }
+                    </ul>
+                </Row>
 
                 <Form noValidate validated={ validated } onSubmit={e => handleSubmit(e)} >
                     <Fields />
 
-                    <Submit buttonText={ buttonText } />
+                    <SubmitDelete setDeleteAlert={ setShowDelete } submitButtonText={ submitButtonText } deleteButtonText={ deleteButtonText } />
                 </Form>
 
                 {
                     showDelete &&
                     <DeleteAlert2 
-                        onClickYes={() => dataAPI.delete(deleteURL)}
+                        onClickYes={() => {
+                            dataAPI.delete(deleteURL);
+                            navigate(returnURL);
+                        }}
                         onClickCancel={() => {
                             setShowDelete(false);
                             navigate(returnURL);
@@ -151,8 +196,8 @@ export function FormTemplate ({title, Fields, redirectURL, buttonText, submitReq
                 { loading && <Spinner animation="grow"/> } 
             </div>
 
-            <Row>
-                <ul className="error">
+            <Row className="feedback">
+                <ul>
                     { feedback.map((item: any, i: any) => <li key={i}>{ item }</li>) }
                 </ul>
             </Row>

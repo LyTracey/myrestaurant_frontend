@@ -1,6 +1,6 @@
 import { FormModal } from "../../modules/forms";
 import { useRef, useState, useContext } from "react";
-import { dataAPI } from "../App";
+import { dataAPI } from "../../modules/axiosInstances";
 import { externalEndpoints, internalEndpoints } from "../../../data/endpoints";
 import { EditFieldGroup2, SelectMultiFieldGroup2, InputMultiFieldGroup2 } from "../../modules/formComponents";
 import Container from "react-bootstrap/Container";
@@ -10,6 +10,7 @@ import { ColumnsToRows } from "../../modules/formComponents";
 import { OrdersContext } from "./orders";
 import Form from "react-bootstrap/Form";
 import slugify from "slugify";
+import { useParams } from "react-router-dom";
 
 export function OrderCreateForm () {
     
@@ -20,6 +21,14 @@ export function OrderCreateForm () {
     const [menuItems, setMenuItems] = useState<Array<number>>([]);
     const quantity = useRef<{[key: string]: number | ""}>({});
     const notes = useRef<HTMLInputElement>(null);
+
+    const submitHandler = () => { 
+        return dataAPI.post(externalEndpoints.orders!, {
+            notes: notes.current!.value ?? "",
+            "menu_items[]": menuItems ?? [],
+            "quantity{}": quantity.current,
+        }
+    )};
 
 
     const Availability = (
@@ -94,11 +103,7 @@ export function OrderCreateForm () {
                 title="Create Order Item"
                 Fields={ Fields }
                 returnURL={ internalEndpoints.orders! }
-                submitRequest={() => { return dataAPI.post(externalEndpoints["menu"]!, {
-                    notes: notes.current!.value ?? "",
-                    "menu_items[]": menuItems ?? [],
-                    "quantity{}": quantity.current,
-                })}}
+                submitRequest={ submitHandler }
                 deleteURL={ externalEndpoints.orders! }
             />
         </>
@@ -110,13 +115,25 @@ export function OrderCreateForm () {
 export function OrderUpdateForm () {
     
     // Get context values
-    const { menu, availabilities, updateObj } = useContext(OrdersContext);
+    const { menu, availabilities, orders } = useContext(OrdersContext);
+    const { id }: any = useParams();
+    const updateObj = orders[id];
 
     // Field states
-    const [menuItems, setMenuItems] = useState<Array<number>>([]);
-    const quantity = useRef<{[key: string]: number | ""}>({});
+    const [menuItems, setMenuItems] = useState<Array<number>>(updateObj.menu_items ?? []);
+    const quantity = useRef<{[key: string]: number | ""}>(updateObj.quantity ?? {});
     const notes = useRef<HTMLInputElement>(null);
 
+    const submitHandler = () => {
+        return dataAPI.patch(
+            `${ externalEndpoints.orders! }${ slugify(String(updateObj.id)) }/`, 
+            {
+                notes: notes.current!.value ?? "",
+                "menu_items[]": menuItems ?? [],
+                "quantity{}": quantity.current,
+            }
+        )
+    };
 
     const Availability = (
         <>
@@ -187,17 +204,10 @@ export function OrderUpdateForm () {
 
         <>
             <FormModal 
-                title="Create Order Item"
+                title="Update Order"
                 Fields={ Fields }
                 returnURL={ internalEndpoints.orders! }
-                submitRequest={() => { return dataAPI.patch(
-                    `${ externalEndpoints["menu"]! }/${ slugify(String(updateObj.id)) }`, 
-                    {
-                        notes: notes.current!.value ?? "",
-                        "menu_items[]": menuItems ?? [],
-                        "quantity{}": quantity.current,
-                    }
-                )}}
+                submitRequest={ submitHandler }
                 deleteURL={ externalEndpoints.orders! }
             />
         </>

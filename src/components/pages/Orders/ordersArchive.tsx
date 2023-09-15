@@ -10,7 +10,7 @@ import Table from 'react-bootstrap/Table';
 import slugify from 'slugify';
 import { useContext } from 'react';
 import { GlobalContext } from '../App';
-import { dataAPI } from '../App';
+import { dataAPI } from '../../modules/axiosInstances';
 import { MenuObj } from '../Menu/menu';
 import { OrdersObj } from './orders';
 import { useLoaderData } from 'react-router-dom';

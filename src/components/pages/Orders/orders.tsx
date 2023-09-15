@@ -1,20 +1,33 @@
 import { 
     useContext, 
-    useRef,
     useMemo,
-    createContext
+    createContext,
+    useState,
+    useRef
 } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import { internalEndpoints } from '../../../data/endpoints';
+import { externalEndpoints, internalEndpoints } from '../../../data/endpoints';
 import "../../../styles/orders.scss";
 import { GlobalContext } from '../App';
-// import { dataAPI } from '../App';
 import { MenuObj } from '../Menu/menu';
 import { useLoaderData, useNavigate } from 'react-router-dom';
-import { Outlet } from 'react-router-dom';
-import { DataGrid, GridColDef, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
+import { Outlet, useRevalidator } from 'react-router-dom';
+import { 
+    DataGrid, 
+    GridColDef, 
+    GridToolbarContainer, 
+    GridToolbarExport, 
+    GridToolbarColumnsButton, 
+    GridToolbarFilterButton,
+    GridActionsCellItem,
+    GridRowParams
+} from '@mui/x-data-grid';
+import ICONS from '../../../data/icons';
+import { DeleteAlert2 } from '../../modules/formComponents';
+import { dataAPI } from '../../modules/axiosInstances';
+
 
 export const OrdersContext = createContext<any>(null);
 
@@ -59,27 +72,36 @@ function Toolbar ()  {
 
 
 function Orders () {
+
     // Unpack loader data
     const [orders, menu]: any = useLoaderData();
 
     // Form states
-    const updateObj = useRef<OrdersObj>(structuredClone(ORDERS_OBJ));
     const { theme: [theme] }  = useContext(GlobalContext);
+    const [showDelete, setShowDelete] = useState<boolean>(false);
+    const deleteObj = useRef<number>(0);
+    
+    // Utils
+    let revalidator = useRevalidator();
     const navigate = useNavigate();
 
-    // Set variables
+    // Map menu list into object
     const filteredMenu = useMemo<{[key: number]: string}>(() => {
-        return Object.fromEntries(menu.filter((menu: MenuObj) => menu.available_quantity! > 0 )
-            .map((item: MenuObj) => [item.id!, item.title!]))
+        return Object.fromEntries(menu.map((item: MenuObj) => [item.id!, item.title!]))
     }, [menu]);
 
+    const filteredOrders = useMemo<{[key: number]: string}>(() =>
+        Object.fromEntries(orders.map((orderObj: {[key: string]: any}) => [orderObj.id, orderObj]))
+    , [orders]);
+
+    // Get object of availabilities
     const availabilities = useMemo<{[key: number]: number}>(() => 
         Object.fromEntries(menu.map((item: any) => [item.id, item.available_quantity]))
     , [menu]);
 
     const ordersContextValue = {
         menu: filteredMenu,
-        updateObj: updateObj,
+        orders: filteredOrders,
         availabilities: availabilities
     };
 
@@ -127,7 +149,16 @@ function Orders () {
         { field: "prepared_at", headerName: "Prepared Time", type: "dateTime", width: 175, valueGetter: ({ row }) => new Date(row.ordered_at) },
         { field: "delivered", headerName: "Delivered", type: "boolean", sortable: false },
         { field: "delivered_at", headerName: "Delivered Time", type: "dateTime", width: 175, valueGetter: ({ row }) => new Date(row.ordered_at) },
-        { field: "complete", headerName: "Complete", type: "boolean", sortable: false }
+        { field: "complete", headerName: "Complete", type: "boolean", sortable: false },
+        { field: "actions", type: "actions", getActions: (params: GridRowParams) => [
+            <GridActionsCellItem icon={ <ICONS.edit /> } onClick={() => {
+                navigate(`${ internalEndpoints.ordersUpdateRoot! }/${ params.row.id }`);
+            }} label="Edit" />,
+            <GridActionsCellItem icon={ <ICONS.delete /> } onClick={() => {
+                deleteObj.current = params.row.id;
+                setShowDelete(true);
+            }} label="Delete" />
+        ]}
     ];
 
     return (
@@ -149,11 +180,28 @@ function Orders () {
                 className='table'
             />
 
+            {
+                showDelete &&
+                <DeleteAlert2 
+                    onClickYes={async () => {
+                        await dataAPI.delete(`${ externalEndpoints.orders! }${ deleteObj.current }`);
+                        setShowDelete(false);
+                        revalidator.revalidate();
+                        
+                    }}
+                    onClickCancel={() => {
+                        setShowDelete(false);
+                    }}
+                />
+
+            }
+
+
             {/* <Table responsive>
                 <thead>
                     <tr className='headers'>
                         <th>Order ID</th>
-                        <th>Menu Items</th>
+                        <th>Menu Items</th
                         <th>Notes</th>
                         <th>Ordered At</th>
                         <th>Prepared</th>

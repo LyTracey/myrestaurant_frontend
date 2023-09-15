@@ -5,15 +5,23 @@ import jwtDecode from 'jwt-decode';
 
 function PrivateRoute () {
     
-    const { exp }: any = jwtDecode(localStorage.getItem("access") ?? "");
+    let expiry: number;
+
+    try {
+        const { exp }: any = jwtDecode(localStorage.getItem("access") ?? "");
+        expiry = exp;
+    } catch {
+        expiry = 0
+    }
+    
 
     return (
 
         <>
             {
-                (Date.now() < (exp * 1000))
+                (Date.now() < (expiry * 1000))
                 ? <Outlet />
-                : <Navigate to={ internalEndpoints.login! } />
+                : <Navigate to={ internalEndpoints.logout! } />
             }
         </>
 

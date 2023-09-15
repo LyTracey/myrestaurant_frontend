@@ -1,5 +1,6 @@
 @use "sass:map";
 
+$sm : 576px;
 $md: 767px;
 
 $themes: (
@@ -15,8 +16,7 @@ $themes: (
     "red": #E07A5F,
     "yellow": #F2CC8F,
     "green": #9FB798,
-    "light-yellow": #F3ECD2,
-    "light-green": #468990
+    "light-yellow": #F3ECD2
 );
 
 @mixin theme ($background, $text) {

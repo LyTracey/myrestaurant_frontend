@@ -2,7 +2,7 @@ import { FormModal } from "../../modules/forms";
 import { EditFieldGroup2 } from "../../modules/formComponents";
 import { useContext, useRef } from "react";
 import { internalEndpoints, externalEndpoints } from "../../../data/endpoints";
-import { dataAPI } from "../App";
+import { dataAPI } from "../../modules/axiosInstances";
 import { InventoryObj } from "./inventory";
 import { InventoryContext } from "./inventory";
 import slugify from "slugify";
@@ -97,6 +97,18 @@ export function InventoryUpdateForm () {
     const quantity = useRef<HTMLInputElement>(null);
     const unit_price = useRef<HTMLInputElement>(null);
 
+    // Submit handler
+
+    const submitHandler = () => { 
+        return dataAPI.patch( 
+            `${ externalEndpoints.inventory! }${ slugify(updateObj.ingredient.toLowerCase()) }/`, 
+            {
+                ingredient: ingredient.current!.value,
+                quantity: quantity.current!.value,
+                unit_price: Number(unit_price.current!.value),
+            }
+    )};
+
 
     const Fields = () => {
         return (
@@ -104,23 +116,25 @@ export function InventoryUpdateForm () {
                 { 
                     EditFieldGroup2({
                         name: "ingredient", 
-                        label: "Ingredient*", 
+                        label: "Ingredient", 
                         ref: ingredient,
                         defaultValue: updateObj.ingredient,
                         feedback: "Required. Max character length is 100."
                     }, {
                         maxLength: 100,
-                        required: true
+                        required: true,
+                        disabled: true,
+                        className: "disabled"
                     }) 
                 }
 
                 { 
                     EditFieldGroup2({
                         name: "quantity", 
-                        label: "Quantity Available*", 
+                        label: "Quantity Available *", 
                         type: "number",
                         ref: quantity,
-                        defaultValue: String(0),
+                        defaultValue: updateObj.quantity,
                         feedback: "Required. Minimum is 0."
                     }, {
                         min: 0,
@@ -131,9 +145,9 @@ export function InventoryUpdateForm () {
                 { 
                     EditFieldGroup2({
                         name: "unit_price", 
-                        label: "Unit Price*", 
+                        label: "Unit Price *", 
                         type: "number", 
-                        defaultValue: String(0),
+                        defaultValue: updateObj.unit_price,
                         ref: unit_price,
                         feedback: "Required. Minimum is £0.00."
                     }, {
@@ -154,15 +168,8 @@ export function InventoryUpdateForm () {
                 title="Create Inventory Item"
                 Fields={ Fields }
                 returnURL={ internalEndpoints.inventory! }
-                submitRequest={() => { return dataAPI.patch( 
-                    `${ externalEndpoints.inventory! }/${ slugify(updateObj.ingredient) }`, 
-                    {
-                        ingredient: ingredient.current!.value,
-                        quantity: quantity.current!.value,
-                        unit_price: Number(unit_price.current!.value),
-                    }
-                    )}}
-                deleteURL={ externalEndpoints.inventory! }
+                submitRequest={ submitHandler }
+                deleteURL={ `${ externalEndpoints.inventory! }${ updateObj.ingredient }` }
             />
         </>
     )

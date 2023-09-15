@@ -9,7 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
-import { dataAPI } from './App';
+import { dataAPI } from './../modules/axiosInstances';
 import { AxiosResponse } from 'axios';
 import Badge from "react-bootstrap/Badge";
 

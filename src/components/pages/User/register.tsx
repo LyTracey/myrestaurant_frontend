@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useNavigate } from 'react-router-dom';
 import { GlobalContext } from '../App';
-import { userAPI } from "../App";
+import { userAPI } from "../../modules/axiosInstances";
 
 interface User {
     username: string,

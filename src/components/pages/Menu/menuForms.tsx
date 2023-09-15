@@ -1,6 +1,6 @@
 import { FormModal } from "../../modules/forms";
 import { useRef, useState, useContext } from "react";
-import { dataAPI } from "../App";
+import { dataAPI } from "../../modules/axiosInstances";
 import { externalEndpoints, internalEndpoints } from "../../../data/endpoints";
 import { EditFieldGroup2, SelectMultiFieldGroup2, InputMultiFieldGroup2 } from "../../modules/formComponents";
 import Container from "react-bootstrap/Container";

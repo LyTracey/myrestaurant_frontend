@@ -1,4 +1,14 @@
-h2.error-message {
+.page.error {
     text-align: center;
-    padding-top: 20px;
+    padding-top: 32px;
+
+    h2.error-message {
+        text-align: center;
+        padding-top: 20px;
+    }
+    
+    .error-icon {
+        height: 64px;
+        width: 64px;
+    }
 }
