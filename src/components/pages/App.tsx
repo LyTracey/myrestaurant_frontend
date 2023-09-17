@@ -15,11 +15,11 @@ import Logout from './User/logout';
 import PrivateRoute from '../modules/privateRoute';
 import { internalEndpoints } from '../../data/endpoints';
 import Profile from './User/profile';
-import { InventoryCreateForm, InventoryUpdateForm } from './Inventory/inventoryForms';
+import InventoryForm from "./Inventory/inventoryForm";
 import { InventoryLoader, MenuLoader, OrdersLoader, OrdersArchiveLoader, UserLoader } from "../modules/loaders";
-import { MenuCreateForm, MenuUpdateForm } from "./Menu/menuForms";
+import MenuForm from "./Menu/menuForm";
 import RootErrorBoundary from "../modules/errors";
-import OrderForm from "./Orders/ordersNewForm";
+import OrderForm from "./Orders/ordersForm";
 import { createInterceptors, dataAPI, userAPI } from "../modules/axiosInstances";
 
 // Create global context
@@ -64,8 +64,7 @@ function AppLayout () {
             setLoading: setLoading,
             setUser: setUser, 
             setFeedback: setFeedback,
-            navigate: navigate,
-            pathname: pathname
+            navigate: navigate
         });
 
         createInterceptors({
@@ -74,11 +73,10 @@ function AppLayout () {
             setUser: setUser, 
             setFeedback: setFeedback,
             navigate: navigate,
-            pathname: pathname
         });
 
         
-    }, []);
+    }, [navigate, pathname, setFeedback, setLoading, setUser]);
 
     return (
         <>
@@ -95,10 +93,12 @@ const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path='/' element={ <AppLayout /> } errorElement={ <RootErrorBoundary /> }>
             <Route index element={ <Home /> } />
-            <Route path={ internalEndpoints.menu! } element={ <Menu /> } loader={ MenuLoader } shouldRevalidate={ ({ nextUrl }) => nextUrl.pathname === internalEndpoints.menu! }>
-                <Route path={ internalEndpoints.menuCreate! } element={ <MenuCreateForm /> } />
-                <Route path={ internalEndpoints.menuUpdate! } element={ <MenuUpdateForm /> } />
+
+            <Route path={ internalEndpoints.menu! } element={ <Menu /> } loader={ MenuLoader } >
+                <Route path={ internalEndpoints.menuCreate! } element={ <MenuForm /> } />
+                <Route path={ internalEndpoints.menuUpdate! } element={ <MenuForm /> } />
             </Route> 
+
             <Route path={ internalEndpoints.login! } element={ <Login />} />
             <Route path={ internalEndpoints.logout! } element={ <Logout />} />
             <Route path={ internalEndpoints.register! } element={ <Register /> } />
@@ -110,6 +110,7 @@ const router = createBrowserRouter(
                     loader={ UserLoader }
                     shouldRevalidate={({ nextUrl }) => nextUrl.pathname === internalEndpoints.profile }
                 />
+
                 <Route 
                     path={ internalEndpoints.dashboard! } element={ <Dashboard /> } 
                     shouldRevalidate={({ nextUrl }) => nextUrl.pathname === internalEndpoints.dashboard } 
@@ -120,14 +121,12 @@ const router = createBrowserRouter(
                     loader={ InventoryLoader } 
                     shouldRevalidate={({ nextUrl }) => nextUrl.pathname === internalEndpoints.inventory }
                 >
-                    <Route path={ internalEndpoints.inventoryCreate! } element={ <InventoryCreateForm /> } />
-                    <Route path={ internalEndpoints.inventoryUpdate! } element={ <InventoryUpdateForm /> } />
+                    <Route path={ internalEndpoints.inventoryCreate! } element={ <InventoryForm /> } />
+                    <Route path={ internalEndpoints.inventoryUpdate! } element={ <InventoryForm /> } />
                 </Route>
-                <Route path={ internalEndpoints.orders! } 
-                    element={ <Orders /> } loader={ OrdersLoader } shouldRevalidate={({ nextUrl }) => nextUrl.pathname === internalEndpoints.orders }
-                >
-                    <Route path="/orders/create" element={ <OrderForm /> } />
-                    <Route path="/orders/update/:id" element={ <OrderForm /> } />
+                <Route path={ internalEndpoints.orders! } element={ <Orders /> } loader={ OrdersLoader }>
+                    <Route path={ internalEndpoints.ordersCreate! } element={ <OrderForm /> } />
+                    <Route path={ internalEndpoints.ordersUpdate! } element={ <OrderForm /> } />
                 </Route>
                 <Route path={ internalEndpoints.ordersArchive! } element={ <ArchivedOrders /> } loader={ OrdersArchiveLoader }/>
             </Route>

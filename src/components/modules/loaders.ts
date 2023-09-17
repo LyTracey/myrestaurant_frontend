@@ -9,11 +9,7 @@ export const MenuLoader = async () => {
         dataAPI.get(`${ externalEndpoints.inventoryReference! }`)
     ]);
 
-    const inventoryReference = Object.fromEntries(inventoryResponse?.data.map((item: {[key: string]: any}) => 
-        [item.id, item.ingredient]
-    ));
-
-    return [menuResponse?.data, inventoryReference]
+    return [menuResponse?.data, inventoryResponse?.data]
 };
 
 export const OrdersLoader = async () => {

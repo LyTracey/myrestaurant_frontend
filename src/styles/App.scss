@@ -28,7 +28,9 @@ body {
     .page {
         min-height: calc(100vh - 194.5px);
     }
+}
 
+.App, .modal-dialog {
     // Headers
     h2.title {
         text-align: center;
@@ -55,10 +57,14 @@ body {
 
     // Buttons
     .button {
+        display: flex;
         width: fit-content;
         border-radius: 18px;
         border: none;
         margin-bottom: 12px;
+        height: 32px;
+        align-items: center;
+        margin: 12px;
 
         &:focus {
         box-shadow: none;
@@ -85,18 +91,28 @@ body {
 
     
     // Inputs
-    .form-control {
+    input {
         border: none;
-    }
-    
-    .form-check-input {
-        cursor: pointer;
+        background-color: map-get(base.$themes, "light-grey");
+        border-radius: 8px;
     }
 
-    .form-check-input:checked {
-        background-color: map-get(base.$themes, "green") !important;
-        border: none;
+    // Validation
+    .feedback {
+        color: map-get(base.$themes, "red");
+        padding: 10px 0;
+
+        ul {
+            margin: 0;
+        }
     }
+
+    .icon {
+        height: 32px;
+        width: 32px;
+        padding: 0 8px;
+    }
+
 }
 
 
@@ -105,9 +121,11 @@ body {
 
     .button {
         background-color: map-get(base.$themes, "blue");
+        color: map-get(base.$themes, "white");
 
         &:hover {
-            background-color: map-get(base.$themes, "mid-blue");
+            background-color: map-get(base.$themes, "off-white");
+            color: map-get(base.$themes, "blue");
         }
     }
 }
@@ -117,10 +135,11 @@ body {
 
     .button {
         background-color: map-get(base.$themes, "light-yellow");
-        color: map-get(base.$themes, "soft-black");
+        color: map-get(base.$themes, "mid-blue");
 
         &:hover {
             background-color: map-get(base.$themes, "beige");
+            color: map-get(base.$themes, "blue");
         }
     }
 

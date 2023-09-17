@@ -48,15 +48,17 @@
         }
 
         .quantity {
-            width: 28px;
+            width: fit-content;
             height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
+            border-radius: 12px;
+            padding: 4px;
             color: map-get(base.$themes, "off-white");
             position: absolute;
-            right: 12px;
+            right: -14px;
+            top: -14px;
 
             &.in-stock {
                 background-color: map-get(base.$themes, "green");
@@ -98,11 +100,9 @@
     }
 
     .actions {
-        justify-content: center;
+        justify-content: flex-end;
 
         .create.button {
-            background-color: map-get(base.$themes, "green");
-            color: map-get(base.$themes, "off-white");
             text-decoration: none;
     
             &:hover {

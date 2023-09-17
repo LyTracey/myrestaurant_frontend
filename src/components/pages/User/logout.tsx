@@ -20,7 +20,7 @@ function Logout () {
 
         // Redirect to login page
         navigate(internalEndpoints.login!);
-    }, []);
+    }, [navigate, setUser]);
 
     return (
         <Container className='page logout'>

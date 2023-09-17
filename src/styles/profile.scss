@@ -57,14 +57,4 @@
 
     }
 
-    // Validation
-    .error {
-        color: map-get(base.$themes, "red");
-        padding: 10px 10%;
-
-        ul {
-            margin: 0;
-        }
-    }
-
 }

@@ -7,9 +7,11 @@ import { AxiosError } from "axios";
 
 function Forbidden () {
 
+    const { ForbiddenIcon } = ICONS;
+
     return (
         <div className="page error">
-            <ICONS.forbidden className="error-icon"/>
+            <ForbiddenIcon className="error-icon"/>
             <h2 className="error-message">Forbidden 403</h2>
         </div>
     )
@@ -17,19 +19,23 @@ function Forbidden () {
 
 
 function NotFound () {
+
+    const { NotFoundIcon } = ICONS;
+
     return (
         <div className="page error">
-            <ICONS.notFound className="error-icon"/>
+            <NotFoundIcon className="error-icon"/>
             <h2 className="error-message">Not Found 404</h2>
         </div>
     )
 }
 
 function InternalError () {
-
+    const { InternalIcon } = ICONS;
+    
     return (
         <div className="page error">
-            <ICONS.internal className="error-icon"/>
+            <InternalIcon className="error-icon"/>
             <h2 className="error-message">Internal Error 500</h2>
         </div>
     )
@@ -38,9 +44,11 @@ function InternalError () {
 
 function Throttled () {
 
+    const { ThrottledIcon } = ICONS;
+
     return (
         <div className="page error">
-            <ICONS.throttled className="error-icon"/>
+            <ThrottledIcon className="error-icon"/>
             <h2 className="error-message">Oh dear, you have passed the throttling levels. Please try again later.</h2>
         </div>
     )
@@ -48,9 +56,11 @@ function Throttled () {
 
 function SomethingWentWrong () {
 
+    const { OhNoIcon } = ICONS;
+
     return (
         <div className="page error">
-            <ICONS.ohNo className="error-icon"/>
+            <OhNoIcon className="error-icon"/>
             <h2 className="error-message">Oops something went wrong. Please try again later.</h2>
         </div>
     )

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { externalEndpoints, internalEndpoints } from "../../data/endpoints";
 import { Dispatch, SetStateAction } from "react";
-import jwt_decode from "jwt-decode";
+import jwtDecode from "jwt-decode";
 import { changeTokens } from "../../utils/apiUtils";
 import { NavigateFunction } from "react-router-dom";
 import { User } from "../pages/App";
@@ -37,33 +37,35 @@ interface CreateInterceptorsType {
     setUser: Dispatch<SetStateAction<User>>,
     setFeedback: Dispatch<SetStateAction<string[]>>
     navigate: NavigateFunction,
-    pathname: string
 }
 
-export function createInterceptors ({axiosInstance, setLoading, setUser, setFeedback, navigate, pathname}: CreateInterceptorsType) {
+export function createInterceptors ({axiosInstance, setLoading, setUser, setFeedback, navigate}: CreateInterceptorsType) {
     
     // Request interceptor
     axiosInstance.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
 
         // Display loading
         setLoading(true);
-
         if (localStorage.getItem("access") && config.url !== externalEndpoints.refresh ) {
 
             // Get expiry time
-            const { exp }: any = jwt_decode(localStorage.getItem("access") ?? "");
+            const { exp }: any = jwtDecode(localStorage.getItem("access") ?? "");
+
 
             if (Date.now() > (exp * 1000)) {
 
                 // Try refreshing token if access token expired
 
                 try {
+                    const refreshToken = localStorage.getItem("refresh");
+                    console.log(refreshToken);
                     const response = await userAPI.post(externalEndpoints.refresh!, {
-                        refresh: localStorage.getItem("refresh")
+                        refresh: refreshToken
                     });
+                    console.log(response);
                     console.log("setting new access token");
 
-                    const changeTokensResponse = await changeTokens(response.data.access, setUser);
+                    const changeTokensResponse = await changeTokens(response.data, setUser);
                     console.log(changeTokensResponse);
                 } catch (error) {
                     console.log(error);
@@ -88,7 +90,8 @@ export function createInterceptors ({axiosInstance, setLoading, setUser, setFeed
         setLoading(false);
 
         // Redirect to login if unauthrorized
-        if (pathname !== internalEndpoints.login && error.response?.status === 401) {
+        if (window.location.pathname !== internalEndpoints.login && error.response?.status === 401) {
+            console.log("navigating to logout");
             navigate(internalEndpoints.logout!);
         }
 

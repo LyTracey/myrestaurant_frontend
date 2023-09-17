@@ -29,7 +29,7 @@ function Profile () {
 
     useEffect(() => {
         setUser(user);
-    }, [user]);
+    }, [user, setUser]);
 
     // Handle PATCH request
     const patchUser = async (data: object) => {

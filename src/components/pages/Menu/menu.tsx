@@ -1,10 +1,4 @@
-import { 
-    useContext, 
-    useRef,
-    // FormEvent,
-    // SetStateAction, 
-    // Dispatch, 
-} from 'react';
+import { useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -14,9 +8,10 @@ import ICONS from '../../../data/icons';
 import { GlobalContext } from '../App';
 import "../../../styles/menu.scss";
 import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
-import { createContext } from 'react';
+import { createContext, useMemo } from 'react';
 import { internalEndpoints } from '../../../data/endpoints';
 import { RiMenuAddFill as AddMenu } from "react-icons/ri";
+import { MenuType } from './menuForm';
 
 // Access
 const hasWriteAccess = (role: string) => {
@@ -28,44 +23,30 @@ const hasWriteAccess = (role: string) => {
 
 export const MenuContext = createContext<any>(null);
 
-export interface MenuObj {
-    id?: number | null,
-    title: string | null,
-    ingredients: {[key: number]: string},
-    units: {[key: string]: number | ""},
-    image?: string | null,
-    description: string,
-    price: number | null,
-    available_quantity?: number
-};
-
-
-// Default menu object
-export const MENU_OBJ = {
-    id: null,
-    title: "",
-    description: "",
-    price: null,
-    image: null,
-    ingredients: {},
-    units: {}
-};
-
-
 function Menu ( ) {
     // Unpack data from loader
     const [menu, inventory]: any = useLoaderData();
+
+    // Map menu and inventory list into object
+     const filteredMenu = useMemo<{[key: number]: string}>(() => {
+        return Object.fromEntries(menu.map((menuObj: MenuType) => [menuObj.id!, menuObj]))
+    }, [menu]);
+
+    const filteredInventory = useMemo<{[key: number]: string}>(() =>
+        Object.fromEntries(inventory.map((inventoryObj: {[key: string]: any}) => [inventoryObj.id, inventoryObj.ingredient]))
+    , [inventory]);
+    
+    const { TeaIcon } = ICONS;
     
     // Form states
-    const updateObj = useRef<MenuObj>(structuredClone(MENU_OBJ));
     const { theme: [theme], user: [user] } = useContext(GlobalContext);
 
     
     // Utils
     const navigate = useNavigate();
     const menuContextValue = {
-        inventory: inventory,
-        updateObj: updateObj
+        inventory: filteredInventory,
+        menu: filteredMenu
     };
 
 
@@ -90,13 +71,12 @@ function Menu ( ) {
                             <Card.Body onClick={() => {
                                     // Only render update form if user isStaff and has a role of MANAGER | CHEF
                                     if (user.isStaff && hasWriteAccess(user.role)) {       
-                                        updateObj.current = {...MENU_OBJ, ...item};
-                                        navigate( internalEndpoints.menuUpdate! );
+                                        navigate( `${ internalEndpoints.menuUpdateRoot! }/${ item.id }` );
                                     }
                                 }} className={!user.isStaff ? "default-cursor" : ""}>
                                 
                                 <div className='card-image'>
-                                    <ICONS.tea className="icon" />
+                                    <TeaIcon className="icon" />
                                 </div>
 
                                 <Card.Title as="div">

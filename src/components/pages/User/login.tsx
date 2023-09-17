@@ -7,11 +7,13 @@ import { changeTokens } from "../../../utils/apiUtils";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../../../styles/login.scss";
 import { useForm } from "react-hook-form";
+import { ErrorMessage } from '@hookform/error-message';
+import { DisplayFeedback } from "../../modules/miscComponents";
 
 function Login () {
 
     // Create form instance
-    const { register, handleSubmit } = useForm({
+    const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             username: "",
             password: ""
@@ -25,21 +27,28 @@ function Login () {
 
     // Handle submit to backend
     const submitRequest = handleSubmit(async (data) => {
-        const response = await userAPI.post(externalEndpoints.login!, {
-            username: data.username,
-            password: data.password
-        });
 
-        console.log(response);
+        try {
+            const response = await userAPI.post(externalEndpoints.login!, {
+                username: data.username,
+                password: data.password
+            });
+    
+            console.log(response);
+            const tokenResponse = await changeTokens(response.data, setUser);
+            console.log(tokenResponse);
+            navigate(internalEndpoints.profile!);
+        } catch {
+            return
+        }
 
-        const tokenResponse = await changeTokens(response.data, setUser);
-        console.log(tokenResponse);
-        navigate(internalEndpoints.profile!);
     });
 
 
     return (
         <Container className={`page login ${ theme }`}>
+            {/* <>{ feedback }</> */}
+            <DisplayFeedback />
 
             <form onSubmit={(e) => {
                 e.preventDefault();
@@ -50,10 +59,18 @@ function Login () {
                     <input type="text" {...register("username", {required: "Please enter a username."})} />
                 </label>
 
+                <div className="feedback">
+                    <ErrorMessage errors={ errors } name="username" />
+                </div>
+
+
                 <label>
                     Password *
                     <input type="password" {...register("password", {required: "Please enter a password."})} />
                 </label>
+                <div className="feedback">
+                    <ErrorMessage errors={ errors } name="password" />
+                </div>
 
                 <button type="submit">Login</button>
             </form>

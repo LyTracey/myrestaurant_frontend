@@ -118,21 +118,6 @@ $light-grey: rgb(225, 225, 225, 1);
                 display: none; /* for Chrome, Safari, and Opera */
             }
         }
-        
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-
-
-            &:hover {
-                // background-color: rgba(222, 222, 222, 0.5);
-                transition: background-color 1s;
-            }
-        }
-
         .icon {
             width: 50%;
             height: 90%;

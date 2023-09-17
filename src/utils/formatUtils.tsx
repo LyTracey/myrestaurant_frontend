@@ -5,7 +5,7 @@ export function errorFormatter (error: AxiosError | any) {
         Returns error.response.data as an array of its values.
     */
 
-    const data = (error instanceof AxiosError) ? error?.response?.data : error.message;
+    const data = error?.response?.data ?? error.message;
 
     if (typeof(data) === "string") {
         return [data]

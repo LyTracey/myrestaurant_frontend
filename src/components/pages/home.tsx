@@ -12,10 +12,21 @@ import ICONS from "../../data/icons";
 import { NavLink } from "react-router-dom";
 import { internalEndpoints } from "../../data/endpoints";
 
-function Home () {
+function Button ({ text, url }: any) {
+    return (
+        <button type="button" onClick={(e: any) => {
+            e.stopPropagation();
+            window.open(url, "_blank");
+        }}>{ text }</button>
+    )
+};
 
+
+function Home () {
+    
     const { theme: [theme] } = useContext(GlobalContext);
-    const [activeBox, setActiveBox] = useState<string>("greeting");
+    const [activeBox, setActiveBox] = useState<string>("source-code");
+    const { StarsIcon, ThoughtIcon, GithubIcon, StackIcon } = ICONS;
 
     return (
         <Container className={`page home ${ theme }`} fluid>
@@ -32,10 +43,8 @@ function Home () {
                 
                 <Col className="greeting" onClick={() => setActiveBox("greeting")}>
                     <div className="box">
-                        <div className="overlay">
-                        </div>
                         {
-                            activeBox !== "greeting" ? <ICONS.stars className="icon" /> : (
+                            activeBox !== "greeting" ? <StarsIcon className="icon" /> : (
                                 <>
                                     <h3 className="title">Welcome!</h3>
                                     This website is for a fictitious cafe built to practice full-stack development. I chose a cafe as a real-world scenario to develop my use cases around.
@@ -43,7 +52,7 @@ function Home () {
 
                                     <br/>
                                     
-                                    P.S. I suggest you account <NavLink className="link" to={ internalEndpoints.register! }>here</NavLink><br/>
+                                    P.S. I suggest you account <NavLink onClick={e => e.stopPropagation()} className="link" to={ internalEndpoints.register! }>here</NavLink><br/>
                                     <br/>
                                     - Tracey
                                 </>
@@ -55,19 +64,17 @@ function Home () {
 
                 <Col className="source-code" onClick={() => setActiveBox("source-code")}>
                     <div className="box">
-                        <div className="overlay">
-                        </div>
                         {
-                            activeBox !== "source-code" ? <ICONS.github className="icon" /> : (
+                            activeBox !== "source-code" ? <GithubIcon className="icon" /> : (
                                 <>
                                     <h3 className="title">Source Code</h3>
                                     The source code for this project can be found on my GitHub at the following links:<br/>
                                     <br/>
                                     <li>
-                                        <a className="link" href="https://github.com/LyTracey/myrestaurant_backend">Django backend</a><br/>
+                                        <Button text="Django Backend" url="https://github.com/LyTracey/myrestaurant_backend"/><br/>
                                     </li>
                                     <li>
-                                        <a className="link" href="https://github.com/LyTracey/myrestaurant_frontend">React JS Frontend</a><br/>
+                                        <Button text="React JS Frontend" url="https://github.com/LyTracey/myrestaurant_frontend" />
                                     </li>
                                 </>
                             )
@@ -77,24 +84,23 @@ function Home () {
             
                 <Col className="tech-stack" onClick={() => setActiveBox("tech-stack")}>
                     <div className="box">
-                        <div className="overlay"></div>
                             {
-                                activeBox !== "tech-stack" ? <ICONS.stack className="icon" /> : (
+                                activeBox !== "tech-stack" ? <StackIcon className="icon" /> : (
                                     <>
                                         <h3 className="title">The Tech-Stack</h3>
                                         The backend is built using Django and Django Rest Framework connected to a MySQL database. 
-                                        It is hosted using <a className="link" href="#" onClick={() => window.open("https://www.pythonanywhere.com/")}>Python Anywhere</a>.<br />
+                                        It is hosted using <Button text="Python Anywhere" url="https://www.pythonanywhere.com/" />.<br />
                                         
                                         <br />
 
                                         The frontend is built using TypeScript, React, React-Bootstrap and SCSS.
-                                        It is hosted on <a className="link" href="https://vercel.com/" target="_blank">Vercel</a>.<br />
+                                        It is hosted on <Button text="Vercel" url="https://vercel.com/" />.<br />
 
                                         <br />
 
                                         I also created some images and icons using a combination 
-                                        of <a className="link" href="https://procreate.com/">Procreate</a> and <a className="link" href="https://www.linearity.io/">Vectornator</a>.
-                                        Other icons use the <a className="link" href="https://react-icons.github.io/react-icons/">React-Icons</a> package.
+                                        of <Button text="Procreate" url="https://procreate.com/" /> and <Button text="Vectornator" url="https://www.linearity.io/" />.
+                                        Other icons use the <Button text="React Icons" url="https://react-icons.github.io/react-icons/" /> package.
                                     </>
                                 )
                             }
@@ -104,10 +110,8 @@ function Home () {
 
                 <Col className="considerations" onClick={() => setActiveBox("considerations")}>
                     <div className="box">
-                        <div className="overlay">
-                        </div>
                         {
-                            activeBox !== "considerations" ? <ICONS.thought className="icon" /> : (
+                            activeBox !== "considerations" ? <ThoughtIcon className="icon" /> : (
                                 <>
                                     <h3 className="title">Considerations</h3>
                                     As I only intended this website to be a personal project, I have opted to use only open-source tools.

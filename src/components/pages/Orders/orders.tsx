@@ -3,7 +3,8 @@ import {
     useMemo,
     createContext,
     useState,
-    useRef
+    useRef,
+    MouseEvent
 } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -11,7 +12,7 @@ import Button from 'react-bootstrap/Button';
 import { externalEndpoints, internalEndpoints } from '../../../data/endpoints';
 import "../../../styles/orders.scss";
 import { GlobalContext } from '../App';
-import { MenuObj } from '../Menu/menu';
+import { MenuType } from '../Menu/menuForm';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { Outlet, useRevalidator } from 'react-router-dom';
 import { 
@@ -22,12 +23,14 @@ import {
     GridToolbarColumnsButton, 
     GridToolbarFilterButton,
     GridActionsCellItem,
-    GridRowParams
+    GridRowParams,
+    GridRenderCellParams
 } from '@mui/x-data-grid';
 import ICONS from '../../../data/icons';
-import { DeleteAlert2 } from '../../modules/formComponents';
+import { DeleteAlert } from '../../modules/miscComponents';
 import { dataAPI } from '../../modules/axiosInstances';
-
+import { DisplayFeedback } from '../../modules/miscComponents';
+import Tooltip from '@mui/material/Tooltip';
 
 export const OrdersContext = createContext<any>(null);
 
@@ -57,7 +60,7 @@ export const ORDERS_OBJ = {
     complete: false
 };
 
-function Toolbar ()  {
+export function Toolbar ()  {
     return (
         <GridToolbarContainer className='table-toolbar'>
             <div>
@@ -77,22 +80,24 @@ function Orders () {
     const [orders, menu]: any = useLoaderData();
 
     // Form states
-    const { theme: [theme] }  = useContext(GlobalContext);
+    const { theme: [theme], feedback: [, setFeedback] }  = useContext(GlobalContext);
     const [showDelete, setShowDelete] = useState<boolean>(false);
     const deleteObj = useRef<number>(0);
     
     // Utils
     let revalidator = useRevalidator();
     const navigate = useNavigate();
+    const { EditIcon, DeleteIcon, FalseIcon, TrueIcon } = ICONS;
 
-    // Map menu list into object
-    const filteredMenu = useMemo<{[key: number]: string}>(() => {
-        return Object.fromEntries(menu.map((item: MenuObj) => [item.id!, item.title!]))
-    }, [menu]);
-
+    // Map orders and menu lists into object
     const filteredOrders = useMemo<{[key: number]: string}>(() =>
         Object.fromEntries(orders.map((orderObj: {[key: string]: any}) => [orderObj.id, orderObj]))
     , [orders]);
+
+    const filteredMenu = useMemo<{[key: number]: string}>(() => {
+        return Object.fromEntries(menu.map((menuObj: MenuType) => [menuObj.id!, menuObj.title!]))
+    }, [menu]);
+
 
     // Get object of availabilities
     const availabilities = useMemo<{[key: number]: number}>(() => 
@@ -106,25 +111,26 @@ function Orders () {
     };
 
     // Send PATCH request every time an order is prepared, delivered, or completed
-    // const handleCheck = (e: any, id: number, field: string, index: number) => {
-    //     e.preventDefault();
+    const handleCheck = async (e: MouseEvent<HTMLDivElement>, row: {[key: string]: any}, field: string) => {
+        e.stopPropagation();
 
-    //     // Check if checkboxes are ticked in the order prepared > delivered > complete
-    //     if (field === "delivered" && !orders[index]?.prepared) {
-    //         setFeedback(["Please ensure order is prepared."])
-    //         return
-    //     } else if (field === "complete" && (!orders[index]?.prepared || !orders[index]?.delivered)) {
-    //         setFeedback(["Please ensure order is prepared and delivered."])
-    //         return
-    //     }
+        // Check if checkboxes are ticked in the order prepared > delivered > complete
+        if (field === "delivered" && !row.prepared) {
+            setFeedback(["Please ensure order is prepared."])
+            return
+        } else if (field === "complete" && (!row.prepared || !row.delivered)) {
+            setFeedback(["Please ensure order is prepared and delivered."])
+            return
+        }
 
+        // Send patch request if the correct checkboxes are checked
+        await dataAPI.patch(`${ externalEndpoints.orders! }${ row.id }/`, {
+            id: row.id,
+            [field]: !row[field]
+        });
 
-    //     // Send patch request if the correct checkboxes are checked
-    //     dataAPI.patch(`${ externalEndpoints.orders! }/${ id }`, {
-    //         id: id,
-    //         [field]: e.target.checked
-    //     });
-    // };
+        revalidator.revalidate();
+    };
 
     const Columns: GridColDef[] = [
         { field: "id", headerName: "ID", type: "string", width: 75}, 
@@ -143,18 +149,39 @@ function Orders () {
                 </div>
             )
         }},
-        { field: "notes", headerName: "Notes", type: "string", width: 200, sortable: false},
+        { field: "notes", headerName: "Notes", type: "string", width: 150, sortable: false},
         { field: "ordered_at", headerName: "Order Time", type: "dateTime", width: 175, valueGetter: ({ row }) => new Date(row.ordered_at) },
-        { field: "prepared", headerName: "Prepared", type: "boolean", sortable: false },
-        { field: "prepared_at", headerName: "Prepared Time", type: "dateTime", width: 175, valueGetter: ({ row }) => new Date(row.ordered_at) },
-        { field: "delivered", headerName: "Delivered", type: "boolean", sortable: false },
-        { field: "delivered_at", headerName: "Delivered Time", type: "dateTime", width: 175, valueGetter: ({ row }) => new Date(row.ordered_at) },
-        { field: "complete", headerName: "Complete", type: "boolean", sortable: false },
+        { field: "prepared", headerName: "Prepared", type: "boolean", sortable: false, renderCell: ({ row }: GridRenderCellParams) => 
+            <Tooltip title={row.prepared ? `Prepared at ${ row.prepared_at }` : "Not prepared"} placement='right-end'>
+                <div onClick={(e) => handleCheck(e, row, "prepared")}>
+                    { row.prepared ? <TrueIcon /> : <FalseIcon /> }
+                </div>
+            </Tooltip>
+        },
+        { field: "prepared_at", headerName: "Prepared Time", type: "dateTime", width: 175, valueGetter: ({ row }) => row.prepared_at ? new Date(row.prepared_at) : null},
+        { field: "delivered", headerName: "Delivered", type: "boolean", sortable: false,
+            renderCell: ({ row }: GridRenderCellParams) => 
+                <Tooltip title={row.delivered ? `Delivered at ${ row.delivered_at }` : "Not delivered"} placement='right-end'>
+                    <div onClick={(e) => handleCheck(e, row, "delivered")}
+                    >{ row.delivered ? <TrueIcon /> : <FalseIcon /> }</div>
+                </Tooltip>
+        },
+        { field: "delivered_at", headerName: "Delivered Time", type: "dateTime", width: 175, 
+            valueGetter: ({ row }) => row.delivered_at ? new Date(row.delivered_at) : null
+        },
+        { field: "complete", headerName: "Complete", type: "boolean", sortable: false,
+            renderCell: ({ row }: GridRenderCellParams) => 
+                <Tooltip title={row.complete ? `Order complete!` : "Order not complete"} placement='right-end'>
+                    <div onClick={(e) => handleCheck(e, row, "complete")}>
+                        { row.complete ? <TrueIcon /> : <FalseIcon /> }
+                    </div>
+                </Tooltip>
+        },
         { field: "actions", type: "actions", getActions: (params: GridRowParams) => [
-            <GridActionsCellItem icon={ <ICONS.edit /> } onClick={() => {
+            <GridActionsCellItem icon={ <EditIcon /> } onClick={() => {
                 navigate(`${ internalEndpoints.ordersUpdateRoot! }/${ params.row.id }`);
             }} label="Edit" />,
-            <GridActionsCellItem icon={ <ICONS.delete /> } onClick={() => {
+            <GridActionsCellItem icon={ <DeleteIcon /> } onClick={() => {
                 deleteObj.current = params.row.id;
                 setShowDelete(true);
             }} label="Delete" />
@@ -165,9 +192,11 @@ function Orders () {
         <Container className={`page orders ${ theme }`}>
 
             <h2 className='title'>Orders</h2>
+
+            <DisplayFeedback />
             
             <Row xs={2} className='actions'>
-                <Button className="button add" onClick={() => navigate(internalEndpoints.ordersCreate!)}>Add Item +</Button>
+                <Button className="button add" onClick={() => navigate(internalEndpoints.ordersCreate!)}>+</Button>
                 <Button className="button archive" as="a" href="/orders/archive">Archive</Button>
             </Row>
 
@@ -178,16 +207,23 @@ function Orders () {
                 slots={{ toolbar:  Toolbar }}
                 getRowHeight={() => "auto"}
                 className='table'
+                initialState={{
+                    columns: {
+                        columnVisibilityModel: {
+                            prepared_at: false,
+                            delivered_at: false
+                        }
+                    }
+                }}
             />
 
             {
                 showDelete &&
-                <DeleteAlert2 
+                <DeleteAlert 
                     onClickYes={async () => {
                         await dataAPI.delete(`${ externalEndpoints.orders! }${ deleteObj.current }`);
                         setShowDelete(false);
                         revalidator.revalidate();
-                        
                     }}
                     onClickCancel={() => {
                         setShowDelete(false);
@@ -195,53 +231,6 @@ function Orders () {
                 />
 
             }
-
-
-            {/* <Table responsive>
-                <thead>
-                    <tr className='headers'>
-                        <th>Order ID</th>
-                        <th>Menu Items</th
-                        <th>Notes</th>
-                        <th>Ordered At</th>
-                        <th>Prepared</th>
-                        <th>Prepared At</th>
-                        <th>Delivered</th>
-                        <th>Delivered At</th>
-                        <th>Complete</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    { 
-                        orders.map((item: OrdersObj, i: number) => {
-                            return (
-                                <tr className="rows" onClick={() => {
-                                        updateObj.current = {...ORDERS_OBJ, ...item};
-                                        navigate(internalEndpoints.ordersUpdate!);
-                                    }} key={i}>
-                                    <td className='id' >{item.id}</td>
-                                    <td className='menu-items' >{item.menu_items.map((item2, i) => {
-                                        return (
-                                            <p key={i}>{menu[item2]?.["title"]}</p>
-                                            )
-                                        }
-                                        )}</td>
-                                    <td className='notes' >{item.notes}</td>
-                                    <td className='ordered-at' >{String(item.ordered_at)}</td>
-                                    <td className='prepared-at-check' ><Form.Check onChange={(e) => handleCheck(e, item.id!, "prepared", i)} onClick={e => e.stopPropagation()} checked={ item.prepared }/></td>
-                                    <td className='prepared-at' >{String(item.prepared_at)}</td>
-                                    <td className='delivered-at-check'><Form.Check onChange={(e) => handleCheck(e, item.id!, "delivered", i)} onClick={e => e.stopPropagation()} checked={ item.delivered }/></td>
-                                    <td className='delivered-at' >{String(item.delivered_at)}</td>
-                                    <td className='complete-check'><Form.Check onChange={(e) => handleCheck(e, item.id!, "complete", i)} onClick={e => e.stopPropagation()} checked={ item.complete }/></td>
-                                </tr>
-                            )
-
-                        })
-                    }
-                </tbody>
-            </Table> */}
-            
 
             <OrdersContext.Provider value={ ordersContextValue }>
                 <Outlet />

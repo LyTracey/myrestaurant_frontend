@@ -1,4 +1,4 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useMemo } from "react";
 import Container from 'react-bootstrap/Container';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,42 +10,32 @@ import { GlobalContext } from '../App';
 import { Outlet } from "react-router-dom";
 import { useLoaderData } from "react-router-dom";
 import { internalEndpoints } from "../../../data/endpoints";
+import { InventoryType } from "./inventoryForm";
+import { Tooltip } from "@mui/material";
 
 
 export const InventoryContext = createContext<any>(null);
-
-export interface InventoryObj {
-    [index: string]: any,
-    id?: number | null,
-    ingredient: string,
-    quantity: number | null,
-    unit_price: number | null,
-    image?: string | null
-};
-
-export const INVENTORY_OBJ = {
-    id: null,
-    ingredient: "",
-    quantity: null,
-    unit_price: null,
-    image: null
-};
 
 function Inventory () {
 
     // Unpack loader data
     const [inventory, stockData]: any = useLoaderData();
+    console.log(inventory);
+
+    // Map inventory list into object
+    const filteredInventory = useMemo<{[key: number]: string}>(() => {
+        return Object.fromEntries(inventory.map((inventoryObj: InventoryType) => [inventoryObj.id!, inventoryObj]))
+    }, [inventory]);
     
     // Utils
     const navigate = useNavigate();
 
     // Form states
-    const [updateObj, setUpdateObj] = useState<InventoryObj>(structuredClone(INVENTORY_OBJ));
     const { theme: [theme] } = useContext(GlobalContext);
 
     // Context value
     const inventoryContextValue = {
-        updateObj: updateObj
+        inventory: filteredInventory
     };
 
     return (
@@ -55,19 +45,21 @@ function Inventory () {
             </Row>
 
             <Row className='actions'>
-                {/* <Button onClick={() => setOpenForm("add")}>Add Item +</Button> */}
-                <NavLink className="button create" to="/inventory/create">+ Create Item</NavLink>
+                <NavLink className="button create" to={ internalEndpoints.inventoryCreate! }>+ Create Item</NavLink>
             </Row>
 
             <Row xs={1} md={2} lg={4}>
-                { inventory.map((item: InventoryObj, i: number) => {
+                { inventory.map((item: InventoryType, i: number) => {
                     return (
                         <Col key={`inventory-item-${i}`}>
                             <Card.Body onClick={() =>  {
-                                setUpdateObj({...INVENTORY_OBJ, ...item});
-                                navigate(internalEndpoints.inventoryUpdate!);
+                                navigate(`${ internalEndpoints.inventoryUpdateRoot! }/${ item.id }`);
                             }}>
-                                <span className={`quantity ${ stockData.low_stock.includes(item.ingredient) ? "low-stock" : (stockData.out_of_stock.includes(item.ingredient) ? "out-of-stock" : "in-stock") }`}>{ item.quantity }</span>
+                                <Tooltip title={ item.quantity === "0.00" ? "Out-of-stock!" : (stockData.low_stock.includes(item.ingredient) ? "Low-stock" : "In-stock :)")}>
+                                    <span className={`quantity ${ item.quantity === "0.00" ? "out-of-stock" : (stockData.low_stock.includes(item.ingredient) ? "low-stock" : "in-stock") }`}>
+                                        { item.quantity }
+                                    </span>
+                                </Tooltip>
                                 <Card.Title>{ item.ingredient }</Card.Title>
                                 <CoffeeBeans className="icon"/>
 

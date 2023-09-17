@@ -13,6 +13,7 @@ import ICONS from '../../data/icons';
 function Navigation() {
 
     const { theme: [theme, setTheme], user: [user] } = useContext(GlobalContext);
+    const { MenuIcon, SunIcon, MoonIcon } = ICONS;
 
 
     const handleTheme = () => {
@@ -32,7 +33,7 @@ function Navigation() {
                     <Logo className="icon logo"/>
                 </NavLink>
 
-                <Navbar.Toggle aria-controls="responsive-navbar-nav"><ICONS.menu className="icon" /></Navbar.Toggle>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav"><MenuIcon className="icon" /></Navbar.Toggle>
                 <Navbar.Collapse className="nav-links" role="navigation" >
                     <Nav>        
                         <Nav.Link eventKey="1" as={ NavLink } to={ internalEndpoints.menu! } className="link">Menu</Nav.Link>
@@ -53,14 +54,14 @@ function Navigation() {
                             theme === "light-mode" ?
                                 (
                                     <div>
-                                        <ICONS.sun className="theme-icon light fade-in" /> 
-                                        <ICONS.moon className="theme-icon dark fade-out" />
+                                        <SunIcon className="theme-icon light fade-in" /> 
+                                        <MoonIcon className="theme-icon dark fade-out" />
                                     </div>
                                 ) : 
                                 (
                                     <div>
-                                        <ICONS.sun className="theme-icon light fade-out" /> 
-                                        <ICONS.moon className="theme-icon dark fade-in" />
+                                        <SunIcon className="theme-icon light fade-out" /> 
+                                        <MoonIcon className="theme-icon dark fade-in" />
                                     </div>
                                 )
                         }

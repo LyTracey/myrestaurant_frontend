@@ -1,216 +1,154 @@
-import { FormModal } from "../../modules/forms";
-import { useRef, useState, useContext } from "react";
+import { useForm } from "react-hook-form";
 import { dataAPI } from "../../modules/axiosInstances";
+import Modal from "react-bootstrap/Modal";
 import { externalEndpoints, internalEndpoints } from "../../../data/endpoints";
-import { EditFieldGroup2, SelectMultiFieldGroup2, InputMultiFieldGroup2 } from "../../modules/formComponents";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { ColumnsToRows } from "../../modules/formComponents";
 import { OrdersContext } from "./orders";
-import Form from "react-bootstrap/Form";
-import slugify from "slugify";
-import { useParams } from "react-router-dom";
+import { useContext } from "react";
+import { useNavigate, useParams, useRevalidator } from "react-router-dom";
+import { ErrorMessage } from "@hookform/error-message";
+import { DisplayFeedback } from "../../modules/miscComponents";
 
-export function OrderCreateForm () {
-    
+const DEFAULT_ORDER = {
+    menu_items: [],
+    quantity: {},
+    notes: ""
+}
+
+interface OrderType {
+    menu_items: Array<string | boolean>,
+    quantity: {[key: string]: number},
+    notes: string
+}
+
+
+function OrderForm () {
+
     // Get context values
-    const { menu, availabilities } = useContext(OrdersContext);
+    const { menu, orders, availabilities }: any = useContext(OrdersContext);
+    const { id } = useParams();
+    let updateObj = id ? {...orders[id]} : DEFAULT_ORDER;
+    
+    // Change array to input format - fill missing values with false
+    updateObj.menu_items = Object.keys(menu).map((menuID: string) => updateObj.menu_items.includes(Number(menuID)) ? menuID : false);
 
-    // Field states
-    const [menuItems, setMenuItems] = useState<Array<number>>([]);
-    const quantity = useRef<{[key: string]: number | ""}>({});
-    const notes = useRef<HTMLInputElement>(null);
+    // Utils
+    const navigate = useNavigate();
+    const revalidator = useRevalidator();
 
-    const submitHandler = () => { 
-        return dataAPI.post(externalEndpoints.orders!, {
-            notes: notes.current!.value ?? "",
-            "menu_items[]": menuItems ?? [],
-            "quantity{}": quantity.current,
+
+    const { register, formState: { errors }, handleSubmit, watch, setValue } = useForm<OrderType>({
+        defaultValues: {...updateObj}
+    });
+
+    const menuItems = watch("menu_items");
+    const quantity = watch("quantity");
+
+    const submitHandler = handleSubmit(async (data) => {
+    
+        const requestData = {
+            notes: data.notes,
+            "menu_items[]": data.menu_items.filter((item: string | boolean): item is string => !!item).map((item: string ) => parseInt(item)),
+            "quantity{}": Object.fromEntries(Object.entries(data.quantity).filter((quantityArray: [string, number | undefined]) => !!quantityArray[1])),
+        };
+
+        console.log(requestData);
+
+        if (id) {
+            await dataAPI.patch(`${ externalEndpoints.orders! }${ id }/`, requestData)
+        } else {
+            await dataAPI.post(externalEndpoints.orders!, requestData);
         }
-    )};
 
+        navigate(internalEndpoints.orders!);
+        revalidator.revalidate();
 
-    const Availability = (
-        <>
-            { Object.entries(availabilities).map((item: any, i: number) => {
-                return (
-                    <Form.Text as="div" className="multi-read-field availability" key={`availability_${i}`}>
-                        { item[1] }
-                    </Form.Text>
-                )
-            })}
-        </>
-    );
-
-    const MenuItems = SelectMultiFieldGroup2({
-        name: "menu-items",
-        reference: menu, 
-        state: menuItems,
-        stateSetter: setMenuItems
     });
-
-
-    const Quantity = InputMultiFieldGroup2({
-        name: "quantity",
-        reference: menu,  
-        items_list: menuItems,
-        ref: quantity,
-        type: "number",
-        feedback: "Quantity must be no more than the availability."
-    }, {
-        min: 1,
-        max: availabilities
-    });
-
-
-    const Fields = () => {
-        return (
-            <>
-                { 
-                    EditFieldGroup2({
-                        name: "notes", 
-                        label: "Notes", 
-                        type: "text", 
-                        ref: notes,
-                        defaultValue: "",
-                        feedback: "Max character length is 200."
-                    }, {
-                        maxLength: 200
-                    })
-                }
-
-                <Container className="multi-input-container">
-                    <Row className="headers">
-                        <Col xs={6}>Menu Items</Col>
-                        <Col xs={3}>Quantity</Col>
-                        <Col xs={3}>Availability</Col>
-                    </Row>
-                    
-                    {
-                        ColumnsToRows([MenuItems, Quantity, Availability], {xs: [6, 3, 3]})   
-                    }
-                </Container>
-        </>
-        )
-    };
 
 
     return (
+        <Modal show={ true } onHide={() => navigate(internalEndpoints.orders!)}>
+            <Modal.Header closeButton>{ id ? `Update Order Item ${ id }` : "Create Order Item"}</Modal.Header>
+            <Modal.Body>
 
-        <>
-            <FormModal 
-                title="Create Order Item"
-                Fields={ Fields }
-                returnURL={ internalEndpoints.orders! }
-                submitRequest={ submitHandler }
-                deleteURL={ externalEndpoints.orders! }
-            />
-        </>
+                <DisplayFeedback />
 
+                <form onSubmit={ submitHandler }>
+                    <div className="notes">
+                        <label className="input-label">Notes </label>
+                        <input {...register("notes", {
+                            maxLength: {
+                                value: 300,
+                                message: "The max length is 300 characters."
+                            }
+                        })} />
+
+                        <div className="feedback">
+                            <ErrorMessage errors={ errors } name="notes" />
+                        </div>
+                    </div>
+
+                    <div className="menu-items">
+                        {
+                            Object.entries(menu).map((menuArray: any, i: number) => {
+                                return (
+                                    <div key={`menu_reference_${i}`}>
+                                        <input
+                                            id={`menuItem.${i}`}
+                                            value={ menuArray[0] }
+                                            type="checkbox" {...register(
+                                                `menu_items.${i}`, 
+                                                {
+                                                    onChange: (e) => {
+                                                        if (!e.target.checked) {
+                                                            let newQuantity = {...quantity};
+                                                            delete newQuantity[menuArray[0]];
+                                                            setValue("quantity", newQuantity);
+                                                        }
+                                                    }
+                                                }
+                                            )}
+                                        />
+                                        <label className="input-label">{ menuArray[1] }</label>
+                                        <span>Availability: { availabilities[menuArray[0]] }</span>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+
+
+                    <div className="quantity">
+                        {
+                            Object.keys(menu).map((menuID: string) => { 
+                                return (
+                                    <div key={`quantity_${ menuID }`}>  
+                                        <div className="quantity-input">
+                                            {
+                                                menuID && <input
+                                                    type="number" {...register(`quantity.${ menuID }`, {
+                                                        disabled: !menuItems.includes(menuID),
+                                                        required: "Please enter a quantity.",
+                                                        valueAsNumber: true
+                                                })} />
+                                            }
+                                        </div>
+
+                                        <div className="feedback">
+                                            <ErrorMessage errors={ errors } name={`quantity.${ menuID }`} />
+                                        </div> 
+                                    </ div>
+                                ) 
+                            })
+                        }
+                    </div>
+
+                    <input type="submit" />
+                </form>
+
+            </Modal.Body>
+        </Modal>
     )
+
 };
 
-
-export function OrderUpdateForm () {
-    
-    // Get context values
-    const { menu, availabilities, orders } = useContext(OrdersContext);
-    const { id }: any = useParams();
-    const updateObj = orders[id];
-
-    // Field states
-    const [menuItems, setMenuItems] = useState<Array<number>>(updateObj.menu_items ?? []);
-    const quantity = useRef<{[key: string]: number | ""}>(updateObj.quantity ?? {});
-    const notes = useRef<HTMLInputElement>(null);
-
-    const submitHandler = () => {
-        return dataAPI.patch(
-            `${ externalEndpoints.orders! }${ slugify(String(updateObj.id)) }/`, 
-            {
-                notes: notes.current!.value ?? "",
-                "menu_items[]": menuItems ?? [],
-                "quantity{}": quantity.current,
-            }
-        )
-    };
-
-    const Availability = (
-        <>
-            { Object.entries(availabilities).map((item: any, i: number) => {
-                return (
-                    <Form.Text as="div" className="multi-read-field availability" key={`availability_${i}`}>
-                        { item[1] }
-                    </Form.Text>
-                )
-            })}
-        </>
-    );
-
-    const MenuItems = SelectMultiFieldGroup2({
-        name: "menu-items",
-        reference: menu, 
-        state: menuItems,
-        stateSetter: setMenuItems
-    });
-
-
-    const Quantity = InputMultiFieldGroup2({
-        name: "quantity",
-        reference: menu,  
-        items_list: menuItems,
-        ref: quantity,
-        type: "number",
-        feedback: "Quantity must be no more than the availability."
-    }, {
-        min: 1,
-        max: availabilities
-    });
-
-
-    const Fields = () => {
-        return (
-            <>
-                { 
-                    EditFieldGroup2({
-                        name: "notes", 
-                        label: "Notes", 
-                        type: "text", 
-                        ref: notes,
-                        defaultValue: updateObj.notes,
-                        feedback: "Max character length is 200."
-                    }, {
-                        maxLength: 200
-                    })
-                }
-
-                <Container className="multi-input-container">
-                    <Row className="headers">
-                        <Col xs={6}>Menu Items</Col>
-                        <Col xs={3}>Quantity</Col>
-                        <Col xs={3}>Availability</Col>
-                    </Row>
-                    
-                    {
-                        ColumnsToRows([MenuItems, Quantity, Availability], {xs: [6, 3, 3]})   
-                    }
-                </Container>
-        </>
-        )
-    };
-
-
-    return (
-
-        <>
-            <FormModal 
-                title="Update Order"
-                Fields={ Fields }
-                returnURL={ internalEndpoints.orders! }
-                submitRequest={ submitHandler }
-                deleteURL={ externalEndpoints.orders! }
-            />
-        </>
-
-    )
-};
+export default OrderForm;
