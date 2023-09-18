@@ -25,7 +25,7 @@ function Button ({ text, url }: any) {
 function Home () {
     
     const { theme: [theme] } = useContext(GlobalContext);
-    const [activeBox, setActiveBox] = useState<string>("source-code");
+    const [activeBox, setActiveBox] = useState<string>("greeting");
     const { StarsIcon, ThoughtIcon, GithubIcon, StackIcon } = ICONS;
 
     return (
