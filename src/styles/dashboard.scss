@@ -13,11 +13,11 @@
 
     .recharts-cartesian-axis {
         line {
-            stroke: map-get(base.$themes, "light-grey" );
+            stroke: map-get(base.$themes, "grey" );
         }
 
         text {
-            fill: map-get(base.$themes, "light-grey" );
+            fill: map-get(base.$themes, "grey" );
         }
     }
 }
@@ -69,7 +69,7 @@
     }
 
     .recharts-tooltip-label {
-        color: map-get(base.$themes, "light-grey");
+        color: map-get(base.$themes, "grey");
     }
 
     .recharts-tooltip-item > span {
@@ -87,8 +87,8 @@
             letter-spacing: 1px;
 
             .badge {
-                background-color: map-get(base.$themes, "light-green") !important;
-                color: map-get(base.$themes, "off-white");
+                background-color: map-get(base.$themes, "beige") !important;
+                color: map-get(base.$themes, "navy");
                 border-radius: 30px;
                 width: 24px;
                 height: 24px;

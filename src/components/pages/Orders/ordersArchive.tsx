@@ -70,16 +70,18 @@ function ArchivedOrders () {
         { field: "complete", headerName: "Complete", type: "boolean", sortable: false,
             renderCell: ({ row }: GridRenderCellParams) => 
                 <Tooltip title={row.complete ? `Order complete!` : "Order not complete"} placement='right-end'>
-                    { row.complete ? <TrueIcon /> : <FalseIcon /> }
+                    <div>
+                        { row.complete ? <TrueIcon /> : <FalseIcon /> }
+                    </div>
                 </Tooltip>
         },
         { field: "actions", type: "actions", getActions: ({ row }: GridRowParams) => [
-            <GridActionsCellItem icon={ <EditIcon /> } onClick={(e: MouseEvent<HTMLElement>) => handleEditOrder(e, row.id)} label="Edit" />,
+            <GridActionsCellItem icon={ <EditIcon className='table-button' /> } onClick={(e: MouseEvent<HTMLElement>) => handleEditOrder(e, row.id)} label="Edit" />,
         ]}
     ];
 
     return (
-        <Container className={`orders ${ theme }`}>
+        <Container className={`page orders ${ theme }`}>
             <Row className='title'>
                 <h2 className="title">Archived Orders</h2>
             </Row>

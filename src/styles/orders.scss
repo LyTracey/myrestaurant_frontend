@@ -7,7 +7,7 @@
         @include base.theme(base.$light-mode...);
         color:  map-get(base.$themes, "soft-black");
 
-        .toolbar-button {
+        .table-button, .MuiSvgIcon-root {
             color: map-get(base.$themes, "grey");
         }
     }
@@ -24,11 +24,10 @@
 
 .orders.dark-mode {
     @include base.theme(base.$dark-mode...);
-
     .table {
         @include base.theme(base.$dark-mode...);
 
-        .toolbar-button {
+        .table-button, .MuiSvgIcon-root, .css-rtrcn9-MuiTablePagination-root {
             color: map-get(base.$themes, "beige");
         }
     }
@@ -46,14 +45,9 @@
     .actions {
         justify-content: right;
         width: 100%;
-
-        .archive {
-            background-color: map-get(base.$themes, "blue");
-        }
     }
 
     // Table
-
     .table-toolbar {
         justify-content: space-between;
     }
@@ -67,27 +61,6 @@
         }
     }
 
-
-    th, td {
-        text-align: center;
-
-        &.menu-items, &.notes {
-            text-align: left;
-        }
-
-        &.menu-items, &.notes, &.id {
-            cursor: pointer;
-        }
-        
-        .edit {
-            color: map-get(base.$themes, "red");
-            border: map-get(base.$themes, "red") solid 2px;
-            background-color: transparent;
-
-        }
-
-
-    }
 
     .feedback {
         color: map-get(base.$themes, "red");

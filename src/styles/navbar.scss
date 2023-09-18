@@ -9,22 +9,18 @@
     }
 
     .link.brand {
-        color: map-get(base.$themes, "light-grey");
+        color: map-get(base.$themes, "grey");
     }
 
     .icon {
-        stroke: map-get(base.$themes, "light-grey");
-        fill: map-get(base.$themes, "light-grey");
+        stroke: map-get(base.$themes, "grey");
+        fill: map-get(base.$themes, "grey");
     }
 
     @media (max-width: calc(base.$md - 1px)) {
         .navbar-collapse {
             background-color: map-get(base.$themes, "beige");
         }
-    }
-
-    .active {
-        color: map-get(base.$themes, "blue");
     }
 }
 
@@ -39,8 +35,8 @@
     .link.brand {
         color: map-get(base.$themes, "beige");
     }
-
-    .icon {
+    
+    .icon, .icon:hover {
         stroke: map-get(base.$themes, "beige");
         fill: map-get(base.$themes, "beige");
     }
@@ -51,15 +47,10 @@
         }
     }
 
-    .active {
-        color: map-get(base.$themes, "yellow");
-    }
-
 }
 
 .navbar {
     padding: 0;
-    font-size: 15px;
     background-color: map-get(base.$themes, "off-white");
 
     // Contianer
@@ -78,18 +69,13 @@
         &.active {
             text-decoration: underline 1px;
             text-underline-offset: 5px;
+            color: map-get(base.$themes, "yellow");
         }
     }
 
     .link:hover {
-        color: map-get(base.$themes, "blue");
+        color: map-get(base.$themes, "yellow");
         transition: color 0.5s;
-
-        .icon {
-            fill: map-get(base.$themes, "blue");
-            transition: fill 0.5s;
-        }
-
     }
 
     // Brand
@@ -108,8 +94,8 @@
         margin: 0;
     
         .logo {
-            height: 40px;
-            width: 40px;
+            height: 44px;
+            width: 44px;
             margin-left: 10px;
         }
     }

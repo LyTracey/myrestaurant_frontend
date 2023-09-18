@@ -40,7 +40,14 @@ export const InventoryLoader = async () => {
 
 
 export const UserLoader = async () => {
-    const { username }: any = jwtDecode(localStorage.getItem("access")!);
+
+    const user: any = localStorage.getItem("access") ? jwtDecode(localStorage.getItem("access")!) : null;
+
+    if (!user) {
+        throw new Response("Unauthorized", {status: 401})
+    }
+
+    const { username } = user;
     const response = await userAPI.get(`${ externalEndpoints["profile"] }${ username }/`);
 
     // Set role and isStaff in local storage

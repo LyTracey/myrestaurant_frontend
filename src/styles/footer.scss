@@ -5,8 +5,8 @@
     @include base.theme(base.$light-mode...);
 
     .navbar-brand, .icon {
-        color: map-get(base.$themes, "light-grey");
-        color: map-get(base.$themes, "light-grey");
+        color: map-get(base.$themes, "grey");
+        color: map-get(base.$themes, "grey");
     }
 }
 
@@ -37,7 +37,6 @@
     .links {
         padding: 0 20%;
         justify-content: center;
-        font-size: 15px;
 
         .nav-link {
             width: fit-content;
@@ -49,7 +48,6 @@
     .navbar-brand {
         margin: 0 auto 10px auto;
         color: map-get(base.$themes, "blue");
-        font-size: 15px;
     }
 
     .footer-logo {

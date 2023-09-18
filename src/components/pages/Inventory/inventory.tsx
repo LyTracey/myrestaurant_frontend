@@ -12,6 +12,7 @@ import { useLoaderData } from "react-router-dom";
 import { internalEndpoints } from "../../../data/endpoints";
 import { InventoryType } from "./inventoryForm";
 import { Tooltip } from "@mui/material";
+import ICONS from "../../../data/icons";
 
 
 export const InventoryContext = createContext<any>(null);
@@ -20,7 +21,6 @@ function Inventory () {
 
     // Unpack loader data
     const [inventory, stockData]: any = useLoaderData();
-    console.log(inventory);
 
     // Map inventory list into object
     const filteredInventory = useMemo<{[key: number]: string}>(() => {
@@ -29,6 +29,7 @@ function Inventory () {
     
     // Utils
     const navigate = useNavigate();
+    const { CreateIcon } = ICONS;
 
     // Form states
     const { theme: [theme] } = useContext(GlobalContext);
@@ -45,7 +46,7 @@ function Inventory () {
             </Row>
 
             <Row className='actions'>
-                <NavLink className="button create" to={ internalEndpoints.inventoryCreate! }>+ Create Item</NavLink>
+                <NavLink className="button create" to={ internalEndpoints.inventoryCreate! }><CreateIcon className="icon"/></NavLink>
             </Row>
 
             <Row xs={1} md={2} lg={4}>

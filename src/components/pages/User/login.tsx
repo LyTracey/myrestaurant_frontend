@@ -47,7 +47,9 @@ function Login () {
 
     return (
         <Container className={`page login ${ theme }`}>
-            {/* <>{ feedback }</> */}
+
+            <h2 className="title">Login</h2>
+            
             <DisplayFeedback />
 
             <form onSubmit={(e) => {
@@ -56,8 +58,8 @@ function Login () {
             }}>
                 <label>
                     Username *
-                    <input type="text" {...register("username", {required: "Please enter a username."})} />
                 </label>
+                <input type="text" {...register("username", {required: "Please enter a username."})} />
 
                 <div className="feedback">
                     <ErrorMessage errors={ errors } name="username" />
@@ -66,14 +68,15 @@ function Login () {
 
                 <label>
                     Password *
-                    <input type="password" {...register("password", {required: "Please enter a password."})} />
                 </label>
+                <input type="password" {...register("password", {required: "Please enter a password."})} />
                 <div className="feedback">
                     <ErrorMessage errors={ errors } name="password" />
                 </div>
 
-                <button type="submit">Login</button>
+                <button type="submit" className="button submit">Login</button>
             </form>
+
 
 
 

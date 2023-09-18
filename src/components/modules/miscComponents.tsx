@@ -2,6 +2,7 @@ import { useContext } from "react"
 import { GlobalContext } from "../pages/App"
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
+import "../../styles/miscComponents.scss";
 
 export function DisplayFeedback () {
 
@@ -46,15 +47,17 @@ export function DeleteAlert ({onClickYes, onClickCancel}: DeleteAlertType) {
     1. If cancel, dismiss alert and return to modal.
     2. If yes, send a delete request to the backend API and close modal.
     */
+
+    const { theme: [theme] } = useContext(GlobalContext);
    
    return (
-       <Alert onClose={() => onClickCancel() } dismissible>
+       <Alert className={`delete-alert ${ theme }`} onClose={() => onClickCancel() } dismissible>
             <Alert.Heading>
                 Are you sure you want to delete this item?
             </Alert.Heading>
-            <div className='alert-actions'>
-                <Button type="button" className="cancel" onClick={() => onClickCancel() }>Cancel</Button>
-                <Button type="button" className="yes" onClick={() => onClickYes()}>Yes</Button>
+            <div className='actions'>
+                <Button type="button" className="button delete" onClick={() => onClickCancel() }>Cancel</Button>
+                <Button type="button" className="button submit" onClick={() => onClickYes()}>Yes</Button>
             </div>
         </Alert>
     )

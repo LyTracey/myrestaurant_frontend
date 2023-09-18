@@ -10,7 +10,6 @@ import "../../../styles/menu.scss";
 import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
 import { createContext, useMemo } from 'react';
 import { internalEndpoints } from '../../../data/endpoints';
-import { RiMenuAddFill as AddMenu } from "react-icons/ri";
 import { MenuType } from './menuForm';
 
 // Access
@@ -36,7 +35,7 @@ function Menu ( ) {
         Object.fromEntries(inventory.map((inventoryObj: {[key: string]: any}) => [inventoryObj.id, inventoryObj.ingredient]))
     , [inventory]);
     
-    const { TeaIcon } = ICONS;
+    const { TeaIcon, CreateIcon } = ICONS;
     
     // Form states
     const { theme: [theme], user: [user] } = useContext(GlobalContext);
@@ -59,15 +58,16 @@ function Menu ( ) {
             {
                 (user.isStaff && hasWriteAccess(user.role)) &&
                 <Row xs={2} className='actions'>
-                    <Button className="add button" onClick={() => navigate(internalEndpoints.menuCreate!)
-                    }><AddMenu/> Add Menu</Button>
+                    <Button title="Create new menu item" className="create button" onClick={() => navigate(internalEndpoints.menuCreate!)}>
+                        <CreateIcon className="icon"/>
+                    </Button>
                 </Row>
             }
 
             <Row xs={1} md={2} lg={3}>
                 { menu.map((item: {[key: string]: any}, i: number) => {
                     return (
-                        <Col key={`menu-item-${i}`} className="card-col">
+                        <Col key={`menu-item-${i}`} className="card-col" title={`Click to edit ${ item.title }.`}>
                             <Card.Body onClick={() => {
                                     // Only render update form if user isStaff and has a role of MANAGER | CHEF
                                     if (user.isStaff && hasWriteAccess(user.role)) {       
@@ -81,7 +81,7 @@ function Menu ( ) {
 
                                 <Card.Title as="div">
                                     <span className='title'>{ item.title }</span>
-                                    <span>{ `£ ${ item.price }` }</span>
+                                    <span className='price'>{ `£ ${ item.price }` }</span>
                                 </Card.Title>
 
                                 <div className='card-details'>

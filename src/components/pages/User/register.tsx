@@ -2,7 +2,6 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { externalEndpoints } from "../../../data/endpoints";
 import { FormEvent, useState, useContext } from "react";
-import "../../../styles/form.scss";
 import { Container } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";

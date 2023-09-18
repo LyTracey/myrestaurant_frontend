@@ -7,6 +7,10 @@
         fill: map-get(base.$themes, "blue");
     }
 
+    .profile-image > svg {
+        background-color: map-get(base.$themes, "beige");
+    }
+
     .form-select {
         background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27rgb(122, 122, 122)%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m2 5 6 6 6-6%27/%3e%3c/svg%3e");
     }
@@ -16,9 +20,14 @@
 .profile.dark-mode {
     @include base.theme(base.$dark-mode...);
     
+    .profile-image > svg {
+        background-color: map-get(base.$themes, "mid-blue");
+    }
+    
     .icon {
         fill: map-get(base.$themes, "beige");
     }
+
 
     .form-select {
         background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27rgb(251, 251, 251)%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m2 5 6 6 6-6%27/%3e%3c/svg%3e");
@@ -37,13 +46,22 @@
         font-weight: 600;
     }
 
+    .row {
+        align-items: center;
+    }
+
     .profile-image, .profile-details {
-        margin-top: 20px;
+        margin: 20px 0;
     }
 
     .profile-image {
-        height: 150px;
         text-align: center;
+        align-items: center;
+        
+        svg {
+            width: 150px;
+            height: 150px;
+        }
     }
 
     .profile-details {
@@ -54,6 +72,16 @@
     .form-select {
         background-color: inherit;
         color: inherit;
+
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+
+        label {
+            margin-left: 12px;
+        }
 
     }
 

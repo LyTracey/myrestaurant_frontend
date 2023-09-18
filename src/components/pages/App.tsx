@@ -47,7 +47,7 @@ export const DEFAULT_USER = {
 // Create Layout
 function AppLayout () {
 
-    const { feedback: [, setFeedback], user: [, setUser], loading: [, setLoading] } = useContext(GlobalContext);
+    const { feedback: [, setFeedback], loading: [, setLoading], user: [, setUser] } = useContext(GlobalContext);
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
@@ -56,6 +56,7 @@ function AppLayout () {
         setFeedback([]);
         window.scrollTo(0, 0);
     }, [pathname, setFeedback]);
+
 
     // Create interceptors to check if tokens are valid and redirect if unauthorized
     useEffect(() => {
@@ -72,11 +73,10 @@ function AppLayout () {
             setLoading: setLoading,
             setUser: setUser, 
             setFeedback: setFeedback,
-            navigate: navigate,
+            navigate: navigate
         });
-
-        
-    }, [navigate, pathname, setFeedback, setLoading, setUser]);
+         
+    }, [setFeedback, setLoading, setUser]);
 
     return (
         <>
@@ -108,18 +108,15 @@ const router = createBrowserRouter(
                 <Route path={ internalEndpoints.profile! } 
                     element={ <Profile />} 
                     loader={ UserLoader }
-                    shouldRevalidate={({ nextUrl }) => nextUrl.pathname === internalEndpoints.profile }
                 />
 
                 <Route 
-                    path={ internalEndpoints.dashboard! } element={ <Dashboard /> } 
-                    shouldRevalidate={({ nextUrl }) => nextUrl.pathname === internalEndpoints.dashboard } 
+                    path={ internalEndpoints.dashboard! } element={ <Dashboard /> }  
                 />
 
                 <Route path={ internalEndpoints.inventory! } 
                     element={ <Inventory /> } 
                     loader={ InventoryLoader } 
-                    shouldRevalidate={({ nextUrl }) => nextUrl.pathname === internalEndpoints.inventory }
                 >
                     <Route path={ internalEndpoints.inventoryCreate! } element={ <InventoryForm /> } />
                     <Route path={ internalEndpoints.inventoryUpdate! } element={ <InventoryForm /> } />
@@ -155,6 +152,7 @@ function App() {
         user: [user, setUser]
 
     };
+
 
     return (
         <GlobalContext.Provider value={ globalContextValue }>

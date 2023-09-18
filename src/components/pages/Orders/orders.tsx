@@ -64,11 +64,11 @@ export function Toolbar ()  {
     return (
         <GridToolbarContainer className='table-toolbar'>
             <div>
-                <GridToolbarColumnsButton className='toolbar-button'/>
-                <GridToolbarFilterButton className='toolbar-button'/>
+                <GridToolbarColumnsButton className='table-button'/>
+                <GridToolbarFilterButton className='table-button'/>
             </div>
 
-            <GridToolbarExport className="toolbar-button"/>
+            <GridToolbarExport className="table-button"/>
         </GridToolbarContainer>
     )
 }
@@ -87,7 +87,7 @@ function Orders () {
     // Utils
     let revalidator = useRevalidator();
     const navigate = useNavigate();
-    const { EditIcon, DeleteIcon, FalseIcon, TrueIcon } = ICONS;
+    const { EditIcon, DeleteIcon, FalseIcon, TrueIcon, CreateIcon, ArchiveIcon } = ICONS;
 
     // Map orders and menu lists into object
     const filteredOrders = useMemo<{[key: number]: string}>(() =>
@@ -178,10 +178,10 @@ function Orders () {
                 </Tooltip>
         },
         { field: "actions", type: "actions", getActions: (params: GridRowParams) => [
-            <GridActionsCellItem icon={ <EditIcon /> } onClick={() => {
+            <GridActionsCellItem icon={ <EditIcon title="Edit order" className='table-button' /> } onClick={() => {
                 navigate(`${ internalEndpoints.ordersUpdateRoot! }/${ params.row.id }`);
             }} label="Edit" />,
-            <GridActionsCellItem icon={ <DeleteIcon /> } onClick={() => {
+            <GridActionsCellItem icon={ <DeleteIcon title="Delete order" className='table-button' /> } onClick={() => {
                 deleteObj.current = params.row.id;
                 setShowDelete(true);
             }} label="Delete" />
@@ -196,8 +196,8 @@ function Orders () {
             <DisplayFeedback />
             
             <Row xs={2} className='actions'>
-                <Button className="button add" onClick={() => navigate(internalEndpoints.ordersCreate!)}>+</Button>
-                <Button className="button archive" as="a" href="/orders/archive">Archive</Button>
+                <Button className="button create" onClick={() => navigate(internalEndpoints.ordersCreate!)}><CreateIcon className="icon"/></Button>
+                <Button className="button archive" as="a" href="/orders/archive"><ArchiveIcon className='icon'/> Archive</Button>
             </Row>
 
             <DataGrid 

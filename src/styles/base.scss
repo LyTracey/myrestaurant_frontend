@@ -10,11 +10,12 @@ $themes: (
     "blue": #395c6b,
     "mid-blue": #1C495C,
     "off-white": #fbf7f5,
-    "grey": #212529,
-    "light-grey": #949494,
+    "dark-grey": #212529,
+    "grey": #949494,
+    "light-grey": #E8E8E8,
     "soft-black": #0e1111,
     "red": #E07A5F,
-    "yellow": #EAAA00,
+    "yellow": #e4b020,
     "green": #9FB798,
     "light-yellow": #F3ECD2
 );
@@ -50,7 +51,7 @@ $themes: (
     background-color: $background;
 }
 
-$light-mode: map-get($themes, "white"), map-get($themes, "light-grey");
+$light-mode: map-get($themes, "white"), map-get($themes, "grey");
 
 $dark-mode: map-get($themes, "navy"), map-get($themes, "off-white");
 

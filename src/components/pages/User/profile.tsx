@@ -64,10 +64,11 @@ function Profile () {
                             <tr>
                                 <td className="key">Staff</td>
                                 <td>
+                                    
                                     <Form.Check 
                                         type="checkbox"
-                                        label="Staff View"
                                         name="is_staff"
+                                        label="Staff View"
                                         checked={ user.isStaff }
                                         onChange={({ target }) => {
                                             patchUser({is_staff: target.checked});

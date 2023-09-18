@@ -1,11 +1,10 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { externalEndpoints, internalEndpoints } from "../../data/endpoints";
 import { Dispatch, SetStateAction } from "react";
-import jwtDecode from "jwt-decode";
 import { changeTokens } from "../../utils/apiUtils";
-import { NavigateFunction } from "react-router-dom";
 import { User } from "../pages/App";
 import { errorFormatter } from "../../utils/formatUtils";
+import { NavigateFunction } from "react-router-dom";
 
 
 // Create axios instances
@@ -35,9 +34,11 @@ interface CreateInterceptorsType {
     axiosInstance: AxiosInstance, 
     setLoading: Dispatch<SetStateAction<boolean>>,
     setUser: Dispatch<SetStateAction<User>>,
-    setFeedback: Dispatch<SetStateAction<string[]>>
-    navigate: NavigateFunction,
+    setFeedback: Dispatch<SetStateAction<string[]>>,
+    navigate: NavigateFunction
 }
+
+const IGNORE_REQUEST_INTERCEPTOR = [externalEndpoints.login, externalEndpoints.refresh];
 
 export function createInterceptors ({axiosInstance, setLoading, setUser, setFeedback, navigate}: CreateInterceptorsType) {
     
@@ -46,33 +47,28 @@ export function createInterceptors ({axiosInstance, setLoading, setUser, setFeed
 
         // Display loading
         setLoading(true);
-        if (localStorage.getItem("access") && config.url !== externalEndpoints.refresh ) {
 
-            // Get expiry time
-            const { exp }: any = jwtDecode(localStorage.getItem("access") ?? "");
+        if (!IGNORE_REQUEST_INTERCEPTOR.includes(config.url) && Date.now() > Number(localStorage.getItem("expiry"))) {
+            console.log("token expired");
+            // Refresh token if access token expired
+            try {
+                const response = await userAPI.post(externalEndpoints.refresh!, {
+                    refresh: localStorage.getItem("refresh")
+                });
+                console.log(response);
+                console.log("setting new access token");
 
-
-            if (Date.now() > (exp * 1000)) {
-
-                // Try refreshing token if access token expired
-
-                try {
-                    const refreshToken = localStorage.getItem("refresh");
-                    console.log(refreshToken);
-                    const response = await userAPI.post(externalEndpoints.refresh!, {
-                        refresh: refreshToken
-                    });
-                    console.log(response);
-                    console.log("setting new access token");
-
-                    const changeTokensResponse = await changeTokens(response.data, setUser);
-                    console.log(changeTokensResponse);
-                } catch (error) {
-                    console.log(error);
-                } 
-            }
+                const changeTokensResponse = await changeTokens(response.data, setUser);
+                console.log(changeTokensResponse);
+            } catch (error: any) {
+                
+                if (window.location.pathname !== internalEndpoints.login && error?.response?.status === 401) {
+                    console.log("navigating to logout");
+                    navigate(internalEndpoints.logout!);
+                }
+            } 
         }
-        return config
+            return config
     }, (error: AxiosError) => {
         console.log(error);
         setLoading(false);
@@ -88,12 +84,6 @@ export function createInterceptors ({axiosInstance, setLoading, setUser, setFeed
         // Display error
         setFeedback(errorFormatter(error));
         setLoading(false);
-
-        // Redirect to login if unauthrorized
-        if (window.location.pathname !== internalEndpoints.login && error.response?.status === 401) {
-            console.log("navigating to logout");
-            navigate(internalEndpoints.logout!);
-        }
 
         Promise.reject(error)
     });

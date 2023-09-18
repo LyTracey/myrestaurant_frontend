@@ -10,6 +10,7 @@ interface TokenData {
 // Set access and refresh token
 export function changeTokens (data: TokenData, userSetter: Dispatch<SetStateAction<any>> ) {
     return new Promise(function (resolve, reject) {
+
     
         // Set access token
         localStorage.setItem("access", data.access);
@@ -17,12 +18,24 @@ export function changeTokens (data: TokenData, userSetter: Dispatch<SetStateActi
         dataAPI.defaults.headers["Authorization"] = `Bearer ${ data.access }`;
     
         // Set user info
-        const { isStaff, role }: any = jwtDecode(data.access);
-        userSetter({
-            isStaff: isStaff,
-            role: role
-        });
-    
+        try {
+            const { isStaff, role }: any = jwtDecode(data.access);
+            userSetter({
+                isStaff: isStaff,
+                role: role
+            });
+        } catch {
+            throw new Response("User data not available", {status: 401})
+        }
+
+        // Set expiry time
+        try {
+            const { exp }: any = jwtDecode(data.access);
+            localStorage.setItem("expiry", String(exp * 1000));
+        } catch (error) {
+            console.log(error);
+        }
+
         // Set refresh token
         localStorage.setItem("refresh", data.refresh);
 

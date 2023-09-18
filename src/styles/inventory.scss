@@ -98,18 +98,4 @@
         
 
     }
-
-    .actions {
-        justify-content: flex-end;
-
-        .create.button {
-            text-decoration: none;
-    
-            &:hover {
-                color: map-get(base.$themes, "navy");
-                transition: color 0.5s;
-            }
-        }
-
-    }
 }

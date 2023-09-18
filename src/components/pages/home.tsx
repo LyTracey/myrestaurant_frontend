@@ -14,7 +14,7 @@ import { internalEndpoints } from "../../data/endpoints";
 
 function Button ({ text, url }: any) {
     return (
-        <button type="button" onClick={(e: any) => {
+        <button className="link" type="button" onClick={(e: any) => {
             e.stopPropagation();
             window.open(url, "_blank");
         }}>{ text }</button>

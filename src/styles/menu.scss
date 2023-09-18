@@ -8,8 +8,7 @@
         background-image: linear-gradient(map-get(base.$themes, "off-white") 60%, map-get(base.$themes, "light-yellow") 50%);
     }
 
-    .icon {
-        // stroke: map-get(base.$themes, "blue");
+    .card-image .icon {
         fill: map-get(base.$themes, "beige");
     }
 
@@ -23,8 +22,7 @@
         background-image: linear-gradient(map-get(base.$themes, "blue") 60%, map-get(base.$themes, "mid-blue") 50%);;
     }
 
-    .icon {
-        // stroke: map-get(base.$themes, "beige");
+    .card-image > .icon {
         fill: map-get(base.$themes, "navy");
     }
 
@@ -34,29 +32,43 @@
     .card-col {
         height: 50vh;
     }
-
-    // card
+    
+    // Card
     .card-body {
         margin-top: 10px;
         margin-bottom: 10px;
         border-radius: 12px;
         text-align: center;
         height: 95%;
+        
+
+        &:hover {
+            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        }
 
         .card-title  {
-            text-align: center;
             margin-bottom: 10px;
             display: flex;
             padding: 0 10%;
             justify-content: space-between;
             font-weight: 600;
             margin-top: 16px;
+
+            .title {
+                text-align: left;
+                max-width: 60%;
+            }
+
+            .price {
+                min-width: fit-content;
+            }
         }
 
         .card-details {
             text-align: left;
-            padding: 16px 10%;
-            line-height: 80%;
+            padding: 8px 10%;
+            height: 22%;
+            overflow-y: auto;
 
 
             .ingredients {
@@ -81,9 +93,5 @@
     
     .card-body.default-cursor {
         cursor: default;
-    }
-    
-    .actions {
-        justify-content: center;
     }
 }

@@ -1,8 +1,19 @@
 import "../../styles/error.scss";
 import { useRouteError } from "react-router-dom";
-import Logout from "../pages/User/logout";
 import ICONS from "../../data/icons";
-import { AxiosError } from "axios";
+import Logout from "../pages/User/logout";
+
+export function Unauthorized () {
+
+    const { UnauthorizedIcon } = ICONS;
+
+    return (
+        <div className="page error">
+            <UnauthorizedIcon className="error-icon"/>
+            <h2 className="error-message">Unauthorized 401</h2>
+        </div>
+    )
+}
 
 
 function Forbidden () {
@@ -72,7 +83,7 @@ function RootErrorBoundary () {
     const error: any = useRouteError();
 
     console.log(error);
-    const errorCode = error instanceof AxiosError ? error.response?.status : error.status;
+    const errorCode = error?.response.status ?? error.status;
 
     switch (errorCode) {
         case 401:

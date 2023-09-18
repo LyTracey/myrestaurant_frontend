@@ -8,6 +8,8 @@ import Modal from "react-bootstrap/Modal";
 import { DisplayFeedback } from "../../modules/miscComponents";
 import { ErrorMessage } from "@hookform/error-message";
 import { DeleteAlert } from "../../modules/miscComponents";
+import { GlobalContext } from "../App";
+import ICONS from "../../../data/icons";
 
 export interface InventoryType {
     [index: string]: any,
@@ -32,6 +34,7 @@ export const DEFAULT_INVENTORY = {
 function InventoryForm () {
 
     // Get context values
+    const { theme: [theme] } = useContext(GlobalContext);
     const { inventory }: any = useContext(InventoryContext);
     const { id } = useParams();
     let updateObj = id ? {...inventory[id]} : DEFAULT_INVENTORY;
@@ -40,6 +43,7 @@ function InventoryForm () {
     const navigate = useNavigate();
     const revalidator = useRevalidator();
     const [showDelete, setShowDelete] = useState<boolean>(false);
+    const { DeleteIcon } = ICONS;
 
     // Initialise form
     const { register, formState: { errors }, handleSubmit } = useForm<InventoryType>({
@@ -79,8 +83,12 @@ function InventoryForm () {
 
 
     return (
-        <Modal show={ true } onHide={() => navigate(internalEndpoints.inventory!)}>
-            <Modal.Header closeButton>{ id ? `Update Inventory Item ${ updateObj.ingredient }` : "Create Inventory Item"}</Modal.Header>
+        <Modal className={ theme } show={ true } onHide={() => navigate(internalEndpoints.inventory!)}>
+            <Modal.Header closeButton>
+                <h3 className="title">
+                    { id ? `Update Inventory Item ${ updateObj.ingredient }` : "Create Inventory Item"}
+                </h3>
+            </Modal.Header>
             <Modal.Body>
 
                 <DisplayFeedback />
@@ -91,6 +99,13 @@ function InventoryForm () {
                         onClickYes={() => deleteHandler()}
                         onClickCancel={() => setShowDelete(false)} 
                     /> 
+                }
+                
+                {   id &&
+                    <div className="actions">
+                        <button type="button" className="button delete" onClick={() => setShowDelete(true)}><DeleteIcon /> Delete</button>
+                    </div>
+                
                 }
 
                 <form onSubmit={ submitHandler }>
@@ -159,8 +174,7 @@ function InventoryForm () {
                         </div>
                     </div>
 
-                    <input type="submit" />
-                    <button type="button" onClick={() => setShowDelete(true)}>Delete</button>
+                    <button type="submit" className="button submit">Submit</ button>
                 </form>
 
             </Modal.Body>
