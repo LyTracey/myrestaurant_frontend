@@ -5,9 +5,14 @@
 
     .table {
         @include base.theme(base.$light-mode...);
+        color:  map-get(base.$themes, "soft-black");
+
+        .table-button, .MuiSvgIcon-root {
+            color: map-get(base.$themes, "grey");
+        }
     }
 
-    tr.rows:hover {
+    .MuiDataGrid-row:hover {
         background-color: map-get(base.$themes, "beige");
         transition: background-color 0.5s;
     }
@@ -19,12 +24,15 @@
 
 .orders.dark-mode {
     @include base.theme(base.$dark-mode...);
-
     .table {
         @include base.theme(base.$dark-mode...);
+
+        .table-button, .MuiSvgIcon-root, .css-rtrcn9-MuiTablePagination-root {
+            color: map-get(base.$themes, "beige");
+        }
     }
 
-    tr.rows:hover  {
+    .MuiDataGrid-row:hover  {
         background-color: map-get(base.$themes, "blue");
         transition: background-color 0.5s;
     }
@@ -35,38 +43,24 @@
     padding-top: 20px;
     
     .actions {
-        justify-content: center;
+        justify-content: right;
+        width: 100%;
+    }
 
-        .btn {
-            @include base.button(map-get(base.$themes, "green"));
-            margin-left: 15px;
-        }
+    // Table
+    .table-toolbar {
+        justify-content: space-between;
+    }
+    
+    .menu-items {
+        width: 100%;
 
-        .archive {
-            background-color: map-get(base.$themes, "blue");
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
         }
     }
 
-    th, td {
-        text-align: center;
-
-        &.menu-items, &.notes {
-            text-align: left;
-        }
-
-        &.menu-items, &.notes, &.id {
-            cursor: pointer;
-        }
-        
-        .edit {
-            color: map-get(base.$themes, "red");
-            border: map-get(base.$themes, "red") solid 2px;
-            background-color: transparent;
-
-        }
-
-
-    }
 
     .feedback {
         color: map-get(base.$themes, "red");

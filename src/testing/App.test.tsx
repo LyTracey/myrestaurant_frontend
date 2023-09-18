@@ -1,8 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import App from '../pages/Base/App';
+import Menu from "../components/pages/Menu/menu";
+import { render } from "@testing-library/react";
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('menu and inventory data is received', () => {
+  render(<Menu />)
 });

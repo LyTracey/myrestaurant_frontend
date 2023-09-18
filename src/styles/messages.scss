@@ -1,0 +1,11 @@
+@use "base.scss";
+
+.page.message {
+    text-align: center;
+
+    .icon {
+        height: 64px;
+        width: 64px;
+        color: map-get(base.$themes, "green");
+    }
+}

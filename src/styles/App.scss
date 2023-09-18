@@ -1,8 +1,10 @@
 @use "base.scss";
-@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200&family=Fira+Sans:wght@900&family=Montserrat:wght@300&family=Roboto:wght@300&display=swap');
+
 
 html, body {
-  height: 100%;
+  height: fit-content;
+  transition: 0.5s;
 }
 
 body {
@@ -12,56 +14,322 @@ body {
   sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-  monospace;
-}
-
-
-.App.light-mode {
-  @include base.theme(base.$light-mode...);
-  
-}
-
-.App.dark-mode {
-  @include base.theme(base.$dark-mode...);
-
+  width: 100vw;
 }
 
 .App {
-  position: relative;
-  min-height: 100vh;
-  padding-bottom: 150px;
-  transition: 0.5s;
+    min-height: 100vh;
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 1px;
+    color: map-get(base.$themes, "soft-black");
+
+    // Containers
+    .page {
+        min-height: calc(100vh - 194.5px);
+    }
+}
+
+.modal-dialog {
+    max-width: 80% !important;
+
+    .modal-header {
+        height: 64px;
+        border-bottom: none;
+    }
+
+    .ingredients, .menu-items {
+        width: fit-content;
+    }
+
+    .checkboxes {
+        display: flex;
+    }
+
+    .multi-input {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .modal-body {
+        padding: 0 10%;
+    }
+}
+
+.App, .modal {
+    font-size: 14px;
+
+    // Headers
+    h2.title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        margin-top: 24px;
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+
+    h3.title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        margin-top: 24px;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    h4.title {
+        text-align: left;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        font-size: 0.9rem;
+    }
+
+    // Buttons
+    .button {
+        display: flex;
+        width: fit-content;
+        border-radius: 8px;
+        border: none;
+        height: 32px;
+        align-items: center;
+        margin: 12px;
+        padding: 0 12px;
+
+        &:focus {
+            box-shadow: none;
+        }
+
+        &.create {
+            border-radius: 50%;
+            height: 32px;
+            width: 32px;
+            padding: 0;
+
+        }
+
+        &.submit {
+            background-color: map-get(base.$themes, "green") !important;
+            color: map-get(base.$themes, "off-white") !important;
+        }
+
+        &.delete {
+            background-color: map-get(base.$themes, "red") !important;
+            color: map-get(base.$themes, "off-white") !important;
+        }
+    }
 
 
-  .btn-close {
-    --bs-btn-close-bg: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27%23E07A5F%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e") !important;
-  }
+    .btn-close:focus {
+        box-shadow: none !important;
+    }
 
-  .btn-close:focus {
-    box-shadow: none !important;
-  }
+    // Links
+    .link-container {
+        display: flex;
+        justify-content: center;
+    }
 
-  .form-check-input {
-    cursor: pointer;
-  }
+    .link {
+        background-color: transparent;
+        border: none;
+        text-decoration: underline;
+        color: inherit;
+        text-align: center;
+    }
 
-  .form-check-input:checked {
-    background-color: map-get(base.$themes, "green") !important;
-    border: none;
-  }
+    // Forms
 
-  .title {
-    text-align: center;
-    margin: 20px 0;
-  }
+    form {
+        display: flex;
+        flex-direction: column;
+        margin: 24px auto;
+        align-items: center;
+        width: 100%;
 
-  .button {
-    width: fit-content;
-  }
+        & > div {
+            width: 100%;
+        }
+    
+        label {
+            display: inherit;
+            width: 100%;
+            margin: 0;
+        }
+
+        // Inputs
+        input {
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            height: 32px;
+            padding: 0 12px;
+        
+            &:focus-visible {
+                border: none;
+            }
+        }
+
+
+        ul {
+            margin: 0;
+        }
+
+        .feedback {
+            align-items: flex-start;
+            width: 100%;
+            height: fit-content;
+        }
+
+    }
+    
+    // Inputs
+    .form-select {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    input:disabled {
+        background-color: map-get(base.$themes, "light-grey") !important;
+    }
+
+    .check-input-container {
+        display: flex;
+        align-items: center;
+        line-height: 32px;
+        margin-bottom: 20px;
+        width: auto;
+
+        .check-input, .check-label {
+            width: fit-content;
+        }
+
+        .check-input {
+            margin-right: 24px;
+        }
+    }
+
+    input[type=checkbox] {
+        border: 1px solid map-get(base.$themes, "light-grey");
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+
+        &:checked {
+            background-color: map-get(base.$themes, "green");
+        }
+
+    }
+
+
+
+    // Validation
+    .feedback {
+        color: map-get(base.$themes, "red");
+        padding: 10px 0;
+        height: fit-content;
+    }
+
+    .icon {
+        height: 32px;
+        width: 32px;
+        padding: 0 8px;
+    }
+
+    // Actions bar
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%
+    }
+    
+    // Lists 
+    ul {
+        margin: 0;
+    }
+}
+
+
+
+.App.light-mode, .modal.light-mode {
+    @include base.theme(base.$light-mode...);
+
+    form {
+        input {
+            background-color: map-get(base.$themes, "off-white");
+        }
+    }
+
+    .button {
+        background-color: map-get(base.$themes, "blue");
+        color: map-get(base.$themes, "off-white");
+
+        path {
+            stroke: map-get(base.$themes, "off-white");
+        }
+
+      
+        &:hover {
+            background-color: map-get(base.$themes, "beige");
+            color: map-get(base.$themes, "blue");
+
+            path {
+                stroke: map-get(base.$themes, "blue");
+            }
+        }
+    }
+}
+
+.App.dark-mode, .modal.dark-mode {
+    @include base.theme(base.$dark-mode...);
+
+    form {
+        input {
+            color: map-get(base.$themes, "off-white");
+            background-color: map-get(base.$themes, "mid-blue");
+        }
+    }
+
+    .button {
+        background-color: map-get(base.$themes, "light-yellow");
+        color: map-get(base.$themes, "mid-blue");
+
+        path {
+            stroke: map-get(base.$themes, "mid-blue");
+        }
+        &:hover {
+            background-color: map-get(base.$themes, "beige");
+            color: map-get(base.$themes, "blue");
+
+            path {
+                stroke: map-get(base.$themes, "blue");
+            }
+        }
+    }
+
+
+}
+
+.modal {
+    background-color: transparent !important;
+
+
+    &.light-mode {
+        color: map-get(base.$themes, "soft-black");
+        .modal-header, .modal-body {
+            background-color: map-get(base.$themes, "beige");
+        }
+    }
+
+    &.dark-mode {
+        color: map-get(base.$themes, "off-white");
+        
+        .modal-header, .modal-body {
+            background-color: map-get(base.$themes, "blue");
+        }
+
+    }
+    
 }
 
 @import "~bootstrap/scss/bootstrap";

@@ -1,35 +1,49 @@
 @use "base.scss";
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
 
 $width: 60%;
+$grey: rgb(225, 225, 225, 1);
 
 .home.light-mode {
     .gradient {
-        background-image: linear-gradient(to bottom, rgb(23, 42, 58, 0) 30%, rgb(225, 225, 225, 1) 50%);
+        background-image: linear-gradient(to bottom, rgb(23, 42, 58, 0) 30%, map-get(base.$themes, "beige") 50%);
     }
+
+    .text {
+        background-image: linear-gradient(to bottom, map-get(base.$themes, "beige"), map-get(base.$themes, "white") 50%);
+
+    }
+    
+    color: map-get(base.$themes, "soft-black");
 }
 
 .home.dark-mode {
     .gradient {
-        background-image: linear-gradient(to bottom, rgb(23, 42, 58, 0) 30%, rgb(23, 42, 58, 1) 50%);
+        // background-image: linear-gradient(to bottom, rgb(23, 42, 58, 0) 30%, rgb(23, 42, 58, 1) 50%);
+        background-image: linear-gradient(to bottom, rgb(23, 42, 58, 0) 30%, map-get(base.$themes, "mid-blue") 50%);
     }
+
+    .text {
+        background-image: linear-gradient(to bottom, map-get(base.$themes, "mid-blue"), map-get(base.$themes, "navy") 50%);
+    }
+
 }
 
 .home {
-    width: 100%;
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 48px);
     margin: 0 0;
     padding: 0;
-
+    font-family: "Montserrat", sans-serif;
 
     .container {
         max-width: 100vw;
+        scroll-snap-type: mandatory;
     }
 
     .gradient {
         position: absolute;
         bottom: 0;
         height: 100%;
+        padding: 0;
     }
     
     
@@ -38,7 +52,7 @@ $width: 60%;
         margin: 0;
         padding: 0;
         width: 100vw;
-        height: calc(100vh - 70px);
+        height: calc(100vh - 48px);
     }
     
     .home-background {
@@ -51,7 +65,6 @@ $width: 60%;
     
     }
 
-
     .home-image {
         position: absolute;
         top: 0;
@@ -62,16 +75,87 @@ $width: 60%;
         width: 100vw;
         padding-top: 50px;
     }
-    
-    .text-block {
-        padding: 30px 0;
-        width: 100vw;
-    }
-    
+
     .text {
-        font-family: 'Montserrat', sans-serif;
-        margin: 0 30px;
-        padding: 15px;
-        font-size: 17px;
+        padding: 100px 15%;
+        line-height: 1.5rem;
+        min-height: 100vh;
+        text-underline-offset: 4px;
+        text-align: center;
+        position: relative;
+        box-sizing: border-box;
+        justify-content: center;
+        align-content: center;
+
+        
+        .col {
+            padding: 6px;
+            z-index: 2;
+            display: flex;
+            height: auto;
+        }
+        
+        h3.title {
+            font-family: 'Fira Sans', sans-serif;
+        }
+        
+        
+        .box {
+            height: 350px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 12px 18px;
+            position: relative;
+            overflow: scroll;
+            align-items: stretch;
+            box-sizing: border-box;
+
+            -ms-overflow-style: none; /* for Internet Explorer, Edge */
+            scrollbar-width: none;  /* for Firefox */
+
+            &::-webkit-scrollbar {
+                display: none; /* for Chrome, Safari, and Opera */
+            }
+        }
+        .icon {
+            width: 50%;
+            height: 90%;
+            stroke: map-get(base.$themes, "off-white");
+            fill: map-get(base.$themes, "off-white");
+        }
+
+        .greeting {
+            .box {                
+                background-color: map-get(base.$themes, "green") ;
+                color: map-get(base.$themes, "soft-black");
+            }
+        }
+
+        .source-code {
+            .box {
+                background-color: map-get(base.$themes, "red") ;
+                font-family: "Roboto", sans-serif;
+                color: map-get(base.$themes, "off-white");
+            }
+        }
+
+        .tech-stack {
+            .box {
+                background-color: map-get(base.$themes, "mid-blue") ;
+                font-family: "Roboto", sans-serif;
+                color: map-get(base.$themes, "off-white");
+            }
+        }
+
+        .considerations {
+            .box {
+                background-color: map-get(base.$themes, "yellow") ;
+                color: map-get(base.$themes, "soft-black");
+            }
+        }
+
     }
+
+
 }
