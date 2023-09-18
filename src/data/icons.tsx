@@ -14,6 +14,7 @@ import { RxCross2, RxCheck, RxCrossCircled } from "react-icons/rx";
 import { GrAdd } from "react-icons/gr";
 import { FiArchive } from "react-icons/fi";
 import { TiArrowBack } from "react-icons/ti";
+import { GiConfirmed } from "react-icons/gi";
 
 const ICONS = {
     "TeaIcon": EmojiFoodBeverageIcon,
@@ -36,7 +37,8 @@ const ICONS = {
     "TrueIcon": RxCheck,
     "ReturnIcon": TiArrowBack,
     "CreateIcon": GrAdd,
-    "ArchiveIcon": FiArchive
+    "ArchiveIcon": FiArchive,
+    "ConfirmIcon": GiConfirmed
 
 };
 

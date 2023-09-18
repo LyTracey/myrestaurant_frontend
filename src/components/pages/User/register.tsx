@@ -1,13 +1,14 @@
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { externalEndpoints } from "../../../data/endpoints";
-import { FormEvent, useState, useContext } from "react";
+import { externalEndpoints, internalEndpoints } from "../../../data/endpoints";
+import { useContext } from "react";
 import { Container } from "react-bootstrap";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import { useNavigate } from 'react-router-dom';
 import { GlobalContext } from '../App';
 import { userAPI } from "../../modules/axiosInstances";
+import { useForm } from "react-hook-form";
+import { DisplayFeedback } from "../../modules/miscComponents";
+import { ErrorMessage } from "@hookform/error-message";
+import Form from "react-bootstrap/Form";
+import "../../../styles/login.scss";
 
 interface User {
     username: string,
@@ -16,132 +17,122 @@ interface User {
     is_staff: boolean
 };
 
+const DEFAULT_REGISTERED_USER: User = {
+    username: "",
+    password1: "",
+    password2: "",
+    is_staff: false
+};
+
 
 function Register () {
 
-    // Set states
-    const [newUser, setNewUser] = useState<User>({
-        username: "",
-        password1: "",
-        password2: "",
-        is_staff: false
+    // Initialise form
+    const { register, handleSubmit, formState: { errors }, watch } = useForm({
+        defaultValues: {...DEFAULT_REGISTERED_USER}
     });
-    const [validated, setValidated] = useState(false);
-    const { theme: [theme], feedback: [feedback, setFeedback] } = useContext(GlobalContext);
+
+    const { theme: [theme], feedback: [, setFeedback] } = useContext(GlobalContext);
     const navigate = useNavigate();
 
-    // Handle state
-    const handleData = (property: string, value: string | boolean) => {
-        setNewUser({...newUser, [property]: value});
-    };
+    //States
+    const password1 = watch("password1");
 
     // Handle form submit
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const submitHandler = handleSubmit(async (data) => {
         
-        const passwordsMatch = (newUser.password1 === newUser.password2);
+        const passwordsMatch = (data.password1 === data.password2);
 
-
-        const form = e.currentTarget;
-        if (form.checkValidity() === false || !passwordsMatch) {
-            e.stopPropagation();
-            if (!passwordsMatch) {
-                setFeedback(["Please ensure passwords match."]);
-            }
+        if (!passwordsMatch) {
+            setFeedback(["Please ensure passwords match."]);
         } else {
-            userAPI.post(
-                `${externalEndpoints["register"]}`,
-                {
-                    username: newUser.username,
-                    password: newUser.password1,
-                    is_staff: newUser.is_staff
-                }
-            ).then(() => {
-                navigate("/");
-            })
-        }
-        setValidated(true);
 
-    };
+            try {
+                console.log({
+                    username: data.username,
+                    password: data.password1,
+                    is_staff: data.is_staff
+                });
+                await userAPI.post(externalEndpoints.register!,
+                    {
+                        username: data.username,
+                        password: data.password1,
+                        is_staff: data.is_staff
+                    }
+                );
+                navigate(internalEndpoints.registerConfirm!);
+            } catch {
+                return 
+            }
+        }
+    });
 
     return (
-        <Container className={`page register-form page-form ${ theme }`}>
+        <Container className={`page register ${ theme }`}>
             <h2 className="title">Register</h2>
 
-            <ul className="error">
-                { feedback.map((item: string, i: number) => <li key={i}>{ item }</li>) }
-            </ul>
+            <DisplayFeedback />
 
-
-            <Form noValidate validated={ validated } className="form" onSubmit={e => handleSubmit(e)}>
+            <form onSubmit={ submitHandler }>
+                <div className="field username">
+                    <label>Username *</label>
+                    <input {...register("username", {
+                        required: "Please enter a username",
+                    }) }/>
+                    <div className="feedback">
+                        <ErrorMessage errors={ errors } name="username" />
+                    </div>
+                </div>
                 
-                <Form.Group as={Row} xs={1} className="group username">
-                    <Form.Label className="left-label">Username*</Form.Label>
-                    <Col className="field">
-                        <Form.Control 
-                            type="text" 
-                            placeholder="Enter username"
-                            name="username"
-                            onChange={e => handleData(e.target.name, e.target.value)}
-                            required
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            Please enter a username.
-                        </Form.Control.Feedback>
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} xs={1} className="group password">
-                    <Form.Label className="left-label">Password*</Form.Label>
-                    <Col className="field">
-                        <Form.Control
-                            type="password" 
-                            name="password1"
-                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-                            placeholder="Create password"
-                            onChange={e => { handleData(e.target.name, e.target.value) }}
-                            required
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            Required. Must contain at least one number, one uppercase letter, one lowercase letter, and at least 6 or more characters.
-                        </Form.Control.Feedback>
-                    </Col>
-                </Form.Group>
+                <div className="field password1">
+                    <label>Password *</label>
+                    <input 
+                        type="password"
+                        {...register("password1", {
+                        required: "Please enter a password.",
+                        pattern: {
+                            value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)[A-Za-z\d\W]{8,}$/,
+                            message: "Must contain at least one number, one uppercase letter, one lowercase letter, and one special character."
+                        },
+                        minLength: {
+                            value: 8,
+                            message: "Must contain at least 8 characters."
+                        }
+                    }) }/>
+                    <div className="feedback">
+                        <ErrorMessage errors={ errors } name="password1" />
+                    </div>
+                </div>
                 
-                <Form.Group as={Row} xs={1} className="group password">
-                    
-                    <Form.Label className="left-label">Re-enter Password*</Form.Label>
-                    <Col className="field">
-                        <Form.Control 
-                            type="password"
-                            name="password2"
-                            placeholder="Re-enter password"
-                            onChange={e => handleData(e.target.name, e.target.value) }
-                            required
-                        />
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} xs={1} className="group is-staff">
-                    <Col>
-                        <Form.Check 
-                            type="checkbox" 
-                            label="Staff View"
-                            name="is_staff"
-                            onChange={e => handleData(e.target.name, e.target.value)}
-                        />
-                    </Col>
-                </Form.Group>
+                <div className="field password2">
+                    <label>Re-enter Password *</label>
+                    <input 
+                        type="password"
+                        {...register("password2", {
+                            required: "Please re-enter your password.",
+                            validate: (value) => value === password1 || "Must be the same as your password."
+                        }) } 
+                        disabled={ password1 === ""}/>
+                    <div className="feedback">
+                        <ErrorMessage errors={ errors } name="password2" />
+                    </div>
+                </div>
                 
-                <Row className="form-actions">
-                    <Button className="submit" type="submit">Submit</Button>
-                </Row>
+                <div className="field is-staff">
+                    <label>Staff Member</label>
+                    <Form.Check
+                        className="check-input"
+                        type="checkbox"
+                        {...register("is_staff") }
+                    />
+                    <div className="feedback">
+                        <ErrorMessage errors={ errors } name="is_staff" />
+                    </div>
+                </div>
 
-                <Row className="extra-link">
-                    <Button as="a" href="/login">Login</Button>
-                </Row>
+                <button className="button submit" type="submit">Register</button>
+            </form>
 
-            </Form>
         </Container>
     )
 }

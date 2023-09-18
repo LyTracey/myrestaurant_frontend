@@ -189,7 +189,7 @@ body {
     }
 
     input:disabled {
-        background-color: map-get(base.$themes, "light-grey");
+        background-color: map-get(base.$themes, "light-grey") !important;
     }
 
     .check-input-container {
@@ -254,8 +254,10 @@ body {
 .App.light-mode, .modal.light-mode {
     @include base.theme(base.$light-mode...);
 
-    form > input {
-        background-color: map-get(base.$themes, "off-white") !important;
+    form {
+        input {
+            background-color: map-get(base.$themes, "off-white");
+        }
     }
 
     .button {
@@ -281,9 +283,11 @@ body {
 .App.dark-mode, .modal.dark-mode {
     @include base.theme(base.$dark-mode...);
 
-    form > input {
-        color: map-get(base.$themes, "off-white");
-        background-color: map-get(base.$themes, "mid-blue") !important;
+    form {
+        input {
+            color: map-get(base.$themes, "off-white");
+            background-color: map-get(base.$themes, "mid-blue");
+        }
     }
 
     .button {

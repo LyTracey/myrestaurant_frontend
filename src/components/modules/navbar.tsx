@@ -47,6 +47,9 @@ function Navigation() {
                             <Nav.Link eventKey="6" as={ NavLink } to={ internalEndpoints.logout! } className="link">Logout</Nav.Link>
                             : <Nav.Link eventKey="7" as={ NavLink } to={ internalEndpoints.login! } className="link">Login</Nav.Link>
                         }
+                        {
+                            !localStorage.getItem("access") && <Nav.Link eventKey="8" as={ NavLink } to={ internalEndpoints.register! } className="link">Register</Nav.Link>
+                        }
 
                     </Nav>
                     <Button className={`${ theme } theme-toggle`} onClick={() => handleTheme() }>

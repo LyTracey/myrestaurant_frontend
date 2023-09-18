@@ -38,7 +38,7 @@ interface CreateInterceptorsType {
     navigate: NavigateFunction
 }
 
-const IGNORE_REQUEST_INTERCEPTOR = [externalEndpoints.login, externalEndpoints.refresh];
+export const IGNORE_REQUEST_INTERCEPTOR = [externalEndpoints.login, externalEndpoints.refresh, externalEndpoints.register];
 
 export function createInterceptors ({axiosInstance, setLoading, setUser, setFeedback, navigate}: CreateInterceptorsType) {
     
@@ -63,7 +63,7 @@ export function createInterceptors ({axiosInstance, setLoading, setUser, setFeed
             } catch (error: any) {
                 
                 if (window.location.pathname !== internalEndpoints.login && error?.response?.status === 401) {
-                    console.log("navigating to logout");
+                    console.log("navigating to login");
                     navigate(internalEndpoints.logout!);
                 }
             } 
@@ -85,7 +85,7 @@ export function createInterceptors ({axiosInstance, setLoading, setUser, setFeed
         setFeedback(errorFormatter(error));
         setLoading(false);
 
-        Promise.reject(error)
+        return Promise.reject(error)
     });
     
 }

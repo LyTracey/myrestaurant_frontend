@@ -11,7 +11,6 @@ interface TokenData {
 export function changeTokens (data: TokenData, userSetter: Dispatch<SetStateAction<any>> ) {
     return new Promise(function (resolve, reject) {
 
-    
         // Set access token
         localStorage.setItem("access", data.access);
         userAPI.defaults.headers["Authorization"] = `Bearer ${ data.access }`;
@@ -39,8 +38,11 @@ export function changeTokens (data: TokenData, userSetter: Dispatch<SetStateActi
         // Set refresh token
         localStorage.setItem("refresh", data.refresh);
 
-        resolve("Success");
-        reject("Error");
+        if (localStorage.getItem("refresh")) {
+            resolve("Success");
+        } else {
+            reject("Error");
+        }
     })
 
 }

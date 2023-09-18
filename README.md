@@ -24,7 +24,9 @@ The deployed version of this website can be found at [here](https://www.tea-ly.c
 
     - [Security](#security)
 
-    - [Interactivity](#interactivity)
+    - [Pages](#pages)
+
+- [Run on Docker](#run-locally-with-docker)
 
 - [Feedback](#feedback)
 
@@ -55,9 +57,70 @@ The image below depicts the relationships between the user-defined models of the
 
 ![image](md-images/erd.png)
 
+
+Based on functionality, I split the Django backend into two apps: the users app to manage users and their authentication (named `user_app`) and the cafe app (named `myrestaurant_app`), which relates to the operating data of a cafe.
+
+
 ### Frontend
 
 The frontend was built using React.js, TypeScript, React-Bootstrap, and SCSS. 
+
+Packages of note used in this project 
+
+---
+
+## **Features**
+
+### Design
+
+The design theme of this website and cafe is day and night. Select whichever them  you like best using the theme toggle in the navbar.
+
+### Security
+
+<ins>Authentication</ins>
+
+For 'non-public' pages, JWT is used to authenticate users in the backend, developed using the `Simple JWT` package ([Simple JWT]: https://django-rest-framework-simplejwt.readthedocs.io/en/latest/).
+
+For the frontend, access and refresh tokens are stored in localStorage. Although this is vulnerable to XSS (cross-site scripting) attacks, refresh tokens are rotated (new refresh token is supplied once used) and are blacklisted after rotation, minising XSS vulnerabilities.
+
+<ins>Permissions and Customised Views</ins>
+
+To demonstrate user permissions, you can change your access level in the profile page by selecting the is staff check input and the relevant role. Possible users are:
+
+1. `MANAGER` - has read and write access to everything.
+2. `CHEF` - has read and write access to inventory, menu pages.
+3. `SALES` - has read and write access to orders and dashboard pages.
+4. `IS STAFF` - has the same permissions as an anonymous user if not role is set.
+5. `ANONYMOUS USER` - use is not logged in. Has read permissions on the menu page.
+
+### Pages
+
+A key aspect of this project is providing an interactive platform for small cafe owners to easily retrieve summary metrics of their business. The following describes the purpose and features of each page.
+
+#### Login, Logout, Register
+
+These pages are as described. When registering, you can select whether your user will by default be a staff member. This can easily be changed on the profile page when logged in.
+
+#### Inventory
+
+The inventory page is where you can add ingredients you have obtained and monitor which items are out of stock or low in stock. You can set the threshold of each ingredient to determine when a certain ingredient is considered low in stock.
+
+#### Menu
+
+The menu page is where you can add your menu items for your cafe. The ingredients you can use in your menu must be added as an inventory item first, even if you have none in stock.
+
+#### Orders and Orders Archive
+
+The orders page is where you can take customers' orders and visually view the status of each order. You can only add available menu items to the order. Orders that are completed are automatically moved to the orders archive page. The timestamps of each stage of the order (prepared, delivered) can be added to the data table under columns.
+
+#### Dashboard
+
+The dashboard is where you can gain an insight of your cafe business, including revenue, profits, inventory items that are low in stock or out of stock and menu items that are out of stock.
+
+
+### Updates
+
+1. Threshold field has been added to Inventory model.
 
 ---
 ## **Run locally with Docker**
@@ -70,9 +133,8 @@ The frontend was built using React.js, TypeScript, React-Bootstrap, and SCSS.
 - docker-compose.yml
 
 ### Setting up the backend
-1. Fork the backend repository using 
 
-Here is a template of a docker-compose.yml file that can be used.
+Here is a template of a `docker-compose.yml`` file that can be used.
 
 ```yml
 version: '1'
@@ -129,33 +191,6 @@ MYSQL_ROOT_PASSWORD=*
 
 
 ---
-
-## **Features**
-
-### Design
-
-The design theme of this website and cafe is day and night. Select whichever them  you like best using the theme toggle in the navbar.
-
-### Security
-
-<ins>Authentication</ins>
-
-For 'non-public' pages, JWT is used to authenticate users in the backend, developed using the `Simple JWT` package ([Simple JWT]: https://django-rest-framework-simplejwt.readthedocs.io/en/latest/).
-
-For the frontend, tokens are stored as `SessionTokens` or `HTTP only` cookies.
-
-<ins>Permissions and Customised Views</ins>
-
-To demonstrate user permissions, 
-
-### Interactivity
-
-A key aspect of this project is providing an interactive platform for small cafe owners to easily retrieve summary metrics of their business.
-
-#### Integrated Data
-
-### Updates
-
 
 ### Feedback
 

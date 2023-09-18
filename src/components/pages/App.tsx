@@ -21,6 +21,7 @@ import MenuForm from "./Menu/menuForm";
 import RootErrorBoundary from "../modules/errors";
 import OrderForm from "./Orders/ordersForm";
 import { createInterceptors, dataAPI, userAPI } from "../modules/axiosInstances";
+import { SuccessfullyRegistered } from "../modules/messages";
 
 // Create global context
 export const GlobalContext = createContext<any>({});
@@ -101,7 +102,10 @@ const router = createBrowserRouter(
 
             <Route path={ internalEndpoints.login! } element={ <Login />} />
             <Route path={ internalEndpoints.logout! } element={ <Logout />} />
-            <Route path={ internalEndpoints.register! } element={ <Register /> } />
+            <Route path={ internalEndpoints.register! } element={ <Outlet /> }>
+                <Route index element={ <Register /> } />
+                <Route path={ internalEndpoints.registerConfirm! } element={ <SuccessfullyRegistered /> } />
+            </Route>
             
             {/* Create privateroute to redirect to login if user is not logged in when accessing non-public pages */}
             <Route path={ internalEndpoints.home! } element={ <PrivateRoute />}>
@@ -114,10 +118,7 @@ const router = createBrowserRouter(
                     path={ internalEndpoints.dashboard! } element={ <Dashboard /> }  
                 />
 
-                <Route path={ internalEndpoints.inventory! } 
-                    element={ <Inventory /> } 
-                    loader={ InventoryLoader } 
-                >
+                <Route path={ internalEndpoints.inventory! } element={ <Inventory /> } loader={ InventoryLoader } >
                     <Route path={ internalEndpoints.inventoryCreate! } element={ <InventoryForm /> } />
                     <Route path={ internalEndpoints.inventoryUpdate! } element={ <InventoryForm /> } />
                 </Route>
