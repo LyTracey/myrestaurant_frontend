@@ -5,7 +5,7 @@ interface Endpoint {
 
 // External endpoints
 export const externalEndpoints: Endpoint = {
-    prefix: "https://tly.pythonanywhere.com/myrestaurant/",
+    prefix_data: "https://tly.pythonanywhere.com/myrestaurant/",
     prefix_user: "https://tly.pythonanywhere.com/user/",
     // prefix_data: "http://127.0.0.1:8000/myrestaurant/",
     // prefix_user: "http://127.0.0.1:8000/user/",
