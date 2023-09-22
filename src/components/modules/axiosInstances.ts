@@ -49,21 +49,19 @@ export function createInterceptors ({axiosInstance, setLoading, setUser, setFeed
         setLoading(true);
 
         if (!IGNORE_REQUEST_INTERCEPTOR.includes(config.url) && Date.now() > Number(localStorage.getItem("expiry"))) {
-            console.log("token expired");
+            
             // Refresh token if access token expired
             try {
                 const response = await userAPI.post(externalEndpoints.refresh!, {
                     refresh: localStorage.getItem("refresh")
                 });
-                console.log(response);
-                console.log("setting new access token");
 
-                const changeTokensResponse = await changeTokens(response.data, setUser);
-                console.log(changeTokensResponse);
+                console.log("setting new access token");
+                await changeTokens(response.data, setUser);
+                
             } catch (error: any) {
                 
                 if (window.location.pathname !== internalEndpoints.login && error?.response?.status === 401) {
-                    console.log("navigating to login");
                     navigate(internalEndpoints.logout!);
                 }
             } 

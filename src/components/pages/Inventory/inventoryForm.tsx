@@ -60,8 +60,6 @@ function InventoryForm () {
             threshold: data.threshold
         };
 
-        console.log(requestData);
-
         if (id) {
             await dataAPI.patch(`${ externalEndpoints.inventory! }${ data.slug }/`, requestData)
         } else {
@@ -74,8 +72,7 @@ function InventoryForm () {
     });
 
     const deleteHandler = async () => {
-        const response = await dataAPI.delete(`${ externalEndpoints.inventory }${ updateObj.slug }/`);
-        console.log(response);
+        await dataAPI.delete(`${ externalEndpoints.inventory }${ updateObj.slug }/`);
 
         navigate(internalEndpoints.inventory!);
         revalidator.revalidate();

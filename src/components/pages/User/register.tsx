@@ -46,13 +46,7 @@ function Register () {
         if (!passwordsMatch) {
             setFeedback(["Please ensure passwords match."]);
         } else {
-
             try {
-                console.log({
-                    username: data.username,
-                    password: data.password1,
-                    is_staff: data.is_staff
-                });
                 await userAPI.post(externalEndpoints.register!,
                     {
                         username: data.username,

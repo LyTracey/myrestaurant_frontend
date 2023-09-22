@@ -74,8 +74,6 @@ function MenuForm () {
             "units{}": Object.fromEntries(Object.entries(units).filter((unitsArray: [string, number | undefined]) => !!unitsArray[1])),
         };
 
-        console.log(requestData);
-
         if (id) {
             await dataAPI.patch(`${ externalEndpoints.menu! }${ data.slug }/`, requestData)
         } else {

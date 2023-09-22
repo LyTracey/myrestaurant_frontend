@@ -60,8 +60,6 @@ function OrderForm () {
             "quantity{}": Object.fromEntries(Object.entries(data.quantity).filter((quantityArray: [string, number | undefined]) => !!quantityArray[1])),
         };
 
-        console.log(requestData);
-
         if (id) {
             await dataAPI.patch(`${ externalEndpoints.orders! }${ id }/`, requestData)
         } else {
