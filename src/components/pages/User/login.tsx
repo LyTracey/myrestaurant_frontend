@@ -33,10 +33,7 @@ function Login () {
                 username: data.username,
                 password: data.password
             });
-    
-            console.log(response);
-            const tokenResponse = await changeTokens(response.data, setUser);
-            console.log(tokenResponse);
+            await changeTokens(response.data, setUser);
             navigate(internalEndpoints.profile!);
         } catch {
             return
