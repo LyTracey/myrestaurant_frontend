@@ -52,7 +52,8 @@ function Home () {
 
                                     <br/>
                                     
-                                    P.S. I suggest you account <NavLink onClick={e => e.stopPropagation()} className="link" to={ internalEndpoints.register! }>here</NavLink><br/>
+                                    P.S. I suggest you create an account <NavLink onClick={e => e.stopPropagation()} className="link" to={ internalEndpoints.register! }>here</NavLink>
+                                    to explore all the features.<br/>
                                     <br/>
                                     - Tracey
                                 </>
