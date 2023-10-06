@@ -3,6 +3,8 @@
 
 .light-mode.navbar {
     @include base.theme(base.$light-mode...);
+    border-bottom: 1px solid map-get(base.$themes, "light-grey");
+    
 
     .nav-link, .navbar-toggler {
         color: map-get(base.$themes, "soft-black");
@@ -27,6 +29,7 @@
 
 .dark-mode.navbar {
     @include base.theme(base.$dark-mode...);
+    border-bottom: 1px solid map-get(base.$themes, "mid-blue");
     
     .icon, .nav-link{
         color: map-get(base.$themes, "beige");
@@ -80,14 +83,14 @@
 
     // Brand
     .link.brand {
-        padding-left: 64px;
+        padding-left: 5%;
         border: none;
         cursor: pointer;
-        font-family: 'Dosis', sans-serif;
-        letter-spacing: 1.2px;
-        font-weight: 600;
-        text-decoration: underline dotted;
-        text-underline-offset: 8px;
+        font-family: 'Roboto', sans-serif;
+        text-decoration: none;
+        letter-spacing: 1.5px;
+        font-size: 16px;
+        font-weight: 900;
         display: flex;
         align-items: center;
         justify-content: flex-start;
@@ -96,13 +99,12 @@
         .logo {
             height: 44px;
             width: 44px;
-            margin-left: 10px;
         }
     }
 
     // Collapsed menu
     .navbar-toggler, .navbar-toggler:focus {
-        padding-right: 48px;
+        padding-right: 5%;
         border: none;
         box-shadow: none;
         cursor: pointer;
@@ -110,6 +112,7 @@
         .icon {
             height: 32px;
             width: 32px;
+            padding: 0;
         }
     }
     

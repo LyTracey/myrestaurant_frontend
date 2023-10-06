@@ -85,8 +85,8 @@ function Menu ( ) {
                                 </Card.Title>
 
                                 <div className='card-details'>
-                                    <Card.Text>{ item.description }</Card.Text>
-                                    <Card.Text className='ingredients'>Ingredients: { Object.values(item.ingredients).join(", ") }</Card.Text>
+                                    <div>{ item.description }</div>
+                                    <div className='ingredients'>Ingredients: { Object.values(item.ingredients).join(", ") }</div>
                                 </div>
                             </Card.Body>
                         </Col>
