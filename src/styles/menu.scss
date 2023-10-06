@@ -40,6 +40,7 @@
         border-radius: 12px;
         text-align: center;
         height: 95%;
+        overflow: hidden;
         
 
         &:hover {
@@ -53,6 +54,7 @@
             justify-content: space-between;
             font-weight: 600;
             margin-top: 16px;
+            
 
             .title {
                 text-align: left;
@@ -67,14 +69,17 @@
         .card-details {
             text-align: left;
             padding: 8px 10%;
-            height: 22%;
             overflow-y: auto;
+            height: 22%;
+
 
 
             .ingredients {
+                margin-top: 12px;
                 font-style: italic;
-                line-height: 150%;
+                overflow: hidden;
             }
+
         }
         
         .card-image {
