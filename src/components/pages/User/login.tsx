@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 import { DisplayFeedback } from "../../modules/miscComponents";
 
-function Login () {
+export default function Login (): JSX.Element {
 
     // Create form instance
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -33,6 +33,7 @@ function Login () {
                 username: data.username,
                 password: data.password
             });
+            console.log(response);
             await changeTokens(response.data, setUser);
             navigate(internalEndpoints.profile!);
         } catch {
@@ -50,15 +51,16 @@ function Login () {
             <DisplayFeedback />
 
             <form onSubmit={(e) => {
-                e.preventDefault();
-                submitRequest();
-            }}>
+                    e.preventDefault();
+                    submitRequest();
+                }}
+            >
                 <label>
                     Username *
                 </label>
-                <input type="text" {...register("username", {required: "Please enter a username."})} />
+                <input type="text" data-testid="username-field" {...register("username", {required: "Please enter a username."})} />
 
-                <div className="feedback">
+                <div className="feedback" data-testid="username-feedback">
                     <ErrorMessage errors={ errors } name="username" />
                 </div>
 
@@ -66,8 +68,8 @@ function Login () {
                 <label>
                     Password *
                 </label>
-                <input type="password" {...register("password", {required: "Please enter a password."})} />
-                <div className="feedback">
+                <input type="password" data-testid="password-field" {...register("password", {required: "Please enter a password."})} />
+                <div className="feedback" data-testid="password-feedback">
                     <ErrorMessage errors={ errors } name="password" />
                 </div>
 
@@ -83,5 +85,3 @@ function Login () {
         </Container>
     )
 }
-
-export default Login;

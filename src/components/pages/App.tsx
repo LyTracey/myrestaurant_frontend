@@ -132,11 +132,10 @@ const router = createBrowserRouter(
     )
 );
 
+export function GlobalContextProvider ({ children }: any) {
 
-// Create App
-function App() {
     // Set global app states
-    const [theme, setTheme] = useState<string>(localStorage.getItem("theme") ?? "light-mode");
+    const [theme, setTheme] = useState<string>(localStorage.getItem("theme") ?? "dark-mode");
     const [feedback, setFeedback] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [user, setUser] = useState<User>(DEFAULT_USER);
@@ -154,13 +153,24 @@ function App() {
 
     };
 
-
     return (
         <GlobalContext.Provider value={ globalContextValue }>
             <div className={`App ${ theme }`}>
-                <RouterProvider router={ router }/>
+                { children }
             </div>
         </GlobalContext.Provider>
+    )
+};
+
+
+// Create App
+function App() {
+
+
+    return (
+        <GlobalContextProvider>
+            <RouterProvider router={ router }/>
+        </GlobalContextProvider>
     )
 }
 

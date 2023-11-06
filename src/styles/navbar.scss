@@ -4,19 +4,14 @@
 .light-mode.navbar {
     @include base.theme(base.$light-mode...);
     border-bottom: 1px solid map-get(base.$themes, "light-grey");
-    
 
-    .nav-link, .navbar-toggler {
-        color: map-get(base.$themes, "soft-black");
-    }
-
-    .link.brand {
-        color: map-get(base.$themes, "grey");
+    .link.active, .link:hover {
+        color: map-get(base.$themes, "blue");
     }
 
     .icon {
-        stroke: map-get(base.$themes, "grey");
-        fill: map-get(base.$themes, "grey");
+        stroke: map-get(base.$themes, "blue");
+        fill: map-get(base.$themes, "blue");
     }
 
     @media (max-width: calc(base.$md - 1px)) {
@@ -33,6 +28,10 @@
     
     .icon, .nav-link{
         color: map-get(base.$themes, "beige");
+    }
+
+    .link.active, .link:hover {
+        color: map-get(base.$themes, "yellow");
     }
 
     .link.brand {
@@ -72,12 +71,11 @@
         &.active {
             text-decoration: underline 1px;
             text-underline-offset: 5px;
-            color: map-get(base.$themes, "yellow");
         }
     }
 
     .link:hover {
-        color: map-get(base.$themes, "yellow");
+        color: map-get(base.$themes, "mid-blue");
         transition: color 0.5s;
     }
 

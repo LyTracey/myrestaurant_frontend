@@ -48,7 +48,7 @@
         }
 
         .quantity {
-            width: fit-content;
+            min-width: 50px;
             height: 28px;
             display: flex;
             align-items: center;
@@ -59,13 +59,14 @@
             position: absolute;
             right: -14px;
             top: -14px;
+            font-weight: 600;
 
             &.in-stock {
                 background-color: map-get(base.$themes, "green");
             }
             
             &.low-stock {
-                background-color: map-get(base.$themes, "yellow");
+                background-color: map-get(base.$themes, "dark-yellow");
             }
 
             &.out-of-stock {

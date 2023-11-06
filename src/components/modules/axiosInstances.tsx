@@ -1,11 +1,10 @@
-import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { externalEndpoints, internalEndpoints } from "../../data/endpoints";
 import { Dispatch, SetStateAction } from "react";
 import { changeTokens } from "../../utils/apiUtils";
 import { User } from "../pages/App";
 import { errorFormatter } from "../../utils/formatUtils";
 import { NavigateFunction } from "react-router-dom";
-
+import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError} from "axios";
 
 // Create axios instances
 
