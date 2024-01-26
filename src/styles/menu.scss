@@ -1,6 +1,6 @@
 @use "base.scss";
 
-.menu.light-mode {
+.menu.light {
     @include base.theme(base.$light-mode...);
     
     .card-body, .modal-content {
@@ -14,7 +14,7 @@
 
 }
 
-.menu.dark-mode {
+.menu.dark {
     @include base.theme(base.$dark-mode...);
     
     .card-body, .modal-content {

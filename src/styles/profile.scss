@@ -1,6 +1,6 @@
 @use "base.scss";
 
-.profile.light-mode {
+.profile.light {
     @include base.theme(base.$light-mode...);
 
     .icon {
@@ -17,7 +17,7 @@
 
 }
 
-.profile.dark-mode {
+.profile.dark {
     @include base.theme(base.$dark-mode...);
     
     .profile-image > svg {

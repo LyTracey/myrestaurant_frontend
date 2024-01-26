@@ -26,6 +26,7 @@
     "allowUnreachableCode": true,                     /* Disable error reporting for unreachable code. */
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./cypress.config.ts",
   ]
 }

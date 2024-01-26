@@ -1,7 +1,7 @@
 @use "base.scss";
 
-// Light mode
-.light-mode.dashboard {
+// light-mode mode
+.light.dashboard {
 
     .card, .date-range > #start-date, .date-range > #end-date, .form-select{
         @include base.card(base.$light-mode-card...);
@@ -22,8 +22,8 @@
     }
 }
 
-// Dark mode
-.dark-mode.dashboard {
+// dark-mode mode
+.dark.dashboard {
 
     .card, .date-range > #start-date, .date-range > #end-date, .form-select {
         @include base.card(base.$dark-mode-card...);

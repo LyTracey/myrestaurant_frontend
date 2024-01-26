@@ -1,7 +1,7 @@
 @use "base.scss";
 @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200&display=swap');
 
-.light-mode.navbar {
+.light.navbar {
     @include base.theme(base.$light-mode...);
     border-bottom: 1px solid map-get(base.$themes, "light-grey");
 
@@ -22,7 +22,7 @@
 }
 
 
-.dark-mode.navbar {
+.dark.navbar {
     @include base.theme(base.$dark-mode...);
     border-bottom: 1px solid map-get(base.$themes, "mid-blue");
     

@@ -1,7 +1,7 @@
 @use 'base.scss';
 
 
-.footer.light-mode {
+.footer.light {
     @include base.theme(base.$light-mode...);
 
     .navbar-brand, .icon {
@@ -10,7 +10,7 @@
     }
 }
 
-.footer.dark-mode {
+.footer.dark {
     @include base.theme(base.$dark-mode...);
 
     .navbar-brand, .icon {

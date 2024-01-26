@@ -3,7 +3,7 @@
 $width: 60%;
 $grey: rgb(225, 225, 225, 1);
 
-.home.light-mode {
+.home.light {
     .gradient {
         background-image: linear-gradient(to bottom, rgb(23, 42, 58, 0) 30%, map-get(base.$themes, "beige") 50%);
     }
@@ -16,7 +16,7 @@ $grey: rgb(225, 225, 225, 1);
     color: map-get(base.$themes, "soft-black");
 }
 
-.home.dark-mode {
+.home.dark {
     .gradient {
         // background-image: linear-gradient(to bottom, rgb(23, 42, 58, 0) 30%, rgb(23, 42, 58, 1) 50%);
         background-image: linear-gradient(to bottom, rgb(23, 42, 58, 0) 30%, map-get(base.$themes, "mid-blue") 50%);

@@ -1,6 +1,6 @@
 @use "base.scss";
 
-.orders.light-mode {
+.orders.light {
     @include base.theme(base.$light-mode...);
 
     .table {
@@ -22,7 +22,7 @@
     }
 }
 
-.orders.dark-mode {
+.orders.dark {
     @include base.theme(base.$dark-mode...);
     .table {
         @include base.theme(base.$dark-mode...);

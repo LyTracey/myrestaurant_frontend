@@ -1,6 +1,8 @@
 @use "base.scss";
 @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200&family=Fira+Sans:wght@900&family=Montserrat:wght@300&family=Roboto:wght@300&display=swap');
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 html, body {
   height: fit-content;
@@ -253,7 +255,7 @@ body {
 
 
 
-.App.light-mode, .modal.light-mode {
+.App.light, .modal.light {
     @include base.theme(base.$light-mode...);
 
     form {
@@ -282,7 +284,7 @@ body {
     }
 }
 
-.App.dark-mode, .modal.dark-mode {
+.App.dark, .modal.dark {
     @include base.theme(base.$dark-mode...);
 
     form {
@@ -316,14 +318,14 @@ body {
     background-color: transparent !important;
 
 
-    &.light-mode {
+    &.light {
         color: map-get(base.$themes, "soft-black");
         .modal-header, .modal-body {
             background-color: map-get(base.$themes, "beige");
         }
     }
 
-    &.dark-mode {
+    &.dark {
         color: map-get(base.$themes, "off-white");
         
         .modal-header, .modal-body {

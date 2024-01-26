@@ -1,6 +1,6 @@
 @use "base.scss";
 
-.inventory.light-mode {
+.inventory.light {
     @include base.theme(base.$light-mode...);
     
     .card-body {
@@ -15,7 +15,7 @@
 
 }
 
-.inventory.dark-mode {
+.inventory.dark {
     @include base.theme(base.$dark-mode...);
     
     .card-body, .modal-content {

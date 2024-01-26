@@ -1,7 +1,7 @@
 import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
 import { LuMenu } from "react-icons/lu";
-import { ReactComponent as SunIcon } from "../images/icons/sun.svg";
-import { ReactComponent as MoonIcon } from "../images/icons/moon.svg";
+import { ReactComponent as SunIcon } from "../assets/icons/sun.svg";
+import { ReactComponent as MoonIcon } from "../assets/icons/moon.svg";
 import { AiFillGithub, AiFillLock } from "react-icons/ai";
 import { GoStack } from "react-icons/go";
 import { BsStars, BsFillQuestionDiamondFill } from "react-icons/bs";
