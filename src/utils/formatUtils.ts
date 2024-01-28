@@ -1,11 +1,11 @@
-import { AxiosError } from "axios";
+import { AxiosError } from "axios"
 
 export function errorFormatter (error: AxiosError | any) {
     /*
         Returns error.response.data as an array of its values.
     */
 
-    const data = error?.response?.data ?? error.message;
+    const data = error?.response?.data ?? error.message
 
     if (typeof(data) === "string") {
         return [data]
@@ -14,4 +14,4 @@ export function errorFormatter (error: AxiosError | any) {
     } else {
         return Object.values(data)
     }
-};
+}

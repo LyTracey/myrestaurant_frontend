@@ -1,4 +1,4 @@
-import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
+import EmojiFoodBeverageIcon from "@mui/icons-material/EmojiFoodBeverage";
 import { LuMenu } from "react-icons/lu";
 import { ReactComponent as SunIcon } from "../assets/icons/sun.svg";
 import { ReactComponent as MoonIcon } from "../assets/icons/moon.svg";
@@ -17,29 +17,28 @@ import { TiArrowBack } from "react-icons/ti";
 import { GiConfirmed } from "react-icons/gi";
 
 const ICONS = {
-    "TeaIcon": EmojiFoodBeverageIcon,
-    "MenuIcon": LuMenu,
-    "SunIcon": SunIcon,
-    "MoonIcon": MoonIcon,
-    "GithubIcon": AiFillGithub,
-    "StackIcon": GoStack,
-    "ThoughtIcon": HiChatBubbleOvalLeftEllipsis,
-    "StarsIcon": BsStars,
-    "OhNoIcon": FaFaceDizzy,
-    "NotFoundIcon": MdSearchOff,
-    "ThrottledIcon": BiTimer,
-    "ForbiddenIcon": AiFillLock,
-    "UnauthorizedIcon": RxCrossCircled,
-    "InternalIcon": BsFillQuestionDiamondFill,
-    "DeleteIcon": MdDelete,
-    "EditIcon": FaEdit,
-    "FalseIcon": RxCross2,
-    "TrueIcon": RxCheck,
-    "ReturnIcon": TiArrowBack,
-    "CreateIcon": GrAdd,
-    "ArchiveIcon": FiArchive,
-    "ConfirmIcon": GiConfirmed
-
+  TeaIcon: EmojiFoodBeverageIcon,
+  MenuIcon: LuMenu,
+  SunIcon: SunIcon,
+  MoonIcon: MoonIcon,
+  GithubIcon: AiFillGithub,
+  StackIcon: GoStack,
+  ThoughtIcon: HiChatBubbleOvalLeftEllipsis,
+  StarsIcon: BsStars,
+  OhNoIcon: FaFaceDizzy,
+  NotFoundIcon: MdSearchOff,
+  ThrottledIcon: BiTimer,
+  ForbiddenIcon: AiFillLock,
+  UnauthorizedIcon: RxCrossCircled,
+  InternalIcon: BsFillQuestionDiamondFill,
+  DeleteIcon: MdDelete,
+  EditIcon: FaEdit,
+  FalseIcon: RxCross2,
+  TrueIcon: RxCheck,
+  ReturnIcon: TiArrowBack,
+  CreateIcon: GrAdd,
+  ArchiveIcon: FiArchive,
+  ConfirmIcon: GiConfirmed,
 };
 
 export default ICONS;
