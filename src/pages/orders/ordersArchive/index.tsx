@@ -3,11 +3,11 @@ import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Button from "react-bootstrap/Button"
 import { externalEndpoints } from "../../../data/endpoints"
-import "../../styles/orders.scss"
+import "../../../styles/orders.scss"
 import { useContext } from "react"
 import { GlobalContext } from "../../../App"
 import { dataAPI } from "../../../api/axiosInstances"
-import { MenuType } from "../../menu/menuForm"
+import { MenuType } from "@pages/menu/menu.types"
 import { useLoaderData, useRevalidator } from "react-router-dom"
 import {
   GridColDef,

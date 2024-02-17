@@ -1,5 +1,5 @@
 import ICONS from "../../data/icons"
-import "../styles/messages.scss"
+import "../../styles/messages.scss"
 
 export function SuccessfullyRegistered() {
   const { ConfirmIcon } = ICONS

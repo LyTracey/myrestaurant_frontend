@@ -4,7 +4,7 @@ import { internalEndpoints } from "../../../data/endpoints"
 import { Container } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import { GlobalContext, DEFAULT_USER } from "../../../App"
-import "../../styles/login.scss"
+import "../../../styles/login.scss"
 
 function Logout() {
   const navigate = useNavigate()

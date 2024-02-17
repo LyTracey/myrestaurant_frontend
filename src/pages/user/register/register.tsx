@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import { DisplayFeedback } from "../../../components/messages/base"
 import { ErrorMessage } from "@hookform/error-message"
 import Form from "react-bootstrap/Form"
-import "../../styles/login.scss"
+import "../../../styles/login.scss"
 
 interface User {
   username: string

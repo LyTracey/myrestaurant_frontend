@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { GlobalContext } from "../../App"
 import Alert from "react-bootstrap/Alert"
 import Button from "react-bootstrap/Button"
-import "../styles/miscComponents.scss"
+import "../../styles/miscComponents.scss"
 
 export function DisplayFeedback() {
   const {

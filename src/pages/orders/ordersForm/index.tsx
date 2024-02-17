@@ -11,7 +11,7 @@ import Form from "react-bootstrap/Form"
 import { GlobalContext } from "../../../App"
 import { DeleteAlert } from "../../../components/messages/base"
 import ICONS from "../../../data/icons"
-import "../../styles/forms.scss"
+import "../../../styles/forms.scss"
 import { DEFAULT_ORDER } from "../constants"
 import { OrderType } from "../orders.types"
 

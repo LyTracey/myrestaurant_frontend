@@ -1,4 +1,4 @@
-import "../styles/error.scss"
+import "../../styles/error.scss"
 import { useRouteError } from "react-router-dom"
 import ICONS from "../../data/icons"
 import Logout from "../../pages/user/logout/logout"

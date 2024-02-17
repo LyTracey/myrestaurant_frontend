@@ -10,7 +10,8 @@ import { ErrorMessage } from "@hookform/error-message"
 import { DeleteAlert } from "../../../components/messages/base"
 import { GlobalContext } from "../../../App"
 import ICONS from "../../../data/icons"
-import { DEFAULT_INVENTORY, InventoryType } from "../inventory.types"
+import { InventoryType } from "../inventory.types"
+import { DEFAULT_INVENTORY } from "../constants"
 
 function InventoryForm() {
   const {
