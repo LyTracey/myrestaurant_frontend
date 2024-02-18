@@ -1,19 +1,19 @@
-import { externalEndpoints, internalEndpoints } from "../data/endpoints";
-import { Dispatch, SetStateAction } from "react";
-import { changeTokens } from "./apiUtils";
-import { User } from "../App";
-import { errorFormatter } from "../utils/formatUtils";
-import { NavigateFunction } from "react-router-dom";
+import { externalEndpoints, internalEndpoints } from "../data/endpoints"
+import { Dispatch, SetStateAction } from "react"
+import { changeTokens } from "./apiUtils"
+import { User } from "../App"
+import { errorFormatter } from "../utils/formatUtils"
+import { NavigateFunction } from "react-router-dom"
 import axios, {
   AxiosInstance,
   InternalAxiosRequestConfig,
   AxiosResponse,
   AxiosError,
-} from "axios";
+} from "axios"
 
 // Create axios instances
 
-const CONTROLLER = new AbortController();
+const CONTROLLER = new AbortController()
 const AXIOS_BASE_CONFIG = {
   timeout: 20000,
   formSerializer: { metaTokens: false, indexes: null },
@@ -24,31 +24,31 @@ const AXIOS_BASE_CONFIG = {
       ? `Bearer ${localStorage.getItem("access")}`
       : "",
   },
-};
+}
 
 export const userAPI = axios.create({
   ...AXIOS_BASE_CONFIG,
   baseURL: `${externalEndpoints.prefix_user}`,
-});
+})
 
 export const dataAPI = axios.create({
   ...AXIOS_BASE_CONFIG,
   baseURL: `${externalEndpoints.prefix_data}`,
-});
+})
 
 interface CreateInterceptorsType {
-  axiosInstance: AxiosInstance;
-  setLoading: Dispatch<SetStateAction<boolean>>;
-  setUser: Dispatch<SetStateAction<User>>;
-  setFeedback: Dispatch<SetStateAction<string[]>>;
-  navigate: NavigateFunction;
+  axiosInstance: AxiosInstance
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setUser: Dispatch<SetStateAction<User>>
+  setFeedback: Dispatch<SetStateAction<string[]>>
+  navigate: NavigateFunction
 }
 
 export const IGNORE_REQUEST_INTERCEPTOR = [
   externalEndpoints.login,
   externalEndpoints.refresh,
   externalEndpoints.register,
-];
+]
 
 export function createInterceptors({
   axiosInstance,
@@ -61,7 +61,7 @@ export function createInterceptors({
   axiosInstance.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
       // Display loading
-      setLoading(true);
+      setLoading(true)
 
       if (
         !IGNORE_REQUEST_INTERCEPTOR.includes(config.url) &&
@@ -71,41 +71,40 @@ export function createInterceptors({
         try {
           const response = await userAPI.post(externalEndpoints.refresh!, {
             refresh: localStorage.getItem("refresh"),
-          });
+          })
 
-          console.log("setting new access token");
-          await changeTokens(response.data, setUser);
+          // Set new access tokens
+          await changeTokens(response.data, setUser)
         } catch (error: any) {
           if (
             window.location.pathname !== internalEndpoints.login &&
             error?.response?.status === 401
           ) {
-            navigate(internalEndpoints.logout!);
+            navigate(internalEndpoints.logout!)
           }
         }
       }
-      return config;
+      return config
     },
     (error: AxiosError) => {
-      console.log(error);
-      setLoading(false);
-      Promise.reject(error);
+      setLoading(false)
+      Promise.reject(error)
     }
-  );
+  )
 
   // Response interceptor
   axiosInstance.interceptors.response.use(
     (response: AxiosResponse) => {
-      setFeedback([]);
-      setLoading(false);
-      return response;
+      setFeedback([])
+      setLoading(false)
+      return response
     },
     (error: AxiosError) => {
       // Display error
-      setFeedback(errorFormatter(error));
-      setLoading(false);
+      setFeedback(errorFormatter(error))
+      setLoading(false)
 
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
-  );
+  )
 }

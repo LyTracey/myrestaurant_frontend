@@ -38,7 +38,6 @@ export default function Login(): JSX.Element {
         username: data.username,
         password: data.password,
       })
-      console.log(response)
       await changeTokens(response.data, setUser)
       navigate(internalEndpoints.profile!)
     } catch {

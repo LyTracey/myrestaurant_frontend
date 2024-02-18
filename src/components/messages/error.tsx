@@ -76,8 +76,8 @@ function SomethingWentWrong() {
 // Create root error boundary
 function RootErrorBoundary() {
   const error: any = useRouteError()
-
   console.log(error)
+
   const errorCode = error?.response.status ?? error.status
 
   switch (errorCode) {

@@ -1,13 +1,13 @@
 interface Endpoint {
-  [key: string]: string;
+  [key: string]: string
 }
 
 // External endpoints
 export const externalEndpoints: Endpoint = {
-  // prefix_data: "https://tly.pythonanywhere.com/myrestaurant/",
-  // prefix_user: "https://tly.pythonanywhere.com/user/",
-  prefix_data: "http://127.0.0.1:8000/myrestaurant/",
-  prefix_user: "http://127.0.0.1:8000/user/",
+  prefix_data: "https://tly.pythonanywhere.com/myrestaurant/",
+  prefix_user: "https://tly.pythonanywhere.com/user/",
+  // prefix_data: "http://127.0.0.1:8000/myrestaurant/",
+  // prefix_user: "http://127.0.0.1:8000/user/",
   dashboard: "dashboard/",
   dashboardStock: "dashboard-stock/",
   menu: "menu/",
@@ -19,7 +19,7 @@ export const externalEndpoints: Endpoint = {
   profile: "profile/",
   login: "login/",
   refresh: "token/refresh/",
-};
+}
 
 export const internalEndpoints: Endpoint = {
   home: "/",
@@ -44,4 +44,4 @@ export const internalEndpoints: Endpoint = {
   logout: "/logout",
   refresh: "/token/refresh",
   verify: "/token/verify",
-};
+}
