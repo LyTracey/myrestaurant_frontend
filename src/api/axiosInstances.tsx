@@ -28,12 +28,12 @@ const AXIOS_BASE_CONFIG = {
 
 export const userAPI = axios.create({
   ...AXIOS_BASE_CONFIG,
-  baseURL: `${externalEndpoints.prefix_user}`,
+  baseURL: process.env.REACT_APP_BACKEND_USER_URL || "",
 })
 
 export const dataAPI = axios.create({
   ...AXIOS_BASE_CONFIG,
-  baseURL: `${externalEndpoints.prefix_data}`,
+  baseURL: process.env.REACT_APP_BACKEND_DATA_URL || "",
 })
 
 interface CreateInterceptorsType {

@@ -47,7 +47,7 @@ function InventoryForm() {
 
     if (id) {
       await dataAPI.patch(
-        `${externalEndpoints.inventory!}${data.slug}/`,
+        `${externalEndpoints.inventory!}${data.id}/`,
         requestData
       )
     } else {
@@ -59,7 +59,7 @@ function InventoryForm() {
   })
 
   const deleteHandler = async () => {
-    await dataAPI.delete(`${externalEndpoints.inventory}${updateObj.slug}/`)
+    await dataAPI.delete(`${externalEndpoints.inventory}${updateObj.id}/`)
 
     navigate(internalEndpoints.inventory!)
     revalidator.revalidate()
@@ -115,7 +115,10 @@ function InventoryForm() {
             />
 
             <div className="feedback">
-              <ErrorMessage errors={errors} name="ingredient" />
+              <ErrorMessage
+                errors={errors}
+                name="ingredient"
+              />
             </div>
           </div>
 
@@ -134,7 +137,10 @@ function InventoryForm() {
             />
 
             <div className="feedback">
-              <ErrorMessage errors={errors} name="quantity" />
+              <ErrorMessage
+                errors={errors}
+                name="quantity"
+              />
             </div>
           </div>
 
@@ -154,7 +160,10 @@ function InventoryForm() {
             />
 
             <div className="feedback">
-              <ErrorMessage errors={errors} name="unit_price" />
+              <ErrorMessage
+                errors={errors}
+                name="unit_price"
+              />
             </div>
           </div>
 
@@ -173,11 +182,17 @@ function InventoryForm() {
             />
 
             <div className="feedback">
-              <ErrorMessage errors={errors} name="threshold" />
+              <ErrorMessage
+                errors={errors}
+                name="threshold"
+              />
             </div>
           </div>
 
-          <button type="submit" className="button submit">
+          <button
+            type="submit"
+            className="button submit"
+          >
             Submit
           </button>
         </form>
