@@ -54,9 +54,7 @@ function MenuForm() {
       title: data.title,
       description: data.description,
       price: data.price,
-      "ingredients[]": ingredients
-        .filter((item: string | boolean): item is string => !!item)
-        .map((item: string) => parseInt(item)),
+      "ingredients[]": ingredients.filter((item: string | boolean) => !!item),
       "units{}": Object.fromEntries(
         Object.entries(units).filter(
           (unitsArray: [string, number | undefined]) => !!unitsArray[1]
@@ -65,10 +63,7 @@ function MenuForm() {
     }
 
     if (id) {
-      await dataAPI.patch(
-        `${externalEndpoints.menu!}${data.slug}/`,
-        requestData
-      )
+      await dataAPI.patch(`${externalEndpoints.menu!}${data.id}/`, requestData)
     } else {
       await dataAPI.post(externalEndpoints.menu!, requestData)
     }
@@ -78,7 +73,7 @@ function MenuForm() {
   })
 
   const deleteHandler = async () => {
-    await dataAPI.delete(`${externalEndpoints.menu}${updateObj.slug}/`)
+    await dataAPI.delete(`${externalEndpoints.menu}${updateObj.id}/`)
 
     navigate(internalEndpoints.menu!)
     revalidator.revalidate()
@@ -133,7 +128,10 @@ function MenuForm() {
             />
 
             <div className="feedback">
-              <ErrorMessage errors={errors} name="title" />
+              <ErrorMessage
+                errors={errors}
+                name="title"
+              />
             </div>
           </div>
 
@@ -142,7 +140,10 @@ function MenuForm() {
             <input {...register("description")} />
 
             <div className="feedback">
-              <ErrorMessage errors={errors} name="description" />
+              <ErrorMessage
+                errors={errors}
+                name="description"
+              />
             </div>
           </div>
 
@@ -161,7 +162,10 @@ function MenuForm() {
             />
 
             <div className="feedback">
-              <ErrorMessage errors={errors} name="price" />
+              <ErrorMessage
+                errors={errors}
+                name="price"
+              />
             </div>
           </div>
 
@@ -231,7 +235,10 @@ function MenuForm() {
             </div>
           </div>
 
-          <button className="button submit" type="submit">
+          <button
+            className="button submit"
+            type="submit"
+          >
             Submit
           </button>
         </form>

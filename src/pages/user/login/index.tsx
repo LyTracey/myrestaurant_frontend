@@ -64,8 +64,14 @@ export default function Login(): JSX.Element {
           {...register("username", { required: "Please enter a username." })}
         />
 
-        <div className="feedback" data-testid="username-feedback">
-          <ErrorMessage errors={errors} name="username" />
+        <div
+          className="feedback"
+          data-testid="username-feedback"
+        >
+          <ErrorMessage
+            errors={errors}
+            name="username"
+          />
         </div>
 
         <label>Password *</label>
@@ -74,18 +80,30 @@ export default function Login(): JSX.Element {
           data-testid="password-field"
           {...register("password", { required: "Please enter a password." })}
         />
-        <div className="feedback" data-testid="password-feedback">
-          <ErrorMessage errors={errors} name="password" />
+        <div
+          className="feedback"
+          data-testid="password-feedback"
+        >
+          <ErrorMessage
+            errors={errors}
+            name="password"
+          />
         </div>
 
-        <button type="submit" className="button submit">
+        <button
+          type="submit"
+          className="button submit"
+        >
           Login
         </button>
       </form>
 
       <div className="link-container">
-        No account?&nbsp{" "}
-        <NavLink className="link" to={internalEndpoints.register!}>
+        No account?
+        <NavLink
+          className="link"
+          to={internalEndpoints.register!}
+        >
           Register
         </NavLink>
       </div>

@@ -50,9 +50,9 @@ function OrderForm() {
   const submitHandler = handleSubmit(async (data) => {
     const requestData = {
       notes: data.notes,
-      "menu_items[]": data.menu_items
-        .filter((item: string | boolean): item is string => !!item)
-        .map((item: string) => parseInt(item)),
+      "menu_items[]": data.menu_items.filter(
+        (item: string | boolean) => !!item
+      ),
       "quantity{}": Object.fromEntries(
         Object.entries(data.quantity).filter(
           (quantityArray: [string, number | undefined]) => !!quantityArray[1]
@@ -71,7 +71,7 @@ function OrderForm() {
   })
 
   const deleteHandler = async () => {
-    await dataAPI.delete(`${externalEndpoints.menu}${updateObj.slug}/`)
+    await dataAPI.delete(`${externalEndpoints.menu}${updateObj.id}/`)
 
     navigate(internalEndpoints.menu!)
     revalidator.revalidate()
@@ -124,7 +124,10 @@ function OrderForm() {
             />
 
             <div className="feedback">
-              <ErrorMessage errors={errors} name="notes" />
+              <ErrorMessage
+                errors={errors}
+                name="notes"
+              />
             </div>
           </div>
 
@@ -193,7 +196,10 @@ function OrderForm() {
             </div>
           </div>
 
-          <button type="submit" className="button submit">
+          <button
+            type="submit"
+            className="button submit"
+          >
             Submit
           </button>
         </form>
