@@ -35,11 +35,14 @@ function Home() {
   const { StarsIcon, ThoughtIcon, GithubIcon, StackIcon } = ICONS
 
   return (
-    <Container className={`page home ${theme}`} fluid>
+    <Container
+      className={`page home ${theme}`}
+      fluid
+    >
       {/* <Row className="home-screen flex relative h-[calc(100vh-48px)] w-full justify-center" >
-                <img className="home-image p-0 z-10 h-3/4 w-3/4 flex justify-center" src={ theme === "light" ? HomeImageLight : HomeImageDark } alt="Bunny and moon" ></img>
+                <img className="z-10 flex justify-center w-3/4 p-0 home-image h-3/4" src={ theme === "light" ? HomeImageLight : HomeImageDark } alt="Bunny and moon" ></img>
                 <div className="gradient h-full w-full absolute top-0 bg-gradient-to-b from-transparent from-30% to-beige to-50% dark:to-mid-blue"></div>
-                <img className="home-background absolute top-0 object-cover p-0 w-full h-full" src={ theme === "light" ? HomeBackgroundLight : HomeBackgroundDark } alt="Speckles"></img>
+                <img className="absolute top-0 object-cover w-full h-full p-0 home-background" src={ theme === "light" ? HomeBackgroundLight : HomeBackgroundDark } alt="Speckles"></img>
             </Row> */}
 
       <Row className="home-screen">
@@ -56,14 +59,22 @@ function Home() {
         ></img>
       </Row>
 
-      <Row className="text" xs={1} md={2} xl={4}>
+      <Row
+        className="text"
+        xs={1}
+        md={2}
+        xl={4}
+      >
         <img
           className="home-background"
           src={theme === "light" ? HomeBackgroundLight : HomeBackgroundDark}
           alt="Speckles"
         ></img>
 
-        <Col className="greeting" onClick={() => setActiveBox("greeting")}>
+        <Col
+          className="greeting"
+          onClick={() => setActiveBox("greeting")}
+        >
           <div className="box">
             {activeBox !== "greeting" ? (
               <StarsIcon className="icon" />
@@ -123,7 +134,10 @@ function Home() {
           </div>
         </Col>
 
-        <Col className="tech-stack" onClick={() => setActiveBox("tech-stack")}>
+        <Col
+          className="tech-stack"
+          onClick={() => setActiveBox("tech-stack")}
+        >
           <div className="box">
             {activeBox !== "tech-stack" ? (
               <StackIcon className="icon" />
@@ -131,23 +145,26 @@ function Home() {
               <>
                 <h3 className="title">The Tech-Stack</h3>
                 The backend is built using Django and Django Rest Framework
-                connected to a MySQL database. It is hosted using{" "}
+                connected to a PostgreSQL database. The frontend is built using
+                TypeScript, React, React-Bootstrap and SCSS. The project is
+                hosted on{" "}
                 <Button
-                  text="Python Anywhere"
-                  url="https://www.pythonanywhere.com/"
+                  text="Vercel"
+                  url="https://vercel.com/"
                 />
                 .<br />
-                <br />
-                The frontend is built using TypeScript, React, React-Bootstrap
-                and SCSS. It is hosted on{" "}
-                <Button text="Vercel" url="https://vercel.com/" />.<br />
                 <br />I also created some images and icons using a combination
-                of <Button
+                of{" "}
+                <Button
                   text="Procreate"
                   url="https://procreate.com/"
-                /> and{" "}
-                <Button text="Vectornator" url="https://www.linearity.io/" />.
-                Other icons use the{" "}
+                />{" "}
+                and{" "}
+                <Button
+                  text="Vectornator"
+                  url="https://www.linearity.io/"
+                />
+                . Other icons use the{" "}
                 <Button
                   text="React Icons"
                   url="https://react-icons.github.io/react-icons/"
